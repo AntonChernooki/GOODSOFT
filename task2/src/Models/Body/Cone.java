@@ -19,6 +19,6 @@ public class Cone implements BodyInterface {
 
     @Override
     public void print() {
-        System.out.println("Это тело с обьемом "+ calculateVolume());
+        System.out.println("Это тело конус с обьемом "+ calculateVolume());
     }
 }

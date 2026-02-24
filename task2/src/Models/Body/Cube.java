@@ -14,7 +14,7 @@ public class Cube implements BodyInterface {
 
     @Override
     public void print() {
-        System.out.println("Это тело с обьемом "+ calculateVolume());
+        System.out.println("Это тело куб с обьемом "+ calculateVolume());
 
     }
 }

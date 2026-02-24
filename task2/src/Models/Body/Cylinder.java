@@ -17,6 +17,6 @@ public class Cylinder implements BodyInterface {
 
     @Override
     public void print() {
-        System.out.println("Это тело с обьемом "+ calculateVolume());
+        System.out.println("Это тело цилиндр с обьемом "+ calculateVolume());
     }
 }

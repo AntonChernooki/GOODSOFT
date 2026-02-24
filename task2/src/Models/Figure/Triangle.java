@@ -22,7 +22,7 @@ public class Triangle implements FigureInterface {
 
     @Override
     public void print() {
-        System.out.println("Эта фигура с площадью "+ calculateSquare());
+        System.out.println("Эта фигура треугольник с площадью "+ calculateSquare());
 
     }
 }
