@@ -3,13 +3,20 @@ package Models.Body;
 import Interface.BodyInterface;
 
 public class Cylinder implements BodyInterface {
+    private double radius;
+    private double height;
+
+    public Cylinder(double radius, double height) {
+        this.radius = radius;
+        this.height = height;
+    }
     @Override
     public double calculateVolume() {
-        return 0;
+        return Math.PI * radius * radius * height;
     }
 
     @Override
     public void print() {
-
+        System.out.println("Это тело с обьемом "+ calculateVolume());
     }
 }
