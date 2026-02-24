@@ -1,10 +1,14 @@
+package Models;
+
+import Interface.FileCopyStrategy;
+
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-public class Nio  implements Copy {
+public class NioFileCopyStrategy implements FileCopyStrategy {
 
     @Override
     public void copy(Path source, Path destination) throws IOException {
@@ -14,9 +18,11 @@ public class Nio  implements Copy {
         try (FileChannel sourceChannel=FileChannel.open(source, StandardOpenOption.READ);
              FileChannel destinationChannel = FileChannel.open(destination,StandardOpenOption.CREATE,StandardOpenOption.WRITE)) {
 
+            long transfer=0;
             long size = sourceChannel.size();
-            long transfer = sourceChannel.transferTo(0, size, destinationChannel);
-
+            while (transfer<size) {
+                 transfer += sourceChannel.transferTo(transfer, size-transfer, destinationChannel);
+            }
         }
         System.out.println("Копирование завершено");
 

@@ -1,3 +1,7 @@
+import Models.IoFileCopyStrategy;
+import Models.Nio2FileCopyStrategy;
+import Models.NioFileCopyStrategy;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
@@ -51,18 +55,18 @@ public class Main {
                 switch (strategy) {
                     case 1:
                         System.out.println("Выбрана стратегия IO");
-                        Io io = new Io();
-                        io.copy(sourcePath, destinationPath);
+                        IoFileCopyStrategy ioFileCopyStrategy = new IoFileCopyStrategy();
+                        ioFileCopyStrategy.copy(sourcePath, destinationPath);
                         break;
                     case 2:
                         System.out.println("Выбрана стратегия NIO");
-                        Nio nio = new Nio();
-                        nio.copy(sourcePath, destinationPath);
+                        NioFileCopyStrategy nioFileCopyStrategy = new NioFileCopyStrategy();
+                        nioFileCopyStrategy.copy(sourcePath, destinationPath);
                         break;
                     case 3:
                         System.out.println("Выбрана стратегия NIO2");
-                        Nio2 nio2 = new Nio2();
-                        nio2.copy(sourcePath, destinationPath);
+                        Nio2FileCopyStrategy nio2FileCopyStrategy = new Nio2FileCopyStrategy();
+                        nio2FileCopyStrategy.copy(sourcePath, destinationPath);
                         break;
                 }
 

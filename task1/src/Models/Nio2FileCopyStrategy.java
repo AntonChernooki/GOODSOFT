@@ -1,9 +1,13 @@
+package Models;
+
+import Interface.FileCopyStrategy;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-public class Nio2 implements Copy{
+public class Nio2FileCopyStrategy implements FileCopyStrategy {
 
 
     @Override
