@@ -1,9 +1,9 @@
-package Models.Body;
+package models.body;
 
-import Interface.BodyInterface;
+import interfaces.BodyInterface;
 
 public class Cube implements BodyInterface {
-    public double a;
+    private double a;
     public Cube(double a){
         this.a=a;
     }

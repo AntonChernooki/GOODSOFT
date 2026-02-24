@@ -1,6 +1,6 @@
-package Models.Figure;
+package models.figure;
 
-import Interface.FigureInterface;
+import interfaces.FigureInterface;
 
 public class Triangle implements FigureInterface {
     private double a;

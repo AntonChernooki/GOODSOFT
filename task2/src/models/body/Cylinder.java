@@ -1,6 +1,6 @@
-package Models.Body;
+package models.body;
 
-import Interface.BodyInterface;
+import interfaces.BodyInterface;
 
 public class Cylinder implements BodyInterface {
     private double radius;
