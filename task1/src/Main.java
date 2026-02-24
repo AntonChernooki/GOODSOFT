@@ -105,7 +105,7 @@ public class Main {
                         System.out.println("Файл уже существует. Перезаписать? 1-да, 2-нет, 3-отмена, exit-отмена");
                         String answerStr = scanner.nextLine().trim();
 
-                        // Проверка на exit
+
                         if (answerStr.equalsIgnoreCase("exit")) {
                             return null;
                         }
