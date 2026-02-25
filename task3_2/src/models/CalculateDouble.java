@@ -53,7 +53,7 @@ public class CalculateDouble implements CalculateOperation<Double> {
      */
     @Override
     public Double division(Double a, Double b) {
-        if(b==0){
+        if(Math.abs(b) < 1e-9){
             throw new ArithmeticException("нельзя делить на ноль") ;
         }
         return a/b;
