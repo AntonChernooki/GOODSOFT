@@ -30,8 +30,11 @@ void main() {
     CalculateString calculateString =new CalculateString();
     System.out.println("сложение строк "+ calculateString.addition("hello","world"));
     System.out.println("умножение строк "+ calculateString.multiplication("hello","world"));
+    System.out.println("умножение строк "+ calculateString.multiplication("hello",""));
     System.out.println("вычитание строк "+ calculateString.subtraction("hello","hel"));
+    System.out.println("вычитание строк "+ calculateString.subtraction("hello"," "));
     System.out.println("деление строк "+ calculateString.division("hello","wo"));
+
 
     Vector2D vector2D1=new Vector2D(14,15);
     Vector2D vector2D2=new Vector2D(7,-1);
