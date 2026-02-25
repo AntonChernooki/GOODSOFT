@@ -19,14 +19,14 @@ public class CalculateInteger implements CalculateOperation<Integer> {
     public Integer multiplication(Integer a, Integer b) {
         return a*b;
     }
-
-    //**
-     * Выполняет операцию сложения двух целых чисел.
-            *
-            * @param a первый операнд (слагаемое).
-            * @param b второй операнд (слагаемое).
-            * @return сумма чисел a и b.
+    /**
+     * Выполняет операцию сложение двух целых чисел.
+     *
+     * @param a первый операнд
+     * @param b второй операнд
+     * @return произведение чисел a и b.
      */
+
     @Override
     public Integer addition(Integer a, Integer b) {
         return a+b;
