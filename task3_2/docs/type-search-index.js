@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html","k":"18"},{"p":"models","l":"CalculateDouble"},{"p":"models","l":"CalculateInteger"},{"p":"interfaces","l":"CalculateOperation","k":"10"},{"p":"models","l":"CalculateString"},{"p":"models","l":"CalculateVector2D"},{"p":"<Unnamed>","l":"Main"},{"p":"models","l":"Vector2D"}];updateSearchResults();
