@@ -4,10 +4,7 @@ import interfaces.CalculateOperation;
 
 /**
  * Реализация арифметических операций для целых чисел.
- * <p>
  * Выполняет базовые математические операции над целыми числами.
- * </p>
- *
  */
 public class CalculateInteger implements CalculateOperation<Integer> {
 

@@ -3,9 +3,7 @@ package models;
 import interfaces.CalculateOperation;
 /**
  * Реализация арифметических операций для дробных чисел.
- * <p>
  * Выполняет базовые математические операции.
- * </p>
  *
  */
 public class CalculateDouble implements CalculateOperation<Double> {

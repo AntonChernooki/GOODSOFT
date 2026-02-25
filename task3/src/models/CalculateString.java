@@ -3,9 +3,7 @@ package models;
 import interfaces.CalculateOperation;
 /**
  * Реализация арифметических операций для строк.
- * <p>
  * Выполняет нестандартные операции над строками:
- * </p>
  */
 public class CalculateString implements CalculateOperation<String> {
 

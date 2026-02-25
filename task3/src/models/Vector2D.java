@@ -30,7 +30,6 @@ public class Vector2D {
 
     /**
      * Возвращает координату вектора по оси Y.
-     *
      * @return значение координаты y.
      */
     public double getY() {
@@ -39,7 +38,6 @@ public class Vector2D {
 
     /**
      * Устанавливает новое значение координаты по оси X.
-     *
      * @param x новое значение координаты x.
      */
     public void setX(double x){
@@ -48,7 +46,6 @@ public class Vector2D {
 
     /**
      * Устанавливает новое значение координаты по оси Y.
-     *
      * @param y новое значение координаты y.
      */
     public void setY(double y) {
@@ -56,8 +53,7 @@ public class Vector2D {
     }
 
     /**
-     * Возвращает строковое представление вектора.
-     *
+     * Возвращает строковое представление вектора
      * @return строка с координатами вектора.
      */
     public String toString(){

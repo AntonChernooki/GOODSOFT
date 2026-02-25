@@ -4,7 +4,6 @@ import interfaces.CalculateOperation;
 /**
  * Реализация арифметических операций для двумерных векторов типа Vector2D.
  * Выполняет покомпонентные математические операции над векторами:
- *
  */
 public class CalculateVector2D implements CalculateOperation<Vector2D> {
 

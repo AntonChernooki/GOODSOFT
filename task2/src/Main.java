@@ -1,12 +1,13 @@
-import interfaces.BodyInterface;
 import interfaces.Entity;
-import interfaces.FigureInterface;
 import models.body.Cone;
 import models.body.Cube;
 import models.body.Cylinder;
 import models.figure.Square;
 import models.figure.Trapezoid;
 import models.figure.Triangle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 void main() {
