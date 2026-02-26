@@ -1,13 +1,13 @@
 import java.util.Comparator;
 import java.util.Objects;
 
-public class UserClass implements Comparable<UserClass>
-{
+public class UserClass implements Comparable<UserClass> {
     private int a;
-   private String b;
-    public UserClass(int a,String b){
-        this.a=a;
-        this.b=b;
+    private String b;
+
+    public UserClass(int a, String b) {
+        this.a = a;
+        this.b = b;
     }
 
     public int getA() {
@@ -28,19 +28,19 @@ public class UserClass implements Comparable<UserClass>
 
     @Override
     public String toString() {
-        return "первое поле= "+getA()+" второе поле= "+getB();
+        return "первое поле= " + getA() + " второе поле= " + getB();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj==this){
+        if (obj == this) {
             return true;
         }
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-        UserClass userClass=(UserClass) obj;
-        return Integer.compare(a,userClass.getA())==0&&b.equals(((UserClass) obj).getB());
+        UserClass userClass = (UserClass) obj;
+        return Integer.compare(a, userClass.getA()) == 0 && b.equals(((UserClass) obj).getB());
     }
 
     @Override
