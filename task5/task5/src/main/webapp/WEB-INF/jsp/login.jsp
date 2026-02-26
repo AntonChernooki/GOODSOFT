@@ -13,7 +13,7 @@
 
     <form action="${pageContext.request.contextPath}/login.jhtml" method="post">
         <input type="hidden" name="action" value="login">
-        Логин: <input type="text" name="login" required><br>
+        Логин: <input type="text" name="username" required><br>
         Пароль: <input type="password" name="password" required><br>
         <input type="submit" value="Войти">
     </form>

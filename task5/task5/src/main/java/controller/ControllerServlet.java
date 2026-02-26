@@ -22,10 +22,10 @@ public class ControllerServlet extends HttpServlet {
             case "/login.jhtml": {
                 String action = req.getParameter("action");
                 if ("login".equals(action)) {
-                    String login = req.getParameter("login");
+                    String username = req.getParameter("username");
                     String password = req.getParameter("password");
 
-                    User user = new User(login, password);
+                    User user = new User(username, password);
                     if (securityService.login(user)) {
                         req.getSession().setAttribute("userData", user);
                         resp.sendRedirect(contextPath + "/welcome.jhtml");
