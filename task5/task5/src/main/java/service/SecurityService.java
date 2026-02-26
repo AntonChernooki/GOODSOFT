@@ -19,18 +19,18 @@ public class SecurityService {
             return false;
         }
         String storedPassw = users.get(user.getUsername());
-        if (storedPassw==null){
+        if (storedPassw == null) {
             return false;
         }
         return storedPassw.equals(user.getPassword());
     }
 
     public boolean changePassword(String username, String oldPassword, String newPassword) {
-        if(username==null|| oldPassword==null||newPassword==null){
+        if (username == null || oldPassword == null || newPassword == null) {
             return false;
         }
         String storedPassw = users.get(username);
-        if (storedPassw==null){
+        if (storedPassw == null) {
             return false;
         }
         if (storedPassw.equals(oldPassword)) {

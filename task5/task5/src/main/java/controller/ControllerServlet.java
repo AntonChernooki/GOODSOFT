@@ -18,56 +18,56 @@ public class ControllerServlet extends HttpServlet {
         String servletPath = req.getServletPath();
         String contextPath = req.getContextPath();
 
-        if (servletPath.equals("/login.jhtml")) {
-            String action = req.getParameter("action");
-            if ("login".equals(action)) {
-                String login = req.getParameter("login");
-                String password = req.getParameter("password");
+        switch (servletPath) {
+            case "/login.jhtml": {
+                String action = req.getParameter("action");
+                if ("login".equals(action)) {
+                    String login = req.getParameter("login");
+                    String password = req.getParameter("password");
 
-                User user = new User(login, password);
-                if (securityService.login(user)) {
-                    req.getSession().setAttribute("userData", user);
-                    resp.sendRedirect(contextPath + "/welcome.jhtml");
+                    User user = new User(login, password);
+                    if (securityService.login(user)) {
+                        req.getSession().setAttribute("userData", user);
+                        resp.sendRedirect(contextPath + "/welcome.jhtml");
+                    } else {
+                        req.setAttribute("error", "Неверный логин или пароль");
+                        req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
+                    }
                 } else {
+                    req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
+                }
+                return;
+            }
+            case "/welcome.jhtml": {
+                String action = req.getParameter("action");
+                if ("logout".equals(action)) {
+                    req.getSession().invalidate();
                     resp.sendRedirect(req.getContextPath() + "/login.jhtml");
+                } else {
+                    req.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(req, resp);
                 }
-            } else {
-                req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
+                return;
             }
-            return;
-        }
+            case "/loginedit.jhtml": {
+                String action = req.getParameter("action");
+                HttpSession httpSession = req.getSession();
+                User user = (User) httpSession.getAttribute("userData");
+                if ("changePassword".equals(action)) {
+                    String oldPassword = req.getParameter("oldPassword");
+                    String newPassword = req.getParameter("newPassword");
+                    if (securityService.changePassword(user.getUsername(), oldPassword, newPassword)) {
+                        req.setAttribute("message", "пароль изменен");
+                    } else {
+                        req.setAttribute("error", "неправильный пароль");
 
-
-        if (servletPath.equals("/welcome.jhtml")) {
-            String action = req.getParameter("action");
-            if ("logout".equals(action)) {
-                req.getSession().invalidate();
-                resp.sendRedirect(req.getContextPath() + "/login.jhtml");
-            } else {
-                req.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(req, resp);
-            }
-            return;
-        }
-
-
-
-        if (servletPath.equals("/loginedit.jhtml")) {
-            String action = req.getParameter("action");
-            HttpSession httpSession=req.getSession();
-            User user= (User) httpSession.getAttribute("userData");
-            if("changePassword".equals(action)){
-                String oldPassword= req.getParameter("oldPassword");
-                String newPassword= req.getParameter("newPassword");
-                if(securityService.changePassword(user.getUsername(),oldPassword,newPassword)){
-                    req.setAttribute("message","пароль изменен");
-                }else {
-                    req.setAttribute("error","неправильный пароль");
+                    }
 
                 }
-
+                req.getRequestDispatcher("/WEB-INF/jsp/loginedit.jsp").forward(req, resp);
+                break;
             }
-            req.getRequestDispatcher("/WEB-INF/jsp/loginedit.jsp").forward(req, resp);
-            return;
         }
+
+
     }
 }

@@ -5,7 +5,15 @@
     <title>Смена пароля</title>
 </head>
 <body>
-    <h2>Смена пароля для пользователя ${sessionScope.user.login}</h2>
+    <h2>Смена пароля для пользователя ${sessionScope.userData.username}</h2>
+
+    <c:if test="${not empty error}">
+        <div style="color: red;">Ошибка: ${error}</div>
+    </c:if>
+    <c:if test="${not empty message}">
+        <div style="color: green;">${message}</div>
+    </c:if>
+
     <form action="${pageContext.request.contextPath}/loginedit.jhtml" method="post">
         <input type="hidden" name="action" value="changePassword">
         Старый пароль: <input type="password" name="oldPassword" required><br>

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.example</groupId>
-    <artifactId>task5</artifactId>
+    <artifactId>webdipatch</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
@@ -62,7 +62,7 @@
                 <version>2.2</version>
                 <configuration>
                     <port>8081</port>
-                    <path>/task5</path>
+                    <path>/webdipatch</path>
                 </configuration>
             </plugin>
         </plugins>

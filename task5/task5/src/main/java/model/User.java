@@ -4,9 +4,9 @@ public class User {
     private String username;
     public String password;
 
-    public User(String name,String password){
-        this.username =name;
-        this.password=password;
+    public User(String name, String password) {
+        this.username = name;
+        this.password = password;
     }
 
     public String getUsername() {

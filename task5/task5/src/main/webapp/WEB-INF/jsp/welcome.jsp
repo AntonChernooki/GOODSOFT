@@ -5,7 +5,7 @@
     <title>Главная</title>
 </head>
 <body>
-    <h1>Добро пожаловать, ${sessionScope.user.login}!</h2>
+    <h1>Добро пожаловать, ${sessionScope.userData.username}!</h1>
     <p>Это главная страница</p>
 
     <a href="${pageContext.request.contextPath}/loginedit.jhtml">Сменить пароль</a><br>
