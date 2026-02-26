@@ -15,7 +15,7 @@ public class SecurityService {
     }
 
     public boolean login(User user) {
-        if (user == null || user.getUsername() == null || user.password == null) {
+        if (user == null || user.getUsername() == null || user.getPassword() == null) {
             return false;
         }
         String storedPassw = users.get(user.getUsername());
