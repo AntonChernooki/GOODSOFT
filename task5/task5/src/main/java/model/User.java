@@ -2,7 +2,7 @@ package model;
 
 public class User {
     private String username;
-    public String password;
+    private String password;
 
     public User(String name, String password) {
         this.username = name;

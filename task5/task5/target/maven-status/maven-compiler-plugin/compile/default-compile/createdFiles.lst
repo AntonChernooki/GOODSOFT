@@ -1,4 +1,5 @@
 filter\AuthFilter.class
 service\SecurityService.class
 controller\ControllerServlet.class
+constants\Constants.class
 model\User.class

@@ -1,5 +1,7 @@
 package filter;
 
+import constants.Constants;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +20,7 @@ public class AuthFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         String path = req.getServletPath();
         HttpSession session = req.getSession(false);
-        boolean haveLogin = (session != null && session.getAttribute("userData") != null);
+        boolean haveLogin = (session != null && session.getAttribute(Constants.USER_SESSION_KEY) != null);
         if (path.equals("/login.jhtml")) {
             chain.doFilter(request, response);
             return;
