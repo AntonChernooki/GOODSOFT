@@ -2,41 +2,38 @@ package service;
 
 import model.User;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class SecurityService {
 
-    private static final Map<String, String> users = new HashMap<>();
-
-    static {
-        users.put("admin", "1234");
-        users.put("user", "4321");
-    }
+    private final UserService userService = new UserService();
 
     public boolean login(User user) {
-        if (user == null || user.getUsername() == null || user.getPassword() == null) {
+        if (user == null || user.getLogin() == null || user.getPassword() == null) {
             return false;
         }
-        String storedPassw = users.get(user.getUsername());
-        if (storedPassw == null) {
+        User storedUser = userService.getUserByLogin(user.getLogin());
+        if (storedUser == null) {
             return false;
         }
-        return storedPassw.equals(user.getPassword());
+        return storedUser.getPassword().equals(user.getPassword());
     }
 
-    public boolean changePassword(String username, String oldPassword, String newPassword) {
-        if (username == null || oldPassword == null || newPassword == null) {
+    public boolean changePassword(String login, String oldPassword, String newPassword) {
+        if (login == null || oldPassword == null || newPassword == null) {
             return false;
         }
-        String storedPassw = users.get(username);
-        if (storedPassw == null) {
+        User user = userService.getUserByLogin(login);
+
+        if (user == null) {
             return false;
         }
-        if (storedPassw.equals(oldPassword)) {
-            users.put(username, newPassword);
+
+        if (user.getPassword().equals(oldPassword)) {
+            user.setPassword(newPassword);
+            userService.updateUser(login, user);
             return true;
         }
+
         return false;
     }
 }

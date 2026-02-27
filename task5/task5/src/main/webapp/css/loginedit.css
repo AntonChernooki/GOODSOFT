@@ -1,0 +1,154 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.password-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    transition: transform 0.3s ease;
+}
+
+.password-card:hover {
+    transform: translateY(-5px);
+}
+
+h2 {
+    color: #333;
+    font-size: 28px;
+    margin-bottom: 10px;
+    border-bottom: 3px solid #667eea;
+    padding-bottom: 15px;
+    text-align: center;
+}
+
+.username-highlight {
+    color: #667eea;
+    font-weight: 600;
+}
+
+.message {
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 500;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message.error {
+    background-color: #fed7d7;
+    color: #c53030;
+    border-left: 4px solid #c53030;
+}
+
+.message.success {
+    background-color: #c6f6d5;
+    color: #22543d;
+    border-left: 4px solid #22543d;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    outline: none;
+}
+
+input[type="password"]:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background: #5a67d8;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 25px;
+    color: #718096;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.back-link:hover {
+    color: #4a5568;
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .password-card {
+        padding: 25px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+}
