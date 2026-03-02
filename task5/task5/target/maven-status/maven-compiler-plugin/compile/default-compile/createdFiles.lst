@@ -1,10 +1,13 @@
+controller\LoginServlet.class
+service\UserService.class
+controller\PasswordServlet.class
 filter\AuthFilter.class
 service\SecurityService.class
-controller\LoginServlet.class
+dao\impl\UserDao.class
 model\Role.class
 controller\WelcomeServlet.class
 controller\UserServlet.class
-service\UserService.class
+dao\impl\InMemoryUserDao.class
+listener\AppContextListener.class
 constants\Constants.class
-controller\PasswordServlet.class
 model\User.class

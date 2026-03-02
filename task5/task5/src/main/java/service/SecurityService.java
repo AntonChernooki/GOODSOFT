@@ -1,17 +1,22 @@
 package service;
 
+import dao.impl.UserDao;
 import model.User;
 
 
 public class SecurityService {
 
-    private final UserService userService = new UserService();
+    private final UserDao userDao ;
+
+    public SecurityService(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     public boolean login(User user) {
         if (user == null || user.getLogin() == null || user.getPassword() == null) {
             return false;
         }
-        User storedUser = userService.getUserByLogin(user.getLogin());
+        User storedUser = userDao.getUserByLogin(user.getLogin());
         if (storedUser == null) {
             return false;
         }
@@ -22,7 +27,7 @@ public class SecurityService {
         if (login == null || oldPassword == null || newPassword == null) {
             return false;
         }
-        User user = userService.getUserByLogin(login);
+        User user = userDao.getUserByLogin(login);
 
         if (user == null) {
             return false;
@@ -30,7 +35,7 @@ public class SecurityService {
 
         if (user.getPassword().equals(oldPassword)) {
             user.setPassword(newPassword);
-            userService.updateUser(login, user);
+            userDao.updateUser(login, user);
             return true;
         }
 

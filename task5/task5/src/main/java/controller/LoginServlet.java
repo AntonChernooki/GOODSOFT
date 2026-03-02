@@ -1,6 +1,8 @@
 package controller;
 
 import constants.Constants;
+import dao.impl.InMemoryUserDao;
+import dao.impl.UserDao;
 import model.User;
 import service.SecurityService;
 import service.UserService;
@@ -14,8 +16,15 @@ import java.io.IOException;
 
 @WebServlet("/login.jhtml")
 public class LoginServlet extends HttpServlet {
-    private final SecurityService securityService = new SecurityService();
-    private final UserService userService = new UserService();
+    private  SecurityService securityService;
+    private  UserService userService;
+
+    public void init()throws ServletException
+    {
+        UserDao userDao = (UserDao) getServletContext().getAttribute("userDao");
+        this.securityService = new SecurityService(userDao);
+        this.userService = new UserService(userDao);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
