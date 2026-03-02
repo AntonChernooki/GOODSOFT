@@ -1,4 +1,4 @@
-package controller;
+/*package controller;
 
 import constants.Constants;
 import model.User;
@@ -62,9 +62,8 @@ public class ControllerServlet extends HttpServlet {
             return;
         }
 
-        if (!"ADMIN".equals(user.getRole())) {
-            req.setAttribute("error", "пользователь не админ");
-            req.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(req, resp);
+        if(adminFilter(req,resp,user))
+        {
             return;
         }
         String login = req.getParameter("login");
@@ -91,9 +90,8 @@ public class ControllerServlet extends HttpServlet {
             return;
         }
 
-        if (!"ADMIN".equals(user.getRole())) {
-            req.setAttribute("error", "пользователь не админ");
-            req.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(req, resp);
+        if(adminFilter(req,resp,user))
+        {
             return;
         }
         String action = req.getParameter(Constants.ACTION_PARAM);
@@ -125,7 +123,7 @@ public class ControllerServlet extends HttpServlet {
         String name = req.getParameter(Constants.NAME_PARAM);
         String patronymic = req.getParameter(Constants.PATRONYMIC_PARAM);
         String birthday = req.getParameter(Constants.BIRTHDAY_PARAM);
-        String role = req.getParameter(Constants.ROLE_PARAM);
+        String roleParam = req.getParameter(Constants.ROLE_PARAM);
         String originalLogin = req.getParameter("originalLogin"); // скрытое поле из формы
 
         Map<String, String> errors = new HashMap<>();
@@ -136,8 +134,17 @@ public class ControllerServlet extends HttpServlet {
         if (email == null || email.trim().isEmpty()) errors.put("email", "Email обязателен");
         if (surname == null || surname.trim().isEmpty()) errors.put("surname", "Фамилия обязательна");
         if (birthday == null || birthday.trim().isEmpty()) errors.put("birthday", "Дата рождения обязательна");
-        if (role == null || role.trim().isEmpty()) errors.put("role", "Роль обязательна");
 
+        Role role = null;
+        if (roleParam == null || roleParam.trim().isEmpty()) {
+            errors.put("role", "Роль обязательна");
+        } else {
+            try {
+                role = Role.valueOf(roleParam.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                errors.put("role", "Недопустимое значение роли");
+            }
+        }
         if (login != null && !login.trim().isEmpty()) {
             User existing = userService.getUserByLogin(login);
             if (existing != null) {
@@ -182,9 +189,8 @@ public class ControllerServlet extends HttpServlet {
             return;
         }
 
-        if (!"ADMIN".equals(user.getRole())) {
-            req.setAttribute("error", "пользователь не админ");
-            req.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(req, resp);
+        if(adminFilter(req,resp,user))
+        {
             return;
         }
         Collection<User> users = userService.getAllUsers();
@@ -250,4 +256,15 @@ public class ControllerServlet extends HttpServlet {
         }
         req.getRequestDispatcher("/WEB-INF/jsp/loginedit.jsp").forward(req, resp);
     }
+
+    private boolean adminFilter(HttpServletRequest req, HttpServletResponse resp,User user) throws ServletException, IOException {
+        if (!Role.ADMIN.equals(user.getRole())) {
+            req.setAttribute("error", "пользователь не админ");
+            req.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(req, resp);
+            return true;
+        }else {
+            return false;
+        }
+    }
 }
+*/

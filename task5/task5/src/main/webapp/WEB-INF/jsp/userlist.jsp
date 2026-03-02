@@ -38,7 +38,7 @@
                         <td>${user.email}</td>
                         <td>${user.role}</td>
                         <td>
-                            <a href="${pageContext.request.contextPath}/useredit.jhtml?id=${user.login}" class="btn-edit">Редактировать</a>
+                            <a href="${pageContext.request.contextPath}/useredit.jhtml?login=${user.login}" class="btn-edit">Редактировать</a>
                             <a href="#" onclick="confirmDelete('${user.login}')" class="btn-delete">Удалить</a>
                         </td>
                     </tr>

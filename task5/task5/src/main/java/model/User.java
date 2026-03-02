@@ -8,9 +8,9 @@ public class User {
     private String name;
     private String patronymic;
     private String birthday;
-    private String role;
+    private Role role;
 
-    public User(String login, String password, String email, String surname, String name, String patronymic, String birthday, String role) {
+    public User(String login, String password, String email, String surname, String name, String patronymic, String birthday, Role role) {
         this.login = login;
         this.password = password;
         this.email = email;
@@ -77,11 +77,11 @@ public class User {
         this.birthday = birthday;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }

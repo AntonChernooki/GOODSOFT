@@ -6,15 +6,7 @@
          version="3.0">
     <display-name>webdispatch</display-name>
 
-    <servlet>
-        <servlet-name>dispatcher</servlet-name>
-        <servlet-class>controller.ControllerServlet</servlet-class>
-    </servlet>
 
-    <servlet-mapping>
-        <servlet-name>dispatcher</servlet-name>
-        <url-pattern>*.jhtml</url-pattern>
-    </servlet-mapping>
 
     <filter>
         <filter-name>AuthFilter</filter-name>

@@ -1,6 +1,10 @@
 filter\AuthFilter.class
 service\SecurityService.class
-controller\ControllerServlet.class
+controller\LoginServlet.class
+model\Role.class
+controller\WelcomeServlet.class
+controller\UserServlet.class
 service\UserService.class
 constants\Constants.class
+controller\PasswordServlet.class
 model\User.class

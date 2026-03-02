@@ -1,10 +1,10 @@
 package service;
 
+import model.Role;
 import model.User;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class UserService {
@@ -12,9 +12,9 @@ public class UserService {
 
     static {
         User admin = new User("admin", "1234", "admin@email.com",
-                "Админов", "Админ", "Админович", "11-11-2011", "ADMIN");
+                "Админов", "Админ", "Админович", "11-11-2011", Role.ADMIN);
         User user = new User("user", "4321", "user@email.com",
-                "Иванов", "Иван", "Иванович", "12-12-2012", "USER");
+                "Иванов", "Иван", "Иванович", "12-12-2012", Role.USER);
         users.put(admin.getLogin(), admin);
         users.put(user.getLogin(), user);
     }
