@@ -1,7 +1,7 @@
 package controller;
 
 import constants.Constants;
-import dao.impl.UserDao;
+import dao.UserDao;
 import model.Role;
 import model.User;
 import service.SecurityService;
@@ -21,14 +21,14 @@ import java.util.Objects;
 @WebServlet({"/userlist.jhtml", "/useredit.jhtml", "/userdelete.jhtml"})
 public class UserServlet extends HttpServlet {
 
-    private  UserService userService;
+    private UserService userService;
 
-    public void init()throws ServletException
-    {
+    public void init() throws ServletException {
         UserDao userDao = (UserDao) getServletContext().getAttribute("userDao");
 
         this.userService = new UserService(userDao);
     }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (!checkAdmin(req, resp)) return;

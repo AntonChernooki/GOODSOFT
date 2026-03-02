@@ -1,6 +1,6 @@
 package service;
 
-import dao.impl.UserDao;
+import dao.UserDao;
 import model.Role;
 import model.User;
 

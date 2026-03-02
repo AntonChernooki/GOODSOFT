@@ -1,7 +1,7 @@
 package controller;
 
 import constants.Constants;
-import dao.impl.UserDao;
+import dao.UserDao;
 import model.User;
 import service.SecurityService;
 import service.UserService;
@@ -15,15 +15,15 @@ import java.io.IOException;
 
 @WebServlet("/loginedit.jhtml")
 public class PasswordServlet extends HttpServlet {
-    private  SecurityService securityService;
+    private SecurityService securityService;
 
 
-    public void init()throws ServletException
-    {
+    public void init() throws ServletException {
         UserDao userDao = (UserDao) getServletContext().getAttribute("userDao");
         this.securityService = new SecurityService(userDao);
 
     }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/WEB-INF/jsp/loginedit.jsp").forward(req, resp);

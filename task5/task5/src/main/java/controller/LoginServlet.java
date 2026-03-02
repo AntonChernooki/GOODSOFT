@@ -2,7 +2,7 @@ package controller;
 
 import constants.Constants;
 import dao.impl.InMemoryUserDao;
-import dao.impl.UserDao;
+import dao.UserDao;
 import model.User;
 import service.SecurityService;
 import service.UserService;
@@ -16,11 +16,10 @@ import java.io.IOException;
 
 @WebServlet("/login.jhtml")
 public class LoginServlet extends HttpServlet {
-    private  SecurityService securityService;
-    private  UserService userService;
+    private SecurityService securityService;
+    private UserService userService;
 
-    public void init()throws ServletException
-    {
+    public void init() throws ServletException {
         UserDao userDao = (UserDao) getServletContext().getAttribute("userDao");
         this.securityService = new SecurityService(userDao);
         this.userService = new UserService(userDao);
