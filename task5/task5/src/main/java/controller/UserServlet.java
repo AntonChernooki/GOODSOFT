@@ -4,7 +4,6 @@ import constants.Constants;
 import dao.UserDao;
 import model.Role;
 import model.User;
-import service.SecurityService;
 import service.UserService;
 
 import javax.servlet.ServletException;
