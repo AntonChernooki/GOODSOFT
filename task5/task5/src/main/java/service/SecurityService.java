@@ -6,21 +6,21 @@ import model.User;
 
 public class SecurityService {
 
-    private final UserDao userDao ;
+    private final UserDao userDao;
 
     public SecurityService(UserDao userDao) {
         this.userDao = userDao;
     }
 
-    public boolean login(User user) {
-        if (user == null || user.getLogin() == null || user.getPassword() == null) {
-            return false;
+    public User login(String login, String password) {
+        if (login == null || password == null) {
+            return null;
         }
-        User storedUser = userDao.getUserByLogin(user.getLogin());
-        if (storedUser == null) {
-            return false;
+        User user = userDao.getUserByLogin(login);
+        if (user == null|| user.getPassword().equals(password)) {
+            return null;
         }
-        return storedUser.getPassword().equals(user.getPassword());
+        return user;
     }
 
     public boolean changePassword(String login, String oldPassword, String newPassword) {

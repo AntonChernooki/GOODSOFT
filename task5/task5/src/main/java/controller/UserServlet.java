@@ -130,55 +130,28 @@ public class UserServlet extends HttpServlet {
 
 
         Map<String, String> errors = new HashMap<>();
-
-
-        if (login == null || login.trim().isEmpty()) errors.put("login", "Логин обязателен");
-        if (password == null || password.trim().isEmpty()) errors.put("password", "Пароль обязателен");
-        if (name == null || name.trim().isEmpty()) errors.put("name", "Имя обязательно");
-        if (email == null || email.trim().isEmpty()) errors.put("email", "Email обязателен");
-        if (surname == null || surname.trim().isEmpty()) errors.put("surname", "Фамилия обязательна");
-        if (birthday == null || birthday.trim().isEmpty()) errors.put("birthday", "Дата рождения обязательна");
-
-        Role role = null;
-        if (roleParam == null || roleParam.trim().isEmpty()) {
-            errors.put("role", "Роль обязательна");
-        } else {
-            try {
-                role = Role.valueOf(roleParam.trim().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                errors.put("role", "Недопустимое значение роли");
-            }
-        }
-
-        if (login != null && !login.trim().isEmpty()) {
-            User existing = userService.getUserByLogin(login);
-            if (existing != null && !login.equals(originalLogin)) {
-                errors.put("login", "Пользователь с таким логином уже существует");
-            }
-        }
-
-        if (!errors.isEmpty()) {
-            User tempUser = new User(login, password, email, surname, name, patronymic, birthday, role);
-            req.setAttribute("user", tempUser);
-            req.setAttribute("errors", errors);
-            req.getRequestDispatcher("/WEB-INF/jsp/useredit.jsp").forward(req, resp);
-            return;
-        }
-
-        User newUser = new User(login, password, email, surname, name, patronymic, birthday, role);
         boolean success;
-
         if (originalLogin == null || originalLogin.isEmpty()) {
-            success = userService.addUser(newUser);
+            success = userService.addUser(login, password, email, surname, name,
+                    patronymic, birthday, roleParam, errors);
         } else {
-            success = userService.updateUser(originalLogin, newUser);
+            success = userService.updateUser(originalLogin, login, password, email, surname, name,
+                    patronymic, birthday, roleParam, errors);
         }
 
         if (success) {
             resp.sendRedirect(req.getContextPath() + "/userlist.jhtml");
         } else {
-            req.setAttribute("error", "Не удалось сохранить пользователя");
-            req.setAttribute("user", newUser);
+            Role role = null;
+            if (roleParam != null && !roleParam.isEmpty()) {
+                try {
+                    role = Role.valueOf(roleParam.trim().toUpperCase());
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+            User tempUser = new User(login, password, email, surname, name, patronymic, birthday, role);
+            req.setAttribute("user", tempUser);
+            req.setAttribute("errors", errors);
             req.getRequestDispatcher("/WEB-INF/jsp/useredit.jsp").forward(req, resp);
         }
     }

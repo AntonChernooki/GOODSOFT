@@ -17,12 +17,10 @@ import java.io.IOException;
 @WebServlet("/login.jhtml")
 public class LoginServlet extends HttpServlet {
     private SecurityService securityService;
-    private UserService userService;
 
     public void init() throws ServletException {
         UserDao userDao = (UserDao) getServletContext().getAttribute("userDao");
         this.securityService = new SecurityService(userDao);
-        this.userService = new UserService(userDao);
     }
 
     @Override
@@ -39,16 +37,11 @@ public class LoginServlet extends HttpServlet {
         String login = req.getParameter(Constants.LOGIN_PARAM);
         String password = req.getParameter(Constants.PASSWORD_PARAM);
 
-        User tempUser = new User(login, password, null, null, null, null, null, null);
-        if (securityService.login(tempUser)) {
-            User user = userService.getUserByLogin(login);
-            if (user != null) {
-                req.getSession().setAttribute(Constants.USER_SESSION_KEY, user);
-                resp.sendRedirect(req.getContextPath() + "/welcome.jhtml");
-            } else {
-                req.setAttribute("error", "Ошибка загрузки пользователя");
-                req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
-            }
+        User user = securityService.login(login, password);
+
+        if (user != null) {
+            req.getSession().setAttribute(Constants.USER_SESSION_KEY, user);
+            resp.sendRedirect(req.getContextPath() + "/welcome.jhtml");
         } else {
             req.setAttribute("error", "Неверный логин или пароль");
             req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);

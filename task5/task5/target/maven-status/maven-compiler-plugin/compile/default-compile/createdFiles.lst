@@ -1,9 +1,9 @@
 controller\LoginServlet.class
 service\UserService.class
+dao\UserDao.class
 controller\PasswordServlet.class
 filter\AuthFilter.class
 service\SecurityService.class
-dao\impl\UserDao.class
 model\Role.class
 controller\WelcomeServlet.class
 controller\UserServlet.class
