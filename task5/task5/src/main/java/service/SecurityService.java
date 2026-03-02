@@ -26,9 +26,9 @@ public class SecurityService {
         }
         User user = userDao.getUserByLogin(login);
         if (user == null|| user.getPassword().equals(password)) {
-            return null;
+            return user;
         }
-        return user;
+        return null;
     }
 
     public boolean changePassword(String login, String oldPassword, String newPassword) {
