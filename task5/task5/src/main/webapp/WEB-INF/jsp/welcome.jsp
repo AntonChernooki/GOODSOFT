@@ -1,11 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<html>
-<head>
-    <title>Главная страница</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/welcome.css">
-</head>
-<body>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
+
+<t:myhtml title="главная страница" cssFile="welcome.css">
     <div class="profile-card">
         <h1>Добро пожаловать, ${sessionScope.userData.name}!</h1>
         <p class="greeting">Рады видеть вас снова</p>
@@ -41,5 +39,4 @@
             <a href="${pageContext.request.contextPath}/welcome.jhtml?action=logout" class="btn btn-danger">Выйти</a>
         </div>
     </div>
-</body>
-</html>
+</t:myhtml>

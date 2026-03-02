@@ -1,11 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<html>
-<head>
-    <title>Редактирование пользователя</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/useredit.css">
-</head>
-<body>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
+
+<t:myhtml title="управление пользователем"  cssFile="useredit.css">
     <div class="edit-card">
         <h2>
             <c:choose>
@@ -95,5 +93,4 @@
             </div>
         </form>
     </div>
-</body>
-</html>
+</t:myhtml>

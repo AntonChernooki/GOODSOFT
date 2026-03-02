@@ -1,11 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<html>
-<head>
-    <title>Список пользователей</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/userlist.css">
-</head>
-<body>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
+
+<t:myhtml title="управление пользователями"  cssFile="userlist.css">
     <div class="container">
         <h1>Управление пользователями</h1>
 
@@ -54,5 +52,4 @@
             }
         }
     </script>
-</body>
-</html>
+</t:myhtml>

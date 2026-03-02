@@ -1,11 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<html>
-<head>
-    <title>Вход в систему</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/login.css">
-</head>
-<body>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
+
+<t:myhtml title="Вход в систему" cssFile="login.css">
+
     <div class="login-container">
         <h1>Вход в систему</h1>
 
@@ -29,5 +28,4 @@
             <button type="submit" class="btn-login">Войти</button>
         </form>
     </div>
-</body>
-</html>
+</t:myhtml>
