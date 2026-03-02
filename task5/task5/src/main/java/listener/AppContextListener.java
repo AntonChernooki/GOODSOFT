@@ -1,7 +1,7 @@
 package listener;
 
 import dao.impl.InMemoryUserDao;
-import dao.impl.UserDao;
+import dao.UserDao;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

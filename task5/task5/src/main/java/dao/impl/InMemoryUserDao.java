@@ -1,5 +1,6 @@
 package dao.impl;
 
+import dao.UserDao;
 import model.Role;
 import model.User;
 
@@ -7,7 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InMemoryUserDao implements dao.impl.UserDao {
+public class InMemoryUserDao implements UserDao {
     private static final Map<String, User> users = new HashMap<>();
 
     static {
