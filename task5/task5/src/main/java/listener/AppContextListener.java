@@ -11,7 +11,7 @@ import javax.servlet.annotation.WebListener;
 public class AppContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        UserDao userDao = new InMemoryUserDao();
+        UserDao userDao = InMemoryUserDao.getInstance();
         sce.getServletContext().setAttribute("userDao", userDao);
     }
 

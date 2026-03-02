@@ -10,6 +10,12 @@ import java.util.Map;
 
 public class InMemoryUserDao implements UserDao {
     private static final Map<String, User> users = new HashMap<>();
+    private static final InMemoryUserDao INSTANCE = new InMemoryUserDao();
+    private InMemoryUserDao() {
+    }
+    public static InMemoryUserDao getInstance() {
+        return INSTANCE;
+    }
 
     static {
         User admin = new User("admin", "1234", "admin@email.com",

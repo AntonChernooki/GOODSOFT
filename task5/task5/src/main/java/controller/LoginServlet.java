@@ -19,7 +19,7 @@ public class LoginServlet extends HttpServlet {
 
     public void init() throws ServletException {
         UserDao userDao = (UserDao) getServletContext().getAttribute("userDao");
-        this.securityService = new SecurityService(userDao);
+        this.securityService = SecurityService.getInstance();
     }
 
     @Override

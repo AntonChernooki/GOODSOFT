@@ -1,6 +1,7 @@
 package service;
 
 import dao.UserDao;
+import dao.impl.InMemoryUserDao;
 import model.Role;
 import model.User;
 
@@ -12,8 +13,15 @@ import java.util.Objects;
 public class UserService {
     private final UserDao userDao;
 
-    public UserService(UserDao userDao) {
-        this.userDao = userDao;
+
+
+    private static final UserService INSTANCE = new UserService();
+
+    private UserService() {
+        this.userDao = InMemoryUserDao.getInstance();
+    }
+    public static UserService getInstance() {
+        return INSTANCE;
     }
 
     public Collection<User> getAllUsers() {

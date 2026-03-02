@@ -1,16 +1,24 @@
 package service;
 
 import dao.UserDao;
+import dao.impl.InMemoryUserDao;
 import model.User;
 
 
 public class SecurityService {
 
-    private final UserDao userDao;
 
-    public SecurityService(UserDao userDao) {
-        this.userDao = userDao;
+
+    private final UserDao userDao;
+    private static final SecurityService INSTANCE = new SecurityService();
+
+    private SecurityService() {
+        this.userDao = InMemoryUserDao.getInstance();
     }
+    public static SecurityService getInstance() {
+        return INSTANCE;
+    }
+
 
     public User login(String login, String password) {
         if (login == null || password == null) {

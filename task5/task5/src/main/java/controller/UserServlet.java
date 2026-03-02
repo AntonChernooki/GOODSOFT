@@ -25,7 +25,7 @@ public class UserServlet extends HttpServlet {
     public void init() throws ServletException {
         UserDao userDao = (UserDao) getServletContext().getAttribute("userDao");
 
-        this.userService = new UserService(userDao);
+        this.userService = UserService.getInstance();
     }
 
     @Override
