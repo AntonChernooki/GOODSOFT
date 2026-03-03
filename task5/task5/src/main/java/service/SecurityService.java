@@ -25,7 +25,7 @@ public class SecurityService {
             return null;
         }
         User user = userDao.getUserByLogin(login);
-        if (user == null|| user.getPassword().equals(password)) {
+        if (user != null && user.getPassword().equals(password)) {
             return user;
         }
         return null;
