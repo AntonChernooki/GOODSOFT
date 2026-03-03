@@ -4,6 +4,7 @@ import constants.Constants;
 import dao.UserDao;
 import model.User;
 import service.SecurityService;
+import service.factory.ServiceFactory;
 
 
 import javax.servlet.ServletException;
@@ -18,8 +19,8 @@ public class LoginServlet extends HttpServlet {
     private SecurityService securityService;
 
     public void init() throws ServletException {
-        UserDao userDao = (UserDao) getServletContext().getAttribute("userDao");
-        this.securityService = SecurityService.getInstance();
+        ServiceFactory serviceFactory= (ServiceFactory) getServletContext().getAttribute("serviceFactory");
+        this.securityService = serviceFactory.getSecurityService();
     }
 
     @Override

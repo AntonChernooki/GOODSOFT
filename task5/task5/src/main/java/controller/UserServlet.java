@@ -2,9 +2,12 @@ package controller;
 
 import constants.Constants;
 import dao.UserDao;
+import dao.factory.InMemoryDaoFactory;
 import model.Role;
 import model.User;
+import service.SecurityService;
 import service.UserService;
+import service.factory.ServiceFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,9 +26,8 @@ public class UserServlet extends HttpServlet {
     private UserService userService;
 
     public void init() throws ServletException {
-        UserDao userDao = (UserDao) getServletContext().getAttribute("userDao");
-
-        this.userService = UserService.getInstance();
+        ServiceFactory serviceFactory= (ServiceFactory) getServletContext().getAttribute("serviceFactory");
+        this.userService = serviceFactory.getUserService();
     }
 
     @Override
