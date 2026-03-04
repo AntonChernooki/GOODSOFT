@@ -1,7 +1,11 @@
 --1 задание
 
+SELECT rolname, rolsuper, rolcanlogin 
+FROM pg_roles 
+WHERE rolcanlogin = true; 
+
 --создал схему 
-CREATE SCHEMA "authorization";
+CREATE SCHEMA "authorization" AUTHORIZATION postgres;
 
 --создаю таблицу пользователи 
 CREATE TABLE "authorization".users(
@@ -127,6 +131,12 @@ left join "authorization".roles on "authorization".users.role_id="authorization"
 --смещение вывода на 2 элемента
 offset 2;
 
+--ограничить  вывод предыдущего 5ю записями  начиная с 3й
+SELECT "authorization".users.name, "authorization".roles.name from "authorization".users
+left join "authorization".roles on "authorization".users.role_id="authorization".roles.id
+--смещение вывода на 2 элемента
+limit 5 offset 2;
+
 
 
 --5 задание изменить таблицу пользователей
@@ -147,10 +157,11 @@ ALTER  COLUMN salary SET default 1000 ;
 --(использовать объединение запросов) больше 25
 
 --приведение типов тк функиция не работает с типом money
-SELECT  AVG(salary::numeric)
+/*SELECT  AVG(salary::numeric)
 from "authorization".users 
-WHERE age<25;
+WHERE age<25;*/
 
+--приведение типов тк функиция не работает с типом money
 SELECT  AVG(salary::numeric)
 from "authorization".users 
 WHERE age<25
@@ -170,8 +181,12 @@ WHERE salary::numeric < 3000;
 
 --Тем у кого имя начинается на заданную букву роль установить на "Менеджер" (если такой нет любую из имеющихся) 
 
-update "authorization".users 
-set role_id=(select id from "authorization".roles where name='MANAGER' )
+update "authorization".users
+--coalesce возвращает первый ненулевой элемент
+set role_id= coalesce(
+(select id from "authorization".roles where name='MANAGER'),
+(select id from "authorization".roles LIMIT 1)
+)
 WHERE name like 'А%';
 
 --7 задание перевод к схеме многие ко многим
@@ -218,7 +233,7 @@ select name from "authorization".users;
 --Удалить выбранного пользователя (у которого есть роли)
 DELETE FROM "authorization".users
 WHERE id = 2
-  AND EXISTS (SELECT 2 FROM "authorization".user_roles WHERE user_id = 1);
+  AND EXISTS (SELECT 2 FROM "authorization".user_roles WHERE user_id = 2);
 
 
 
