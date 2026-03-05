@@ -12,13 +12,9 @@ public class SecurityService {
 
 
     private final UserDao userDao;
-    private static final SecurityService INSTANCE = new SecurityService();
 
-    private SecurityService() {
-        this.userDao = JdbcUserDao.getInstance();
-    }
-    public static SecurityService getInstance() {
-        return INSTANCE;
+    public SecurityService(UserDao userDao) {
+        this.userDao = userDao;
     }
 
 

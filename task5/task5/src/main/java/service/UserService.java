@@ -12,15 +12,11 @@ public class UserService {
     private final UserDao userDao;
 
 
-    private static final UserService INSTANCE = new UserService();
 
-    private UserService() {
-        this.userDao = JdbcUserDao.getInstance();
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
     }
 
-    public static UserService getInstance() {
-        return INSTANCE;
-    }
 
     public Collection<User> getAllUsers() throws SQLException {
         return userDao.getAllUsers();
