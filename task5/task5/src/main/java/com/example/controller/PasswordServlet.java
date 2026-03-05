@@ -4,19 +4,16 @@ import com.example.constants.Constants;
 import com.example.model.User;
 import com.example.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("/loginedit.jhtml")
 public class PasswordServlet extends HttpServlet {
 
     @Autowired

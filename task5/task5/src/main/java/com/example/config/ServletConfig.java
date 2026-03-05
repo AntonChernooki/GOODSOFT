@@ -1,5 +1,5 @@
 
-/*package com.example.config;
+package com.example.config;
 
 import com.example.controller.*;
 import com.example.service.SecurityService;
@@ -60,6 +60,6 @@ public class ServletConfig {
         return registration;
     }
 }
-*/
+
 
 

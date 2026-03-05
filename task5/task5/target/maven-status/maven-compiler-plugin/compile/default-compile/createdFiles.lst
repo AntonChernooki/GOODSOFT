@@ -1,8 +1,6 @@
 com\example\controller\UserServlet.class
 com\example\Application.class
-com\example\config\ServletConfig.class
 com\example\controller\WelcomeServlet.class
-com\example\controller\HomeController.class
 com\example\controller\LoginServlet.class
 com\example\model\Role.class
 com\example\dao\UserDao.class

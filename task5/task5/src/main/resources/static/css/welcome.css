@@ -1,0 +1,131 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    padding: 40px;
+    width: 100%;
+    max-width: 500px;
+    transition: transform 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+}
+
+h1 {
+    color: #333;
+    font-size: 28px;
+    margin-bottom: 10px;
+    border-bottom: 3px solid #667eea;
+    padding-bottom: 15px;
+    text-align: center;
+}
+
+.greeting {
+    color: #666;
+    font-size: 18px;
+    margin-bottom: 25px;
+    text-align: center;
+    font-style: italic;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 15px;
+    margin: 30px 0;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #555;
+}
+
+.info-value {
+    color: #333;
+}
+
+.info-value:empty:before {
+    content: "—";
+    color: #999;
+}
+
+.actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+    display: inline-block;
+    min-width: 180px;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:hover {
+    background: #5a67d8;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: #e53e3e;
+    color: white;
+    box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+}
+
+.btn-danger:hover {
+    background: #c53030;
+    box-shadow: 0 6px 20px rgba(229, 62, 62, 0.6);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+    .profile-card {
+        padding: 25px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

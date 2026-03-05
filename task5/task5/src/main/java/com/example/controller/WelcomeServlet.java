@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebServlet("/welcome.jhtml")
 public class WelcomeServlet extends HttpServlet {
 
 

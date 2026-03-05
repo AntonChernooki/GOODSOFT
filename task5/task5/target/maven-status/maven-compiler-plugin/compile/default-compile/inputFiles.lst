@@ -3,7 +3,6 @@ E:\GOODSOFT\task5\task5\src\main\java\com\example\controller\LoginServlet.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\dao\impl\JdbcUserDao.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\filter\AuthFilter.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\constants\Constants.java
-E:\GOODSOFT\task5\task5\src\main\java\com\example\controller\HomeController.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\model\Role.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\config\ServletConfig.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\service\UserService.java

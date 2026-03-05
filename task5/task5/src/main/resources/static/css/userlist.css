@@ -1,0 +1,118 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    padding: 30px;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #667eea;
+    padding-bottom: 15px;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.actions {
+    margin-bottom: 25px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-add {
+    background: #667eea;
+    color: white;
+}
+.btn-add:hover {
+    background: #5a67d8;
+    transform: translateY(-2px);
+}
+
+.btn-back {
+    background: #718096;
+    color: white;
+}
+.btn-back:hover {
+    background: #4a5568;
+    transform: translateY(-2px);
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.user-table th {
+    background: #f7fafc;
+    color: #4a5568;
+    font-weight: 600;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.user-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.user-table tr:hover {
+    background: #f7fafc;
+}
+
+.btn-edit, .btn-delete {
+    padding: 5px 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+.btn-edit {
+    background: #48bb78;
+    color: white;
+}
+.btn-edit:hover {
+    background: #38a169;
+}
+
+.btn-delete {
+    background: #f56565;
+    color: white;
+}
+.btn-delete:hover {
+    background: #e53e3e;
+}
