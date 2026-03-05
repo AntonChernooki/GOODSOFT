@@ -109,101 +109,72 @@ public class JdbcUserDao implements UserDao {
                     return user;
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-
         return null;
     }
 
     @Override
-    public boolean addUser(User user) {
+    public void addUser(User user) throws SQLException {
         String insertUser = "INSERT INTO users (login, password, email, surname, name, patronymic, birthday) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String insertRole = "INSERT INTO user_roles (user_id, role_id) VALUES ((SELECT id FROM users WHERE login = ?), (SELECT id FROM roles WHERE name = ?))";
 
         try (Connection connection = DatabaseConfig.getDataSource().getConnection()) {
             connection.setAutoCommit(false);
 
-            try {
-                try (PreparedStatement preparedStatement = connection.prepareStatement(insertUser)) {
-                    preparedStatement.setString(1, user.getLogin());
-                    preparedStatement.setString(2, user.getPassword());
-                    preparedStatement.setString(3, user.getEmail());
-                    preparedStatement.setString(4, user.getSurname());
-                    preparedStatement.setString(5, user.getName());
-                    preparedStatement.setString(6, user.getPatronymic());
-                    if (user.getBirthday() != null && !user.getBirthday().isEmpty()) {
-                        preparedStatement.setDate(7, java.sql.Date.valueOf(user.getBirthday()));
-                    } else {
-                        preparedStatement.setNull(7, Types.DATE);
-                    }
-                    preparedStatement.executeUpdate();
+            try (PreparedStatement preparedStatement = connection.prepareStatement(insertUser)) {
+                preparedStatement.setString(1, user.getLogin());
+                preparedStatement.setString(2, user.getPassword());
+                preparedStatement.setString(3, user.getEmail());
+                preparedStatement.setString(4, user.getSurname());
+                preparedStatement.setString(5, user.getName());
+                preparedStatement.setString(6, user.getPatronymic());
+                if (user.getBirthday() != null && !user.getBirthday().isEmpty()) {
+                    preparedStatement.setDate(7, java.sql.Date.valueOf(user.getBirthday()));
+                } else {
+                    preparedStatement.setNull(7, Types.DATE);
                 }
-
-                if (user.getRoles() != null && !user.getRoles().isEmpty()) {
-                    try (PreparedStatement preparedStatement = connection.prepareStatement(insertRole)) {
-                        for (Role role : user.getRoles()) {
-                            preparedStatement.setString(1, user.getLogin());
-                            preparedStatement.setString(2, role.name());
-                            preparedStatement.addBatch();
-                        }
-                        preparedStatement.executeBatch();
-                    }
-                }
-
-                connection.commit();
-                return true;
-
-            } catch (SQLException e) {
-                connection.rollback();
-                e.printStackTrace();
-                return false;
+                preparedStatement.executeUpdate();
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+                try (PreparedStatement preparedStatement = connection.prepareStatement(insertRole)) {
+                    for (Role role : user.getRoles()) {
+                        preparedStatement.setString(1, user.getLogin());
+                        preparedStatement.setString(2, role.name());
+                        preparedStatement.addBatch();
+                    }
+                    preparedStatement.executeBatch();
+                }
+            }
+
+            connection.commit();
         }
     }
 
     @Override
-    public boolean deleteUser(String login) {
+    public void deleteUser(String login) throws SQLException {
         String deleteRoles = "DELETE FROM user_roles WHERE user_id = (SELECT id FROM users WHERE login = ?)";
         String deleteUser = "DELETE FROM users WHERE login = ?";
 
         try (Connection connection = DatabaseConfig.getDataSource().getConnection()) {
             connection.setAutoCommit(false);
 
-            try {
-                try (PreparedStatement preparedStatement = connection.prepareStatement(deleteRoles)) {
-                    preparedStatement.setString(1, login);
-                    preparedStatement.executeUpdate();
-                }
-
-                try (PreparedStatement preparedStatement = connection.prepareStatement(deleteUser)) {
-                    preparedStatement.setString(1, login);
-                    int rows = preparedStatement.executeUpdate();
-
-                    connection.commit();
-                    return rows > 0;
-                }
-
-            } catch (SQLException e) {
-                connection.rollback();
-                e.printStackTrace();
-                return false;
-            } finally {
-                connection.setAutoCommit(true);
+            try (PreparedStatement preparedStatement = connection.prepareStatement(deleteRoles)) {
+                preparedStatement.setString(1, login);
+                preparedStatement.executeUpdate();
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            try (PreparedStatement preparedStatement = connection.prepareStatement(deleteUser)) {
+                preparedStatement.setString(1, login);
+                preparedStatement.executeUpdate();
+            }
+
+            connection.commit();
         }
     }
 
     @Override
-    public boolean updateUser(String oldLogin, User newUser) {
+    public void updateUser(String oldLogin, User newUser) throws SQLException {
         String updateUser = "UPDATE users SET login = ?, password = ?, email = ?, surname = ?, name = ?, patronymic = ?, birthday = ? WHERE login = ?";
         String deleteRoles = "DELETE FROM user_roles WHERE user_id = (SELECT id FROM users WHERE login = ?)";
         String insertRole = "INSERT INTO user_roles (user_id, role_id) VALUES ((SELECT id FROM users WHERE login = ?), (SELECT id FROM roles WHERE name = ?))";
@@ -211,59 +182,39 @@ public class JdbcUserDao implements UserDao {
         try (Connection connection = DatabaseConfig.getDataSource().getConnection()) {
             connection.setAutoCommit(false);
 
-            try {
-
-                try (PreparedStatement preparedStatement = connection.prepareStatement(deleteRoles)) {
-                    preparedStatement.setString(1, oldLogin);
-                    preparedStatement.executeUpdate();
-                }
-
-                try (PreparedStatement preparedStatement = connection.prepareStatement(updateUser)) {
-                    preparedStatement.setString(1, newUser.getLogin());
-                    preparedStatement.setString(2, newUser.getPassword());
-                    preparedStatement.setString(3, newUser.getEmail());
-                    preparedStatement.setString(4, newUser.getSurname());
-                    preparedStatement.setString(5, newUser.getName());
-                    preparedStatement.setString(6, newUser.getPatronymic());
-                    if (newUser.getBirthday() != null && !newUser.getBirthday().isEmpty()) {
-                        preparedStatement.setDate(7, java.sql.Date.valueOf(newUser.getBirthday()));
-                    } else {
-                        preparedStatement.setNull(7, Types.DATE);
-                    }
-                    preparedStatement.setString(8, oldLogin);
-
-                    if (preparedStatement.executeUpdate() == 0) {
-                        connection.rollback();
-                        return false;
-                    }
-                }
-
-
-                if (newUser.getRoles() != null && !newUser.getRoles().isEmpty()) {
-                    try (PreparedStatement preparedStatement = connection.prepareStatement(insertRole)) {
-                        for (Role role : newUser.getRoles()) {
-                            preparedStatement.setString(1, newUser.getLogin());
-                            preparedStatement.setString(2, role.name());
-                            preparedStatement.addBatch();
-                        }
-                        preparedStatement.executeBatch();
-                    }
-                }
-
-                connection.commit();
-                return true;
-
-            } catch (SQLException e) {
-                connection.rollback();
-                e.printStackTrace();
-                return false;
-            } finally {
-                connection.setAutoCommit(true);
+            try (PreparedStatement preparedStatement = connection.prepareStatement(deleteRoles)) {
+                preparedStatement.setString(1, oldLogin);
+                preparedStatement.executeUpdate();
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            try (PreparedStatement preparedStatement = connection.prepareStatement(updateUser)) {
+                preparedStatement.setString(1, newUser.getLogin());
+                preparedStatement.setString(2, newUser.getPassword());
+                preparedStatement.setString(3, newUser.getEmail());
+                preparedStatement.setString(4, newUser.getSurname());
+                preparedStatement.setString(5, newUser.getName());
+                preparedStatement.setString(6, newUser.getPatronymic());
+                if (newUser.getBirthday() != null && !newUser.getBirthday().isEmpty()) {
+                    preparedStatement.setDate(7, java.sql.Date.valueOf(newUser.getBirthday()));
+                } else {
+                    preparedStatement.setNull(7, Types.DATE);
+                }
+                preparedStatement.setString(8, oldLogin);
+                preparedStatement.executeUpdate();
+            }
+
+            if (newUser.getRoles() != null && !newUser.getRoles().isEmpty()) {
+                try (PreparedStatement preparedStatement = connection.prepareStatement(insertRole)) {
+                    for (Role role : newUser.getRoles()) {
+                        preparedStatement.setString(1, newUser.getLogin());
+                        preparedStatement.setString(2, role.name());
+                        preparedStatement.addBatch();
+                    }
+                    preparedStatement.executeBatch();
+                }
+            }
+
+            connection.commit();
         }
     }
 }

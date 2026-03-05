@@ -10,9 +10,9 @@ public interface UserDao {
 
     User getUserByLogin(String login) throws SQLException;
 
-    boolean addUser(User user);
+    void addUser(User user) throws SQLException;
 
-    boolean updateUser(String login, User user);
+    void updateUser(String oldLogin, User newUser) throws SQLException;
 
-    boolean deleteUser(String login);
+    void deleteUser(String login) throws SQLException;
 }

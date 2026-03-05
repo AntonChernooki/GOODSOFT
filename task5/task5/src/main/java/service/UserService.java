@@ -1,7 +1,6 @@
 package service;
 
 import dao.UserDao;
-import dao.impl.JdbcUserDao;
 import model.Role;
 import model.User;
 
@@ -28,48 +27,54 @@ public class UserService {
 
     public boolean addUser(String login, String password, String email,
                            String surname, String name, String patronymic,
-                           String birthday, Set<Role> roles, Map<String, String> errors) throws SQLException {
-        Map<String, String> validationErrors = validateUserData(login, password, email,
-                surname, name, patronymic, birthday, roles, null);
-        if (!validationErrors.isEmpty()) {
-            errors.putAll(validationErrors);
+                           String birthday, Set<Role> roles, Map<String, String> errors) {
+        try {
+            Map<String, String> validationErrors = validateUserData(login, password, email,
+                    surname, name, patronymic, birthday, roles, null);
+            if (!validationErrors.isEmpty()) {
+                errors.putAll(validationErrors);
+                return false;
+            }
+
+            User user = new User(login, password, email, surname, name, patronymic, birthday, roles);
+            userDao.addUser(user);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            errors.put("global", "Ошибка бд: не удалось добавить пользователя");
             return false;
         }
-
-
-
-        User user = new User(login, password, email, surname, name, patronymic, birthday, roles);
-
-
-        boolean success = userDao.addUser(user);
-        if (!success) {
-            errors.put("global", "Не удалось добавить пользователя");
-        }
-        return success;
     }
 
     public boolean updateUser(String originalLogin, String login, String password, String email,
                               String surname, String name, String patronymic,
-                              String birthday, Set<Role>roles, Map<String, String> errors) throws SQLException {
+                              String birthday, Set<Role> roles, Map<String, String> errors) {
+        try {
+            Map<String, String> validationErrors = validateUserData(login, password, email,
+                    surname, name, patronymic, birthday, roles, originalLogin);
+            if (!validationErrors.isEmpty()) {
+                errors.putAll(validationErrors);
+                return false;
+            }
 
-        Map<String, String> validationErrors = validateUserData(login, password, email, surname, name, patronymic, birthday, roles, originalLogin);
-        if (!validationErrors.isEmpty()) {
-            errors.putAll(validationErrors);
+            User user = new User(login, password, email, surname, name, patronymic, birthday, roles);
+            userDao.updateUser(originalLogin, user);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            errors.put("global", "Ошибка бд: не удалось обновить пользователя");
             return false;
         }
-
-
-        User user = new User(login, password, email, surname, name, patronymic, birthday, roles);
-
-        boolean success = userDao.updateUser(originalLogin, user);
-        if (!success) {
-            errors.put("global", "Не удалось обновить пользователя");
-        }
-        return success;
     }
 
     public boolean deleteUser(String login) {
-        return userDao.deleteUser(login);
+        try {
+            userDao.deleteUser(login);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 
