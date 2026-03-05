@@ -75,17 +75,25 @@
                 </c:if>
             </div>
 
-            <div class="form-group">
-                <label for="role">Роль *</label>
-                <select id="role" name="role" required>
-                    <option value="">Выберите роль</option>
-                    <option value="ADMIN" <c:if test="${user.role == 'ADMIN'}">selected</c:if>>Администратор</option>
-                    <option value="USER" <c:if test="${user.role == 'USER'}">selected</c:if>>Пользователь</option>
-                </select>
-                <c:if test="${not empty errors.role}">
-                    <span class="error-text">${errors.role}</span>
-                </c:if>
-            </div>
+           <div class="form-group">
+               <label>Роли *</label>
+               <div class="checkbox-group">
+                   <c:forEach var="r" items="${allRoles}">
+                       <label>
+                           <input type="checkbox" name="roles" value="${r}"
+                               ${user != null && user.roles.contains(r) ? 'checked' : ''} />
+                           ${r == 'ADMIN' ? 'Администратор' : 'Пользователь'}
+                       </label><br/>
+                   </c:forEach>
+               </div>
+               <c:if test="${not empty errors.role}">
+               <div class="message error">${error}</div>
+               <c:if test="${not empty errors.global}">
+                   <div class="message error">${errors.global}</div>
+               </c:if>
+                   <span class="error-text">${errors.role}</span>
+               </c:if>
+           </div>
 
             <div class="actions">
                 <button type="submit" class="btn-submit">Сохранить</button>

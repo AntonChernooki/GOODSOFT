@@ -1,50 +1,48 @@
 package service;
 
 import dao.UserDao;
-import dao.impl.InMemoryUserDao;
+import dao.impl.JdbcUserDao;
 import model.Role;
 import model.User;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.sql.SQLException;
+import java.util.*;
 
 public class UserService {
     private final UserDao userDao;
 
 
-
     private static final UserService INSTANCE = new UserService();
 
     private UserService() {
-        this.userDao = InMemoryUserDao.getInstance();
+        this.userDao = JdbcUserDao.getInstance();
     }
+
     public static UserService getInstance() {
         return INSTANCE;
     }
 
-    public Collection<User> getAllUsers() {
+    public Collection<User> getAllUsers() throws SQLException {
         return userDao.getAllUsers();
     }
 
-    public User getUserByLogin(String login) {
+    public User getUserByLogin(String login) throws SQLException {
         return userDao.getUserByLogin(login);
     }
 
     public boolean addUser(String login, String password, String email,
                            String surname, String name, String patronymic,
-                           String birthday, String roleParam, Map<String, String> errors) {
+                           String birthday, Set<Role> roles, Map<String, String> errors) throws SQLException {
         Map<String, String> validationErrors = validateUserData(login, password, email,
-                surname, name, patronymic, birthday, roleParam, null);
+                surname, name, patronymic, birthday, roles, null);
         if (!validationErrors.isEmpty()) {
             errors.putAll(validationErrors);
             return false;
         }
 
 
-        Role role = Role.valueOf(roleParam.trim().toUpperCase());
-        User user = new User(login, password, email, surname, name, patronymic, birthday, role);
+
+        User user = new User(login, password, email, surname, name, patronymic, birthday, roles);
 
 
         boolean success = userDao.addUser(user);
@@ -56,16 +54,16 @@ public class UserService {
 
     public boolean updateUser(String originalLogin, String login, String password, String email,
                               String surname, String name, String patronymic,
-                              String birthday, String roleParam, Map<String, String> errors) {
+                              String birthday, Set<Role>roles, Map<String, String> errors) throws SQLException {
 
-        Map<String, String> validationErrors = validateUserData(login, password, email, surname, name, patronymic, birthday, roleParam, originalLogin);
+        Map<String, String> validationErrors = validateUserData(login, password, email, surname, name, patronymic, birthday, roles, originalLogin);
         if (!validationErrors.isEmpty()) {
             errors.putAll(validationErrors);
             return false;
         }
 
-        Role role = Role.valueOf(roleParam.trim().toUpperCase());
-        User user = new User(login, password, email, surname, name, patronymic, birthday, role);
+
+        User user = new User(login, password, email, surname, name, patronymic, birthday, roles);
 
         boolean success = userDao.updateUser(originalLogin, user);
         if (!success) {
@@ -79,12 +77,8 @@ public class UserService {
     }
 
 
-
-
-
-
-    private Map<String, String> validateUserData(String login, String password, String email,  String surname, String name, String patronymic,
-                                                 String birthday, String roleParam, String originalLogin) {
+    private Map<String, String> validateUserData(String login, String password, String email, String surname, String name, String patronymic,
+                                                 String birthday, Set<Role>roles, String originalLogin) throws SQLException {
         Map<String, String> errors = new HashMap<>();
 
         if (login == null || login.trim().isEmpty()) {
@@ -105,15 +99,15 @@ public class UserService {
         if (birthday == null || birthday.trim().isEmpty()) {
             errors.put("birthday", "Дата рождения обязательна");
         }
-        if (roleParam == null || roleParam.trim().isEmpty()) {
+        if (roles == null || roles.isEmpty()) {
             errors.put("role", "Роль обязательна");
-        } else {
+        } /*else {
             try {
                 Role role = Role.valueOf(roleParam.trim().toUpperCase());
             } catch (IllegalArgumentException e) {
                 errors.put("role", "Недопустимое значение роли");
             }
-        }
+        }*/
         if (login != null && !login.trim().isEmpty()) {
             User existing = userDao.getUserByLogin(login);
             if (existing != null && !Objects.equals(login, originalLogin)) {

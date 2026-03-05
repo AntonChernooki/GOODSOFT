@@ -1,13 +1,16 @@
+config\DatabaseConfig.class
 controller\LoginServlet.class
+dao\factory\JdbcDaoFactory.class
 service\UserService.class
 dao\UserDao.class
 controller\PasswordServlet.class
+dao\impl\JdbcUserDao.class
 filter\AuthFilter.class
 service\SecurityService.class
 model\Role.class
+service\factory\ServiceFactory.class
 controller\WelcomeServlet.class
 controller\UserServlet.class
-dao\impl\InMemoryUserDao.class
 listener\AppContextListener.class
 constants\Constants.class
 model\User.class

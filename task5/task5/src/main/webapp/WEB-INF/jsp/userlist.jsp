@@ -34,7 +34,11 @@
                         <td>${user.name}</td>
                         <td>${user.surname}</td>
                         <td>${user.email}</td>
-                        <td>${user.role}</td>
+                        <td>
+                            <c:forEach var="r" items="${user.roles}" varStatus="status">
+                                ${r}${!status.last ? ', ' : ''}
+                            </c:forEach>
+                        </td>
                         <td>
                             <a href="${pageContext.request.contextPath}/useredit.jhtml?login=${user.login}" class="btn-edit">Редактировать</a>
                             <a href="#" onclick="confirmDelete('${user.login}')" class="btn-delete">Удалить</a>

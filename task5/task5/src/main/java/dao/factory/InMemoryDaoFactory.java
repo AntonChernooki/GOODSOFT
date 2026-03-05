@@ -1,4 +1,4 @@
-package dao.factory;
+/*package dao.factory;
 
 import dao.UserDao;
 import dao.impl.InMemoryUserDao;
@@ -21,3 +21,4 @@ public class InMemoryDaoFactory {
     }
 
 }
+*/

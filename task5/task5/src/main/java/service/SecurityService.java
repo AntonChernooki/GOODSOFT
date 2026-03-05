@@ -1,8 +1,10 @@
 package service;
 
 import dao.UserDao;
-import dao.impl.InMemoryUserDao;
+import dao.impl.JdbcUserDao;
 import model.User;
+
+import java.sql.SQLException;
 
 
 public class SecurityService {
@@ -13,14 +15,14 @@ public class SecurityService {
     private static final SecurityService INSTANCE = new SecurityService();
 
     private SecurityService() {
-        this.userDao = InMemoryUserDao.getInstance();
+        this.userDao = JdbcUserDao.getInstance();
     }
     public static SecurityService getInstance() {
         return INSTANCE;
     }
 
 
-    public User login(String login, String password) {
+    public User login(String login, String password) throws SQLException {
         if (login == null || password == null) {
             return null;
         }
@@ -31,7 +33,7 @@ public class SecurityService {
         return null;
     }
 
-    public boolean changePassword(String login, String oldPassword, String newPassword) {
+    public boolean changePassword(String login, String oldPassword, String newPassword) throws SQLException {
         if (login == null || oldPassword == null || newPassword == null) {
             return false;
         }
@@ -43,8 +45,7 @@ public class SecurityService {
 
         if (user.getPassword().equals(oldPassword)) {
             user.setPassword(newPassword);
-            userDao.updateUser(login, user);
-            return true;
+            return  userDao.updateUser(login, user);
         }
 
         return false;

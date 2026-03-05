@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet("/loginedit.jhtml")
 public class PasswordServlet extends HttpServlet {
@@ -20,7 +21,7 @@ public class PasswordServlet extends HttpServlet {
 
 
     public void init() throws ServletException {
-        ServiceFactory serviceFactory= (ServiceFactory) getServletContext().getAttribute("serviceFactory");
+        ServiceFactory serviceFactory = (ServiceFactory) getServletContext().getAttribute("serviceFactory");
         this.securityService = serviceFactory.getSecurityService();
 
     }
@@ -32,10 +33,14 @@ public class PasswordServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        handleEdit(req, resp);
+        try {
+            handleEdit(req, resp);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void handleEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void handleEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         User user = (User) req.getSession().getAttribute(Constants.USER_SESSION_KEY);
 
         String action = req.getParameter(Constants.ACTION_PARAM);

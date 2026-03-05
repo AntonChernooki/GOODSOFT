@@ -1,11 +1,8 @@
 package controller;
 
 import constants.Constants;
-import dao.UserDao;
-import dao.factory.InMemoryDaoFactory;
 import model.Role;
 import model.User;
-import service.SecurityService;
 import service.UserService;
 import service.factory.ServiceFactory;
 
@@ -15,10 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.sql.SQLException;
+import java.util.*;
 
 @WebServlet({"/userlist.jhtml", "/useredit.jhtml", "/userdelete.jhtml"})
 public class UserServlet extends HttpServlet {
@@ -26,7 +21,7 @@ public class UserServlet extends HttpServlet {
     private UserService userService;
 
     public void init() throws ServletException {
-        ServiceFactory serviceFactory= (ServiceFactory) getServletContext().getAttribute("serviceFactory");
+        ServiceFactory serviceFactory = (ServiceFactory) getServletContext().getAttribute("serviceFactory");
         this.userService = serviceFactory.getUserService();
     }
 
@@ -37,13 +32,25 @@ public class UserServlet extends HttpServlet {
         String servletPath = req.getServletPath();
         switch (servletPath) {
             case "/userlist.jhtml":
-                handleUserList(req, resp);
+                try {
+                    handleUserList(req, resp);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             case "/useredit.jhtml":
-                handleUserEdit(req, resp);
+                try {
+                    handleUserEdit(req, resp);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             case "/userdelete.jhtml":
-                handleUserDelete(req, resp);
+                try {
+                    handleUserDelete(req, resp);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             default:
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -58,7 +65,11 @@ public class UserServlet extends HttpServlet {
         if ("/useredit.jhtml".equals(servletPath)) {
             String action = req.getParameter(Constants.ACTION_PARAM);
             if (Constants.SAVE_PARAM.equals(action)) {
-                handleUserSave(req, resp);
+                try {
+                    handleUserSave(req, resp);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             } else {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }
@@ -70,7 +81,7 @@ public class UserServlet extends HttpServlet {
 
     private boolean checkAdmin(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         User user = (User) req.getSession().getAttribute(Constants.USER_SESSION_KEY);
-        if (user.getRole() != Role.ADMIN) {
+        if (user == null || !user.getRoles().contains(Role.ADMIN)) {
             req.setAttribute("error", "Недостаточно прав");
             req.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(req, resp);
             return false;
@@ -79,15 +90,16 @@ public class UserServlet extends HttpServlet {
     }
 
 
-    private void handleUserList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void handleUserList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         Collection<User> users = userService.getAllUsers();
         req.setAttribute("users", users);
         req.getRequestDispatcher("/WEB-INF/jsp/userlist.jsp").forward(req, resp);
     }
 
-    private void handleUserEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void handleUserEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         String login = req.getParameter(Constants.LOGIN_PARAM);
         User editUser = null;
+        req.setAttribute("allRoles", Role.values());
         if (login != null && !login.isEmpty()) {
             editUser = userService.getUserByLogin(login);
             if (editUser == null) {
@@ -100,7 +112,7 @@ public class UserServlet extends HttpServlet {
         req.getRequestDispatcher("/WEB-INF/jsp/useredit.jsp").forward(req, resp);
     }
 
-    private void handleUserDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void handleUserDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         String login = req.getParameter("login");
         if (login == null || login.isEmpty()) {
             resp.sendRedirect(req.getContextPath() + "/userlist.jhtml");
@@ -118,7 +130,7 @@ public class UserServlet extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + "/userlist.jhtml");
     }
 
-    private void handleUserSave(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void handleUserSave(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         String login = req.getParameter(Constants.LOGIN_PARAM);
         String password = req.getParameter(Constants.PASSWORD_PARAM);
         String email = req.getParameter(Constants.EMAIL_PARAM);
@@ -126,33 +138,44 @@ public class UserServlet extends HttpServlet {
         String name = req.getParameter(Constants.NAME_PARAM);
         String patronymic = req.getParameter(Constants.PATRONYMIC_PARAM);
         String birthday = req.getParameter(Constants.BIRTHDAY_PARAM);
-        String roleParam = req.getParameter(Constants.ROLE_PARAM);
+        //String roleParam = req.getParameter(Constants.ROLE_PARAM);
         String originalLogin = req.getParameter("originalLogin");
+        String[] roleParams = req.getParameterValues(Constants.ROLES_PARAM);
 
+        Set<Role> roles = new HashSet<>();
+        if (roleParams != null) {
+            for (String r : roleParams) {
+                try {
+                    roles.add(Role.valueOf(r.trim().toUpperCase()));
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+        }
 
         Map<String, String> errors = new HashMap<>();
         boolean success;
         if (originalLogin == null || originalLogin.isEmpty()) {
             success = userService.addUser(login, password, email, surname, name,
-                    patronymic, birthday, roleParam, errors);
+                    patronymic, birthday, roles, errors);
         } else {
             success = userService.updateUser(originalLogin, login, password, email, surname, name,
-                    patronymic, birthday, roleParam, errors);
+                    patronymic, birthday, roles, errors);
         }
 
         if (success) {
             resp.sendRedirect(req.getContextPath() + "/userlist.jhtml");
         } else {
-            Role role = null;
+            /*Role role = null;
             if (roleParam != null && !roleParam.isEmpty()) {
                 try {
                     role = Role.valueOf(roleParam.trim().toUpperCase());
                 } catch (IllegalArgumentException ignored) {
                 }
-            }
-            User tempUser = new User(login, password, email, surname, name, patronymic, birthday, role);
+            }*/
+            User tempUser = new User(login, password, email, surname, name, patronymic, birthday, roles);
             req.setAttribute("user", tempUser);
             req.setAttribute("errors", errors);
+            req.setAttribute("allRoles", Role.values());
             req.getRequestDispatcher("/WEB-INF/jsp/useredit.jsp").forward(req, resp);
         }
     }

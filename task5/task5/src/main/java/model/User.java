@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Set;
+
 public class User {
     private String login;
     private String password;
@@ -8,9 +10,9 @@ public class User {
     private String name;
     private String patronymic;
     private String birthday;
-    private Role role;
+    private Set<Role> roles;
 
-    public User(String login, String password, String email, String surname, String name, String patronymic, String birthday, Role role) {
+    public User(String login, String password, String email, String surname, String name, String patronymic, String birthday, Set<Role> roles) {
         this.login = login;
         this.password = password;
         this.email = email;
@@ -18,7 +20,7 @@ public class User {
         this.name = name;
         this.patronymic = patronymic;
         this.birthday = birthday;
-        this.role = role;
+        this.roles = roles;
     }
 
     public String getLogin() {
@@ -77,11 +79,17 @@ public class User {
         this.birthday = birthday;
     }
 
-    public Role getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+    public boolean hasRole(Role role){
+        return roles.contains(role);
+    }
+    public boolean isAdmin() {
+        return hasRole(Role.ADMIN);
     }
 }

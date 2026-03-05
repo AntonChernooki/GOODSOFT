@@ -13,13 +13,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet("/login.jhtml")
 public class LoginServlet extends HttpServlet {
     private SecurityService securityService;
 
     public void init() throws ServletException {
-        ServiceFactory serviceFactory= (ServiceFactory) getServletContext().getAttribute("serviceFactory");
+        ServiceFactory serviceFactory = (ServiceFactory) getServletContext().getAttribute("serviceFactory");
         this.securityService = serviceFactory.getSecurityService();
     }
 
@@ -30,10 +31,14 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        handleLogin(req, resp);
+        try {
+            handleLogin(req, resp);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void handleLogin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void handleLogin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         String login = req.getParameter(Constants.LOGIN_PARAM);
         String password = req.getParameter(Constants.PASSWORD_PARAM);
 

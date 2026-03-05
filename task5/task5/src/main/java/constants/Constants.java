@@ -14,7 +14,7 @@ public final class Constants {
     public static final String BIRTHDAY_PARAM = "birthday";
     public static final String ROLE_PARAM = "role";
     public static final String EMAIL_PARAM = "email";
-
+    public static final String ROLES_PARAM = "roles";
 
 
     public static final String OLD_PASSWORD_PARAM = "oldPassword";
