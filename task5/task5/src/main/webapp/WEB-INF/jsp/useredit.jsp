@@ -81,8 +81,9 @@
                    <c:forEach var="r" items="${allRoles}">
                        <label>
                            <input type="checkbox" name="roles" value="${r}"
-                               ${user != null && user.roles.contains(r) ? 'checked' : ''} />
-                           ${r == 'ADMIN' ? 'Администратор' : 'Пользователь'}
+                               <c:if test="${user != null && user.roles.contains(r)}">checked</c:if> />
+                           <c:if test="${r == 'ADMIN'}">Администратор</c:if>
+                           <c:if test="${r != 'ADMIN'}">Пользователь</c:if>
                        </label><br/>
                    </c:forEach>
                </div>

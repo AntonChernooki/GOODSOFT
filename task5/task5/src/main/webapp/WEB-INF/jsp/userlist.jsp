@@ -36,7 +36,8 @@
                         <td>${user.email}</td>
                         <td>
                             <c:forEach var="r" items="${user.roles}" varStatus="status">
-                                ${r}${!status.last ? ', ' : ''}
+                                ${r}
+                                <c:if test="${!status.last}">, </c:if>
                             </c:forEach>
                         </td>
                         <td>

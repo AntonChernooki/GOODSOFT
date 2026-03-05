@@ -7,6 +7,7 @@ import model.User;
 
 import java.sql.*;
 import java.util.*;
+
 public class JdbcUserDao implements UserDao {
 
     private static final JdbcUserDao INSTANCE = new JdbcUserDao();
@@ -236,7 +237,6 @@ public class JdbcUserDao implements UserDao {
                         return false;
                     }
                 }
-
 
 
                 if (newUser.getRoles() != null && !newUser.getRoles().isEmpty()) {

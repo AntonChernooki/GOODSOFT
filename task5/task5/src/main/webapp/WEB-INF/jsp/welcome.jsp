@@ -31,7 +31,7 @@
             <span class="info-label">Роли:</span>
             <span class="info-value">
                 <c:forEach var="r" items="${sessionScope.userData.roles}" varStatus="status">
-                    ${r}${!status.last ? ', ' : ''}
+                    ${r}<c:if test="${!status.last}">, </c:if>
                 </c:forEach>
             </span>
 
