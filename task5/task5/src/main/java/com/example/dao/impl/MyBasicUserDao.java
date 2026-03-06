@@ -5,14 +5,13 @@ import com.example.model.Role;
 import com.example.model.User;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.sql.*;
 import java.util.*;
 
 @Repository
 @Primary
-@Transactional
 public class MyBasicUserDao implements UserDao {
 
     private  final UserDao userDao;

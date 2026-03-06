@@ -4,6 +4,7 @@ import com.example.dao.UserDao;
 import com.example.model.Role;
 import com.example.model.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ import java.util.*;
 
 
 @Service
-
+@Transactional
 public class UserService {
 
     private final UserDao userDao;

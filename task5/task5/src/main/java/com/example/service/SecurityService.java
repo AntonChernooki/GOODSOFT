@@ -3,11 +3,12 @@ package com.example.service;
 import com.example.dao.UserDao;
 import com.example.model.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 
 @Service
-
+@Transactional
 public class SecurityService {
 
     private final UserDao userDao;
