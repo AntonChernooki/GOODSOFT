@@ -12,7 +12,6 @@ public class FilterConfig {
     public FilterRegistrationBean<AuthFilter> authFilterRegistration() {
         FilterRegistrationBean<AuthFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new AuthFilter());
-        registration.addUrlPatterns("*.jhtml");
         registration.setOrder(1);
         return registration;
     }

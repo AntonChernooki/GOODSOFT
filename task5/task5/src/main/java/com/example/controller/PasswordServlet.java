@@ -6,7 +6,6 @@ import com.example.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,12 +15,12 @@ import java.sql.SQLException;
 
 public class PasswordServlet extends HttpServlet {
 
-    @Autowired
-    private SecurityService securityService;
 
-public PasswordServlet(SecurityService securityService){
-    this.securityService=securityService;
-}
+    private final SecurityService securityService;
+
+    public PasswordServlet(SecurityService securityService) {
+        this.securityService = securityService;
+    }
 
 
     @Override

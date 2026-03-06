@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.*;
 
 
-
 import javax.servlet.ServletException;
 
 import javax.servlet.http.HttpServlet;
@@ -19,13 +18,13 @@ import java.sql.SQLException;
 
 public class LoginServlet extends HttpServlet {
 
-    @Autowired
-    private  SecurityService securityService;
+
+    private final SecurityService securityService;
+
 
     public LoginServlet(SecurityService securityService) {
         this.securityService = securityService;
     }
-
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ServletConfig {
 
+
     @Bean
     public LoginServlet loginServlet(SecurityService securityService) {
         return new LoginServlet(securityService);

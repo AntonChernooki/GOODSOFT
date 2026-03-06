@@ -4,13 +4,21 @@ import com.example.config.DatabaseConfig;
 import com.example.dao.UserDao;
 import com.example.model.Role;
 import com.example.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 
 @Repository
 public class JdbcUserDao implements UserDao {
+
+    private  final DataSource dataSource;
+
+    public JdbcUserDao(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
 
     @Override
@@ -23,7 +31,7 @@ public class JdbcUserDao implements UserDao {
 
         Map<String, User> userMap = new LinkedHashMap<>();
 
-        try (Connection connection = DatabaseConfig.getDataSource().getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -90,7 +98,7 @@ public class JdbcUserDao implements UserDao {
     public User getUserByLogin(String login) throws SQLException {
         String sql = "SELECT login, password, email, surname, name, patronymic, birthday FROM users WHERE login = ?";
 
-        try (Connection connection = DatabaseConfig.getDataSource().getConnection();
+        try (Connection connection =dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1, login);
@@ -112,7 +120,7 @@ public class JdbcUserDao implements UserDao {
         String insertUser = "INSERT INTO users (login, password, email, surname, name, patronymic, birthday) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String insertRole = "INSERT INTO user_roles (user_id, role_id) VALUES ((SELECT id FROM users WHERE login = ?), (SELECT id FROM roles WHERE name = ?))";
 
-        try (Connection connection = DatabaseConfig.getDataSource().getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(insertUser)) {
@@ -150,7 +158,7 @@ public class JdbcUserDao implements UserDao {
         String deleteRoles = "DELETE FROM user_roles WHERE user_id = (SELECT id FROM users WHERE login = ?)";
         String deleteUser = "DELETE FROM users WHERE login = ?";
 
-        try (Connection connection = DatabaseConfig.getDataSource().getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(deleteRoles)) {
@@ -173,7 +181,7 @@ public class JdbcUserDao implements UserDao {
         String deleteRoles = "DELETE FROM user_roles WHERE user_id = (SELECT id FROM users WHERE login = ?)";
         String insertRole = "INSERT INTO user_roles (user_id, role_id) VALUES ((SELECT id FROM users WHERE login = ?), (SELECT id FROM roles WHERE name = ?))";
 
-        try (Connection connection = DatabaseConfig.getDataSource().getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(deleteRoles)) {

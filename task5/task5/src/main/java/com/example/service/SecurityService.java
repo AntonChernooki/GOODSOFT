@@ -10,10 +10,11 @@ import java.sql.SQLException;
 @Service
 public class SecurityService {
 
-@Autowired
-    private  UserDao userDao;
+    private final UserDao userDao;
 
-
+    public SecurityService(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
 
     public User login(String login, String password) throws SQLException {

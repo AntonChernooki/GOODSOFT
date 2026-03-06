@@ -17,12 +17,12 @@ import java.util.*;
 
 public class UserServlet extends HttpServlet {
 
-@Autowired
-    private UserService userService;
+    private final UserService userService;
 
-   public UserServlet(UserService userService){
-       this.userService=userService;
-   }
+    public UserServlet(UserService userService) {
+        this.userService = userService;
+    }
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

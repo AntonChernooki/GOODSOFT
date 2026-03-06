@@ -22,7 +22,7 @@ public class AuthFilter implements Filter {
         String path = req.getServletPath();
         HttpSession session = req.getSession(false);
         boolean haveLogin = (session != null && session.getAttribute(Constants.USER_SESSION_KEY) != null);
-        if (path.equals("/login.jhtml")) {
+        if (path.startsWith("/css/") || path.equals("/login.jhtml")) {
             chain.doFilter(request, response);
             return;
         }

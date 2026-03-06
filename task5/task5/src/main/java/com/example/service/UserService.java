@@ -12,8 +12,12 @@ import java.util.*;
 
 @Service
 public class UserService {
-    @Autowired
-    private  UserDao userDao;
+
+    private final UserDao userDao;
+
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
 
     public Collection<User> getAllUsers() throws SQLException {
@@ -78,7 +82,7 @@ public class UserService {
 
 
     private Map<String, String> validateUserData(String login, String password, String email, String surname, String name, String patronymic,
-                                                 String birthday, Set<Role>roles, String originalLogin) throws SQLException {
+                                                 String birthday, Set<Role> roles, String originalLogin) throws SQLException {
         Map<String, String> errors = new HashMap<>();
 
         if (login == null || login.trim().isEmpty()) {
