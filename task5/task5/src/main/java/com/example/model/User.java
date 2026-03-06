@@ -1,5 +1,6 @@
 package com.example.model;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 public class User {
@@ -9,10 +10,10 @@ public class User {
     private String surname;
     private String name;
     private String patronymic;
-    private String birthday;
+    private LocalDate birthday;
     private Set<Role> roles;
 
-    public User(String login, String password, String email, String surname, String name, String patronymic, String birthday, Set<Role> roles) {
+    public User(String login, String password, String email, String surname, String name, String patronymic, LocalDate birthday, Set<Role> roles) {
         this.login = login;
         this.password = password;
         this.email = email;
@@ -21,6 +22,9 @@ public class User {
         this.patronymic = patronymic;
         this.birthday = birthday;
         this.roles = roles;
+    }
+    public User(){
+
     }
 
     public String getLogin() {
@@ -71,11 +75,11 @@ public class User {
         this.name = name;
     }
 
-    public String getBirthday() {
+    public LocalDate getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
 

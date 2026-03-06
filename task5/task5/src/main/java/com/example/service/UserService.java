@@ -3,14 +3,15 @@ package com.example.service;
 import com.example.dao.UserDao;
 import com.example.model.Role;
 import com.example.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.*;
 
 
 @Service
+
 public class UserService {
 
     private final UserDao userDao;
@@ -30,16 +31,17 @@ public class UserService {
 
     public boolean addUser(String login, String password, String email,
                            String surname, String name, String patronymic,
-                           String birthday, Set<Role> roles, Map<String, String> errors) {
+                           LocalDate birthday, Set<Role> roles, Map<String, String> errors) {
         try {
             Map<String, String> validationErrors = validateUserData(login, password, email,
-                    surname, name, patronymic, birthday, roles, null);
+                    surname, name, patronymic, String.valueOf(birthday), roles, null);
             if (!validationErrors.isEmpty()) {
                 errors.putAll(validationErrors);
                 return false;
             }
 
             User user = new User(login, password, email, surname, name, patronymic, birthday, roles);
+            System.out.println("=== Service: roles before addUser: " + roles);
             userDao.addUser(user);
             return true;
         } catch (SQLException e) {
@@ -51,16 +53,17 @@ public class UserService {
 
     public boolean updateUser(String originalLogin, String login, String password, String email,
                               String surname, String name, String patronymic,
-                              String birthday, Set<Role> roles, Map<String, String> errors) {
+                              LocalDate birthday, Set<Role> roles, Map<String, String> errors) {
         try {
             Map<String, String> validationErrors = validateUserData(login, password, email,
-                    surname, name, patronymic, birthday, roles, originalLogin);
+                    surname, name, patronymic, String.valueOf(birthday), roles, originalLogin);
             if (!validationErrors.isEmpty()) {
                 errors.putAll(validationErrors);
                 return false;
             }
 
             User user = new User(login, password, email, surname, name, patronymic, birthday, roles);
+            System.out.println("=== Service: roles before updateUser: " + roles);
             userDao.updateUser(originalLogin, user);
             return true;
         } catch (SQLException e) {

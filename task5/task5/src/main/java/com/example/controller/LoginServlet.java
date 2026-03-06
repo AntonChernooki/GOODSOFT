@@ -4,7 +4,6 @@ import com.example.constants.Constants;
 import com.example.model.User;
 import com.example.service.SecurityService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.*;
 
 

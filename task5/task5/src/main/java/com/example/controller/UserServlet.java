@@ -4,7 +4,6 @@ import com.example.constants.Constants;
 import com.example.model.Role;
 import com.example.model.User;
 import com.example.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 import javax.servlet.ServletException;
@@ -13,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.*;
 
 public class UserServlet extends HttpServlet {
@@ -136,7 +136,7 @@ public class UserServlet extends HttpServlet {
         String surname = req.getParameter(Constants.SURNAME_PARAM);
         String name = req.getParameter(Constants.NAME_PARAM);
         String patronymic = req.getParameter(Constants.PATRONYMIC_PARAM);
-        String birthday = req.getParameter(Constants.BIRTHDAY_PARAM);
+        LocalDate birthday = LocalDate.parse(req.getParameter(Constants.BIRTHDAY_PARAM));
         //String roleParam = req.getParameter(Constants.ROLE_PARAM);
         String originalLogin = req.getParameter("originalLogin");
         String[] roleParams = req.getParameterValues(Constants.ROLES_PARAM);
@@ -155,10 +155,10 @@ public class UserServlet extends HttpServlet {
         boolean success;
         if (originalLogin == null || originalLogin.isEmpty()) {
             success = userService.addUser(login, password, email, surname, name,
-                    patronymic, birthday, roles, errors);
+                    patronymic, LocalDate.parse(String.valueOf(birthday)), roles, errors);
         } else {
             success = userService.updateUser(originalLogin, login, password, email, surname, name,
-                    patronymic, birthday, roles, errors);
+                    patronymic, LocalDate.parse(String.valueOf(birthday)), roles, errors);
         }
 
         if (success) {

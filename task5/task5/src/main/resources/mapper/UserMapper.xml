@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.UserDao">
+
+    <resultMap id="userResultMap" type="com.example.model.User">
+        <id property="login" column="login"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="surname" column="surname"/>
+        <result property="name" column="name"/>
+        <result property="patronymic" column="patronymic"/>
+        <result property="birthday" column="birthday"/>
+        <collection property="roles" ofType="com.example.model.Role" javaType="java.util.HashSet">
+            <result column="role_name" property="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAllUsers" resultMap="userResultMap">
+        SELECT users.login, users.password, users.email, users.surname, users.name, users.patronymic, users.birthday, roles.name AS role_name
+        FROM users
+        LEFT JOIN user_roles ON users.id = user_roles.user_id
+        LEFT JOIN roles ON user_roles.role_id = roles.id
+        ORDER BY users.login
+    </select>
+
+    <select id="getUserByLogin" resultMap="userResultMap">
+        SELECT users.login, users.password, users.email, users.surname, users.name, users.patronymic, users.birthday, roles.name AS role_name
+        FROM users
+        LEFT JOIN user_roles ON users.id = user_roles.user_id
+        LEFT JOIN roles ON user_roles.role_id = roles.id
+        WHERE users.login = #{login}
+    </select>
+
+    <insert id="addUser" parameterType="com.example.model.User">
+        INSERT INTO users (login, password, email, surname, name, patronymic, birthday)
+        VALUES (
+        #{login},
+        #{password},
+        #{email},
+        #{surname},
+        #{name},
+        #{patronymic},
+        #{birthday, jdbcType=DATE}
+        )
+    </insert>
+
+    <update id="updateUser">
+        UPDATE users
+        SET login = #{newUser.login},
+        password = #{newUser.password},
+        email = #{newUser.email},
+        surname = #{newUser.surname},
+        name = #{newUser.name},
+        patronymic = #{newUser.patronymic},
+        birthday = #{newUser.birthday}
+        WHERE login = #{oldLogin}
+    </update>
+
+    <delete id="deleteUser">
+        DELETE FROM users WHERE login = #{login}
+    </delete>
+
+    <delete id="deleteUserRoles">
+        DELETE FROM user_roles WHERE user_id = (SELECT id FROM users WHERE login = #{login})
+    </delete>
+
+    <insert id="insertUserRole">
+        INSERT INTO user_roles (user_id, role_id)
+        VALUES (
+        (SELECT id FROM users WHERE login = #{login}),
+        (SELECT id FROM roles WHERE name = #{role})
+        )
+    </insert>
+</mapper>

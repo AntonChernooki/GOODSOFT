@@ -1,6 +1,5 @@
 E:\GOODSOFT\task5\task5\src\main\java\com\example\Application.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\controller\LoginServlet.java
-E:\GOODSOFT\task5\task5\src\main\java\com\example\dao\impl\JdbcUserDao.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\filter\AuthFilter.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\constants\Constants.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\model\Role.java
@@ -8,6 +7,8 @@ E:\GOODSOFT\task5\task5\src\main\java\com\example\config\ServletConfig.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\service\UserService.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\controller\WelcomeServlet.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\model\User.java
+E:\GOODSOFT\task5\task5\src\main\java\com\example\config\FilterConfig.java
+E:\GOODSOFT\task5\task5\src\main\java\com\example\dao\impl\MyBasicUserDao.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\config\DatabaseConfig.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\dao\UserDao.java
 E:\GOODSOFT\task5\task5\src\main\java\com\example\controller\UserServlet.java

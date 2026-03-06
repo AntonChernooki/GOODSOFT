@@ -3,7 +3,6 @@ package com.example.controller;
 import com.example.constants.Constants;
 import com.example.model.User;
 import com.example.service.SecurityService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 import javax.servlet.ServletException;
