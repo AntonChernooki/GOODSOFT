@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 
 <t:myhtml title="управление пользователем"  cssFile="useredit.css">
@@ -16,90 +17,65 @@
             <div class="message error">${error}</div>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/useredit.jhtml" method="post">
-            <input type="hidden" name="action" value="save">
+<form:form modelAttribute="user" method="post" action="${pageContext.request.contextPath}/useredit.jhtml">            <input type="hidden" name="action" value="save">
             <c:if test="${not empty user}">
                 <input type="hidden" name="originalLogin" value="${user.login}">
             </c:if>
 
             <div class="form-group">
                 <label for="login">Логин *</label>
-                <input type="text" id="login" name="login" value="${user.login}" required>
-                <c:if test="${not empty errors.login}">
-                    <span class="error-text">${errors.login}</span>
-                </c:if>
+                <form:input path="login" id="login" cssClass="form-control" />
+                <form:errors path="login"  />
             </div>
 
             <div class="form-group">
                 <label for="password">Пароль *</label>
-                <input type="password" id="password" name="password" value="${user.password}" required>
-                <c:if test="${not empty errors.password}">
-                    <span class="error-text">${errors.password}</span>
-                </c:if>
+                 <form:password path="password" id="password" cssClass="form-control" />
+                 <form:errors path="password"  />
             </div>
 
             <div class="form-group">
                 <label for="email">Email *</label>
-                <input type="email" id="email" name="email" value="${user.email}" required>
-                <c:if test="${not empty errors.email}">
-                    <span class="error-text">${errors.email}</span>
-                </c:if>
+                <form:input path="email" id="email" cssClass="form-control" type="email" />
+                <form:errors path="email" />
             </div>
 
             <div class="form-group">
                 <label for="surname">Фамилия *</label>
-                <input type="text" id="surname" name="surname" value="${user.surname}" required>
-                <c:if test="${not empty errors.surname}">
-                    <span class="error-text">${errors.surname}</span>
-                </c:if>
+                <form:input path="surname" id="surname" cssClass="form-control" />
+                <form:errors path="surname" />
             </div>
 
             <div class="form-group">
                 <label for="name">Имя *</label>
-                <input type="text" id="name" name="name" value="${user.name}" required>
-                <c:if test="${not empty errors.name}">
-                    <span class="error-text">${errors.name}</span>
-                </c:if>
+                <form:input path="name" id="name" cssClass="form-control" />
+                <form:errors path="name"  />
             </div>
 
             <div class="form-group">
                 <label for="patronymic">Отчество</label>
-                <input type="text" id="patronymic" name="patronymic" value="${user.patronymic}">
-            </div>
+                <form:input path="patronymic" id="patronymic" cssClass="form-control" />
+                <form:errors path="patronymic"  />
+                   </div>
 
             <div class="form-group">
                 <label for="birthday">Дата рождения *</label>
-                <input type="date" id="birthday" name="birthday" value="${user.birthday}" required>
-                <c:if test="${not empty errors.birthday}">
-                    <span class="error-text">${errors.birthday}</span>
-                </c:if>
+                <form:input path="birthday" id="birthday" cssClass="form-control" type="date" />
+                <form:errors path="birthday"  />
             </div>
 
            <div class="form-group">
                <label>Роли *</label>
                <div class="checkbox-group">
-                   <c:forEach var="r" items="${allRoles}">
-                       <label>
-                           <input type="checkbox" name="roles" value="${r}"
-                               <c:if test="${user != null && user.roles.contains(r)}">checked</c:if> />
-                           <c:if test="${r == 'ADMIN'}">Администратор</c:if>
-                           <c:if test="${r != 'ADMIN'}">Пользователь</c:if>
-                       </label><br/>
-                   </c:forEach>
-               </div>
-               <c:if test="${not empty errors.role}">
-               <div class="message error">${error}</div>
-               <c:if test="${not empty errors.global}">
-                   <div class="message error">${errors.global}</div>
-               </c:if>
-                   <span class="error-text">${errors.role}</span>
-               </c:if>
+                   <form:checkboxes items="${allRoles}" path="roles" delimiter="<br/>" />
+                   </div>
+                   <form:errors path="roles" cssClass="error-text" />
            </div>
 
             <div class="actions">
                 <button type="submit" class="btn-submit">Сохранить</button>
                 <a href="${pageContext.request.contextPath}/userlist.jhtml" class="btn-cancel">Отмена</a>
             </div>
-        </form>
+        </form:form>
     </div>
 </t:myhtml>

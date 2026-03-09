@@ -92,13 +92,8 @@ public class UserController {
         }
 
 
-        if(bindingResult.hasErrors()){
-            Map<String,String> errors=new HashMap<>();
-            for(FieldError error:bindingResult.getFieldErrors()){
-                errors.put(error.getField(),error.getDefaultMessage());
-            }
-            model.addAttribute("errors",errors);
-            model.addAttribute("allRoles",Role.values());
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("allRoles", Role.values());
             return "useredit";
         }
 

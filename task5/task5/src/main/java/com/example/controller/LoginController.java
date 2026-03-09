@@ -37,12 +37,7 @@ public class LoginController {
                         HttpSession httpSession,
                         Model model
                         ) throws SQLException {
-        if(bindingResult.hasErrors()){
-            Map<String,String> errors=new HashMap<>();
-            for(FieldError error:bindingResult.getFieldErrors()){
-                errors.put(error.getField(),error.getDefaultMessage());
-            }
-            model.addAttribute("errors",errors);
+        if (bindingResult.hasErrors()) {
             return "login";
         }
 

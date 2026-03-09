@@ -42,11 +42,6 @@ public class PasswordController {
             return "redirect:/login.jhtml";
         }
         if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            model.addAttribute("errors", errors);
             return "loginedit";
         }
 
