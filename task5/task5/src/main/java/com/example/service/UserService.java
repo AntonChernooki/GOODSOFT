@@ -34,20 +34,15 @@ public class UserService {
                            String surname, String name, String patronymic,
                            LocalDate birthday, Set<Role> roles, Map<String, String> errors) {
         try {
-            Map<String, String> validationErrors = validateUserData(login, password, email,
-                    surname, name, patronymic, String.valueOf(birthday), roles, null);
-            if (!validationErrors.isEmpty()) {
-                errors.putAll(validationErrors);
+            if (userDao.getUserByLogin(login) != null) {
+                errors.put("login", "Пользователь с таким логином уже существует");
                 return false;
             }
-
             User user = new User(login, password, email, surname, name, patronymic, birthday, roles);
-            System.out.println("=== Service: roles before addUser: " + roles);
             userDao.addUser(user);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            errors.put("global", "Ошибка бд: не удалось добавить пользователя");
             return false;
         }
     }
@@ -56,20 +51,16 @@ public class UserService {
                               String surname, String name, String patronymic,
                               LocalDate birthday, Set<Role> roles, Map<String, String> errors) {
         try {
-            Map<String, String> validationErrors = validateUserData(login, password, email,
-                    surname, name, patronymic, String.valueOf(birthday), roles, originalLogin);
-            if (!validationErrors.isEmpty()) {
-                errors.putAll(validationErrors);
+            if (!originalLogin.equals(login) && userDao.getUserByLogin(login) != null) {
+                errors.put("login", "Пользователь с таким логином уже существует");
                 return false;
             }
 
             User user = new User(login, password, email, surname, name, patronymic, birthday, roles);
-            System.out.println("=== Service: roles before updateUser: " + roles);
             userDao.updateUser(originalLogin, user);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            errors.put("global", "Ошибка бд: не удалось обновить пользователя");
             return false;
         }
     }
@@ -85,46 +76,7 @@ public class UserService {
     }
 
 
-    private Map<String, String> validateUserData(String login, String password, String email, String surname, String name, String patronymic,
-                                                 String birthday, Set<Role> roles, String originalLogin) throws SQLException {
-        Map<String, String> errors = new HashMap<>();
 
-        if (login == null || login.trim().isEmpty()) {
-            errors.put("login", "Логин обязателен");
-        }
-        if (password == null || password.trim().isEmpty()) {
-            errors.put("password", "Пароль обязателен");
-        }
-        if (name == null || name.trim().isEmpty()) {
-            errors.put("name", "Имя обязательно");
-        }
-        if (email == null || email.trim().isEmpty()) {
-            errors.put("email", "Email обязателен");
-        }
-        if (surname == null || surname.trim().isEmpty()) {
-            errors.put("surname", "Фамилия обязательна");
-        }
-        if (birthday == null || birthday.trim().isEmpty()) {
-            errors.put("birthday", "Дата рождения обязательна");
-        }
-        if (roles == null || roles.isEmpty()) {
-            errors.put("role", "Роль обязательна");
-        } /*else {
-            try {
-                Role role = Role.valueOf(roleParam.trim().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                errors.put("role", "Недопустимое значение роли");
-            }
-        }*/
-        if (login != null && !login.trim().isEmpty()) {
-            User existing = userDao.getUserByLogin(login);
-            if (existing != null && !Objects.equals(login, originalLogin)) {
-                errors.put("login", "Пользователь с таким логином уже существует");
-            }
-        }
-
-        return errors;
-    }
 
 
 }

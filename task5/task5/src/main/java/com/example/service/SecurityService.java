@@ -19,9 +19,6 @@ public class SecurityService {
 
 
     public User login(String login, String password) throws SQLException {
-        if (login == null || password == null) {
-            return null;
-        }
         User user = userDao.getUserByLogin(login);
         if (user != null && user.getPassword().equals(password)) {
             return user;
@@ -30,9 +27,7 @@ public class SecurityService {
     }
 
     public boolean changePassword(String login, String oldPassword, String newPassword) {
-        if (login == null || oldPassword == null || newPassword == null) {
-            return false;
-        }
+
         try {
             User user = userDao.getUserByLogin(login);
             if (user == null) {

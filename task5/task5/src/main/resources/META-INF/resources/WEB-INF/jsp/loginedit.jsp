@@ -10,6 +10,14 @@
             Пользователь: <span class="username-highlight">${sessionScope.userData.name}</span>
         </p>
 
+        <c:if test="${not empty errors}">
+                    <div class="message error">
+                        <c:forEach var="err" items="${errors}">
+                            ${err.value}<br/>
+                        </c:forEach>
+                    </div>
+                </c:if>
+
         <c:if test="${not empty error}">
             <div class="message error">${error}</div>
         </c:if>

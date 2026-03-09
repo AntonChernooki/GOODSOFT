@@ -8,6 +8,16 @@
     <div class="login-container">
         <h1>Вход в систему</h1>
 
+
+         <c:if test="${not empty errors}">
+                    <div class="error-message">
+                        <c:forEach var="err" items="${errors}">
+                            ${err.value}<br/>
+                        </c:forEach>
+                    </div>
+                </c:if>
+
+
         <c:if test="${not empty error}">
             <div class="error-message">${error}</div>
         </c:if>
