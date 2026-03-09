@@ -2,29 +2,30 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<t:myhtml title="управление пользователями"  cssFile="userlist.css">
+<t:myhtml title="<spring:message code='userlist.title'/>"  cssFile="userlist.css">
     <div class="container">
-        <h1>Управление пользователями</h1>
+        <h1><spring:message code="userlist.header"/></h1>
 
         <c:if test="${not empty error}">
             <div class="error-message">${error}</div>
         </c:if>
 
         <div class="actions">
-            <a href="${pageContext.request.contextPath}/useredit.jhtml" class="btn btn-add">Добавить пользователя</a>
-            <a href="${pageContext.request.contextPath}/welcome.jhtml" class="btn btn-back">На главную</a>
+            <a href="${pageContext.request.contextPath}/useredit.jhtml" class="btn btn-add"><spring:message code="userlist.addUser"/></a>
+            <a href="${pageContext.request.contextPath}/welcome.jhtml" class="btn btn-back"><spring:message code="userlist.backToMain"/></a>
         </div>
 
         <table class="user-table">
             <thead>
                 <tr>
-                    <th>Логин</th>
-                    <th>Имя</th>
-                    <th>Фамилия</th>
-                    <th>Email</th>
-                    <th>Роль</th>
-                    <th>Действия</th>
+                    <th><spring:message code="userlist.login"/></th>
+                    <th><spring:message code="userlist.name"/></th>
+                    <th><spring:message code="userlist.surname"/></th>
+                    <th><spring:message code="userlist.email"/></th>
+                    <th><spring:message code="userlist.role"/></th>
+                    <th><spring:message code="userlist.actions"/></th>
                 </tr>
             </thead>
             <tbody>
@@ -41,8 +42,8 @@
                             </c:forEach>
                         </td>
                         <td>
-                            <a href="${pageContext.request.contextPath}/useredit.jhtml?login=${user.login}" class="btn-edit">Редактировать</a>
-                            <a href="#" onclick="confirmDelete('${user.login}')" class="btn-delete">Удалить</a>
+                            <a href="${pageContext.request.contextPath}/useredit.jhtml?login=${user.login}" class="btn-edit"><spring:message code="userlist.edit"/></a>
+                            <a href="#" onclick="confirmDelete('${user.login}')" class="btn-delete"><spring:message code="userlist.delete"/></a>
                         </td>
                     </tr>
                 </c:forEach>
@@ -52,7 +53,9 @@
 
     <script>
         function confirmDelete(login) {
-            if (confirm('Вы уверены, что хотите удалить пользователя ' + login + '?')) {
+            var template = '<spring:message code="userlist.deleteConfirm" arguments="{0}"/>';
+            var message = template.replace('{0}', login);
+            if (confirm(message)) {
                 window.location.href = '${pageContext.request.contextPath}/userdelete.jhtml?login=' + login;
             }
         }

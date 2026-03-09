@@ -2,12 +2,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<t:myhtml title="смена пароля"  cssFile="loginedit.css">
+<t:myhtml title="<spring:message code='password.title'/>"  cssFile="loginedit.css">
     <div class="password-card">
-        <h2>Смена пароля</h2>
+        <h2><spring:message code="password.header"/></h2>
         <p style="text-align: center; margin-bottom: 20px; color: #666;">
-            Пользователь: <span class="username-highlight">${sessionScope.userData.name}</span>
+            <spring:message code="password.userLabel"/> <span class="username-highlight">${sessionScope.userData.name}</span>
         </p>
 
 
@@ -28,14 +29,14 @@
             </div>
 
             <div class="form-group">
-                <label for="newPassword">Новый пароль</label>
+                <label for="newPassword"><spring:message code="password.newPassword"/></label>
                 <form:password path="newPassword" id="newPassword" cssClass="form-control" />
                 <form:errors path="newPassword"  />
-                   </div>
+            </div>
 
-            <button type="submit" class="btn-submit">Изменить пароль</button>
+            <button type="submit" class="btn-submit"><spring:message code="password.submit"/></button>
         </form:form>
 
-        <a href="${pageContext.request.contextPath}/welcome.jhtml" class="back-link">← На главную</a>
+        <a href="${pageContext.request.contextPath}/welcome.jhtml" class="back-link"><spring:message code="password.back"/></a>
     </div>
 </t:myhtml>

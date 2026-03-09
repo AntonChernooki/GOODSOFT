@@ -2,16 +2,18 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-
-<t:myhtml title="управление пользователем"  cssFile="useredit.css">
+<t:myhtml title="<spring:message code='useredit.title'/>"  cssFile="useredit.css">
     <div class="edit-card">
-        <h2>
-            <c:choose>
-                <c:when test="${empty user}">Добавление нового пользователя</c:when>
-                <c:otherwise>Редактирование пользователя ${user.login}</c:otherwise>
-            </c:choose>
-        </h2>
+       <h2>
+           <c:if test="${empty user}">
+               <spring:message code="useredit.addHeader"/>
+           </c:if>
+           <c:if test="${not empty user}">
+               <spring:message code="useredit.editHeader" arguments="${user.login}"/>
+           </c:if>
+       </h2>
 
         <c:if test="${not empty error}">
             <div class="message error">${error}</div>
@@ -23,49 +25,49 @@
             </c:if>
 
             <div class="form-group">
-                <label for="login">Логин *</label>
+                <label for="login"><spring:message code="useredit.login"/></label>
                 <form:input path="login" id="login" cssClass="form-control" />
                 <form:errors path="login"  />
             </div>
 
             <div class="form-group">
-                <label for="password">Пароль *</label>
+                <label for="password"><spring:message code="useredit.password"/></label>
                  <form:password path="password" id="password" cssClass="form-control" />
                  <form:errors path="password"  />
             </div>
 
             <div class="form-group">
-                <label for="email">Email *</label>
+                <label for="email"><spring:message code="useredit.email"/></label>
                 <form:input path="email" id="email" cssClass="form-control" type="email" />
                 <form:errors path="email" />
             </div>
 
             <div class="form-group">
-                <label for="surname">Фамилия *</label>
+                <label for="surname"><spring:message code="useredit.surname"/></label>
                 <form:input path="surname" id="surname" cssClass="form-control" />
                 <form:errors path="surname" />
             </div>
 
             <div class="form-group">
-                <label for="name">Имя *</label>
+                <label for="name"><spring:message code="useredit.name"/></label>
                 <form:input path="name" id="name" cssClass="form-control" />
                 <form:errors path="name"  />
             </div>
 
             <div class="form-group">
-                <label for="patronymic">Отчество</label>
+                <label for="patronymic"><spring:message code="useredit.patronymic"/></label>
                 <form:input path="patronymic" id="patronymic" cssClass="form-control" />
                 <form:errors path="patronymic"  />
                    </div>
 
             <div class="form-group">
-                <label for="birthday">Дата рождения *</label>
+                <label for="birthday"><spring:message code="useredit.birthday"/></label>
                 <form:input path="birthday" id="birthday" cssClass="form-control" type="date" />
                 <form:errors path="birthday"  />
             </div>
 
            <div class="form-group">
-               <label>Роли *</label>
+               <label><spring:message code="useredit.roles"/></label>
                <div class="checkbox-group">
                    <form:checkboxes items="${allRoles}" path="roles" delimiter="<br/>" />
                    </div>
@@ -73,8 +75,8 @@
            </div>
 
             <div class="actions">
-                <button type="submit" class="btn-submit">Сохранить</button>
-                <a href="${pageContext.request.contextPath}/userlist.jhtml" class="btn-cancel">Отмена</a>
+                <button type="submit" class="btn-submit"><spring:message code="useredit.save"/></button>
+                <a href="${pageContext.request.contextPath}/userlist.jhtml" class="btn-cancel"><spring:message code="useredit.cancel"/></a>
             </div>
         </form:form>
     </div>
