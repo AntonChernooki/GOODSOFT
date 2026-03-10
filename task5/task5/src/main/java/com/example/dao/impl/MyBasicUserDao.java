@@ -37,36 +37,23 @@ public class MyBasicUserDao implements UserDao {
     @Override
     public void addUser(User user) throws SQLException {
         Set<Role> roles = user.getRoles();
-        System.out.println("=== DAO addUser: roles before addUser = " + roles);
         userDao.addUser(user);
-        System.out.println("=== DAO addUser: roles after addUser = " + user.getRoles());
-        System.out.println("=== DAO addUser: saved roles = " + roles);
         if (roles != null) {
             for (Role role : roles) {
-                System.out.println("=== DAO addUser: inserting role " + role.name());
                 userDao.insertUserRole(user.getLogin(), role.name());
             }
-        } else {
-            System.out.println("=== DAO addUser: roles is null, skipping inserts");
         }
     }
 
     @Override
     public void updateUser(String oldLogin, User newUser) throws SQLException {
         Set<Role> roles = newUser.getRoles();
-        System.out.println("=== DAO updateUser: deleting roles for oldLogin = " + oldLogin);
         userDao.deleteUserRoles(oldLogin);
-        System.out.println("=== DAO updateUser: updating user");
         userDao.updateUser(oldLogin, newUser);
-        System.out.println("=== DAO updateUser: roles after update = " + newUser.getRoles());
-        System.out.println("=== DAO updateUser: saved roles = " + roles);
         if (roles != null) {
             for (Role role : roles) {
-                System.out.println("=== DAO updateUser: inserting role " + role.name() + " for login " + newUser.getLogin());
                 userDao.insertUserRole(newUser.getLogin(), role.name());
             }
-        } else {
-            System.out.println("=== DAO updateUser: roles is null, skipping inserts");
         }
     }
 
