@@ -9,9 +9,6 @@
     <div class="login-container">
         <h1><spring:message code="login.header"/></h1>
 
-
-
-
         <c:if test="${not empty error}">
             <div class="error-message">${error}</div>
         </c:if>

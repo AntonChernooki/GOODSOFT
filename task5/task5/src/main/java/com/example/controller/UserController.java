@@ -5,6 +5,9 @@ import com.example.dto.UserForm;
 import com.example.model.Role;
 import com.example.model.User;
 import com.example.service.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,22 +35,21 @@ public class UserController {
         return user != null && user.getRoles().contains(Role.ADMIN);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/userlist.jhtml")
-    public String userListForm(HttpSession session, Model model) throws SQLException {
-        if (isAdmin(session)) {
-            model.addAttribute("users", userService.getAllUsers());
-            return "userlist";
-        }
-        return "redirect:/welcome.jhtml";
+    public String userListForm(Model model) throws SQLException {
+
+        model.addAttribute("users", userService.getAllUsers());
+        return "userlist";
+
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/useredit.jhtml")
     public String editUser(@RequestParam(required = false) String login,
-                           Model model,
-                           HttpSession session) throws SQLException {
-        if (!isAdmin(session)) {
-            return "redirect:/welcome.jhtml";
-        }
+                           Model model
+    ) throws SQLException {
+
 
         UserForm userForm;
         if (login != null && !login.isEmpty()) {
@@ -66,15 +68,14 @@ public class UserController {
         return "useredit";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/userdelete.jhtml")
     public String deleteUser(@RequestParam String login,
-                             HttpSession session,
+
                              Model model) throws SQLException {
-        if (!isAdmin(session)) {
-            return "redirect:/welcome.jhtml";
-        }
-        User currentUser = (User) session.getAttribute(Constants.USER_SESSION_KEY);
-        if (login.equals(currentUser.getLogin())) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (login.equals(authentication.getName())) {
             model.addAttribute("error", "Нельзя удалить свою учётную запись");
             return "redirect:/userlist.jhtml";
         }
@@ -82,14 +83,11 @@ public class UserController {
         return "redirect:/userlist.jhtml";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/useredit.jhtml")
     public String saveUser(@Valid @ModelAttribute("user") UserForm userForm,
                            BindingResult bindingResult,
-                           HttpSession session,
                            Model model) throws SQLException {
-        if (!isAdmin(session)) {
-            return "redirect:/welcome.jhtml";
-        }
 
 
         if (bindingResult.hasErrors()) {
@@ -99,7 +97,7 @@ public class UserController {
 
 
         Set<Role> roles = userForm.getRoles();
-        if (roles == null){
+        if (roles == null) {
             roles = new HashSet<>();
         }
 

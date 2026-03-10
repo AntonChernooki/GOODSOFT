@@ -3,13 +3,17 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <t:myhtml title="<spring:message code='password.title'/>"  cssFile="loginedit.css">
     <div class="password-card">
         <h2><spring:message code="password.header"/></h2>
         <p style="text-align: center; margin-bottom: 20px; color: #666;">
-            <spring:message code="password.userLabel"/> <span class="username-highlight">${sessionScope.userData.name}</span>
-        </p>
+                    <spring:message code="password.userLabel"/>
+                    <span class="username-highlight">
+                        <sec:authentication property="principal.name" />
+                    </span>
+                </p>
 
 
         <c:if test="${not empty error}">

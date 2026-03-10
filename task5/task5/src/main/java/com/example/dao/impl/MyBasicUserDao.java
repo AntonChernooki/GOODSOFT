@@ -31,7 +31,15 @@ public class MyBasicUserDao implements UserDao {
 
     @Override
     public User getUserByLogin(String login) throws SQLException {
-       return userDao.getUserByLogin(login);
+        System.out.println(">>> MyBasicUserDao.getUserByLogin: login = " + login);
+        User user = userDao.getUserByLogin(login);
+        System.out.println(">>> user = " + user);
+        if (user != null) {
+            System.out.println(">>> user.login = " + user.getLogin());
+            System.out.println(">>> user.password = " + user.getPassword());
+            System.out.println(">>> user.roles = " + user.getRoles());
+        }
+        return user;
     }
 
     @Override

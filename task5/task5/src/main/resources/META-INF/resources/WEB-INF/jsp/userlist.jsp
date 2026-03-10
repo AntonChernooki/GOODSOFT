@@ -1,10 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<t:myhtml title="<spring:message code='userlist.title'/>"  cssFile="userlist.css">
+<t:myhtml title="<spring:message code='userlist.title'/>" cssFile="userlist.css">
     <div class="container">
         <h1><spring:message code="userlist.header"/></h1>
 
@@ -37,8 +37,7 @@
                         <td>${user.email}</td>
                         <td>
                             <c:forEach var="r" items="${user.roles}" varStatus="status">
-                                ${r}
-                                <c:if test="${!status.last}">, </c:if>
+                                ${r}<c:if test="${!status.last}">, </c:if>
                             </c:forEach>
                         </td>
                         <td>

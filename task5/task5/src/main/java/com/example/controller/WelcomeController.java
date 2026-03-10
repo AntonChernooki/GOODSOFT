@@ -11,11 +11,8 @@ import javax.servlet.http.HttpSession;
 
 public class WelcomeController {
     @GetMapping("/welcome.jhtml")
-    public String welcome(@RequestParam(value = Constants.ACTION_PARAM,required = false) String action, HttpSession httpSession){
-        if(Constants.ACTION_LOGOUT.equals(action)){
-            httpSession.invalidate();
-            return "redirect:/login.jhtml";
-        }
+    public String welcome() {
+
         return "welcome";
     }
 }

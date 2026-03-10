@@ -5,6 +5,8 @@ import com.example.dto.PasswordChangeForm;
 import com.example.model.User;
 import com.example.service.SecurityService;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,18 +37,15 @@ public class PasswordController {
     @PostMapping("/loginedit.jhtml")
     public String changePassword(@Valid PasswordChangeForm passwordChangeForm,
                                  BindingResult bindingResult,
-                                 HttpSession httpSession,
                                  Model model) {
-        User user = (User) httpSession.getAttribute(Constants.USER_SESSION_KEY);
-        if (user == null) {
-            return "redirect:/login.jhtml";
-        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (bindingResult.hasErrors()) {
             return "loginedit";
         }
 
 
-        if (securityService.changePassword(user.getLogin(), passwordChangeForm.getOldPassword(), passwordChangeForm.getNewPassword())) {
+        if (securityService.changePassword(authentication.getName(), passwordChangeForm.getOldPassword(), passwordChangeForm.getNewPassword())) {
             model.addAttribute("message", "Пароль изменён");
             return "loginedit";
         } else {
