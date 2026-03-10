@@ -29,13 +29,13 @@
 
             <div class="form-group">
                 <form:password path="oldPassword" id="oldPassword" cssClass="form-control" />
-                <form:errors path="oldPassword"/>
+                <form:errors path="oldPassword" cssClass="error-text"/>
             </div>
 
             <div class="form-group">
                 <label for="newPassword"><spring:message code="password.newPassword"/></label>
                 <form:password path="newPassword" id="newPassword" cssClass="form-control" />
-                <form:errors path="newPassword"  />
+                <form:errors path="newPassword" cssClass="error-text" />
             </div>
 
             <button type="submit" class="btn-submit"><spring:message code="password.submit"/></button>

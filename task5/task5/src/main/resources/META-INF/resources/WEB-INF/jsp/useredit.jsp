@@ -22,48 +22,48 @@
 
         <form:form modelAttribute="user" method="post" action="${pageContext.request.contextPath}/useredit.jhtml">
             <input type="hidden" name="action" value="save">
-            <form:hidden path="originalLogin"/>
+            <form:hidden path="originalLogin" />
 
             <div class="form-group">
                 <label for="login"><spring:message code="useredit.login"/></label>
                 <form:input path="login" id="login" cssClass="form-control"/>
-                <form:errors path="login"/>
+                <form:errors path="login" cssClass="error-text"/>
             </div>
 
             <div class="form-group">
                 <label for="password"><spring:message code="useredit.password"/></label>
                 <form:password path="password" id="password" cssClass="form-control"/>
-                <form:errors path="password"/>
+                <form:errors path="password" cssClass="error-text"/>
             </div>
 
             <div class="form-group">
                 <label for="email"><spring:message code="useredit.email"/></label>
                 <form:input path="email" id="email" cssClass="form-control" type="email"/>
-                <form:errors path="email"/>
+                <form:errors path="email" cssClass="error-text"/>
             </div>
 
             <div class="form-group">
                 <label for="surname"><spring:message code="useredit.surname"/></label>
                 <form:input path="surname" id="surname" cssClass="form-control"/>
-                <form:errors path="surname"/>
+                <form:errors path="surname" cssClass="error-text"/>
             </div>
 
             <div class="form-group">
                 <label for="name"><spring:message code="useredit.name"/></label>
                 <form:input path="name" id="name" cssClass="form-control"/>
-                <form:errors path="name"/>
+                <form:errors path="name" cssClass="error-text"/>
             </div>
 
             <div class="form-group">
                 <label for="patronymic"><spring:message code="useredit.patronymic"/></label>
                 <form:input path="patronymic" id="patronymic" cssClass="form-control"/>
-                <form:errors path="patronymic"/>
+                <form:errors path="patronymic" cssClass="error-text"/>
             </div>
 
             <div class="form-group">
                 <label for="birthday"><spring:message code="useredit.birthday"/></label>
                 <form:input path="birthday" id="birthday" cssClass="form-control" type="date"/>
-                <form:errors path="birthday"/>
+                <form:errors path="birthday" cssClass="error-text" />
             </div>
 
             <div class="form-group">

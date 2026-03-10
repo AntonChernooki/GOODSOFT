@@ -85,6 +85,13 @@ input[type="password"]:focus {
     transition: background-color 0.3s;
 }
 
+.error-text {
+    color: #e53e3e;
+    font-size: 13px;
+    margin-top: 3px;
+    display: block;
+}
+
 .btn-login:hover {
     background-color: #5a67d8;
 }

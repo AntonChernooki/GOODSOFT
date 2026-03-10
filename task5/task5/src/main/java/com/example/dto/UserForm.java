@@ -13,31 +13,31 @@ import java.util.stream.Collectors;
 
 
 public class UserForm {
-    @NotBlank(message = "Логин обязателен")
+    @NotBlank(message = "{user.login.blank}")
     private String login;
 
-    @NotBlank(message = "Пароль обязателен")
-    @Size(min = 4, message = "Пароль должен содержать минимум 4 символа")
+    @NotBlank(message = "{user.password.blank}")
+    @Size(min = 4, message = "{user.password.size}")
     private String password;
 
-    @NotBlank(message = "Email обязателен")
-    @Email(message = "Некорректный email")
+    @NotBlank(message = "{user.email.blank}")
+    @Email(message = "{user.email.invalid}")
     private String email;
 
-    @NotBlank(message = "Фамилия обязательна")
+    @NotBlank(message = "{user.surname.blank}")
     private String surname;
 
-    @NotBlank(message = "Имя обязательно")
+    @NotBlank(message = "{user.name.blank}")
     private String name;
 
     private String patronymic;
 
-    @NotNull(message = "Дата рождения обязательна")
-    @Past(message = "Дата рождения должна быть в прошлом")
+    @NotNull(message = "{user.birthday.null}")
+    @Past(message = "{user.birthday.past}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
-    @NotEmpty(message = "Роль обязательна")
+    @NotEmpty(message = "{user.roles.notEmpty}")
     private Set<Role> roles;
 
     private String originalLogin;

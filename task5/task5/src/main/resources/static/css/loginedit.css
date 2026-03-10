@@ -143,6 +143,13 @@ input[type="password"]:focus {
     text-decoration: underline;
 }
 
+
+.error-text {
+    color: #e53e3e;
+    font-size: 13px;
+    margin-top: 3px;
+    display: block;
+}
 @media (max-width: 480px) {
     .password-card {
         padding: 25px;

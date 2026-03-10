@@ -5,11 +5,11 @@ import javax.validation.constraints.Size;
 
 public class PasswordChangeForm {
 
-    @NotBlank(message = "старый пароль не может быть пустым")
+    @NotBlank(message = "{password.old.blank}")
     private String oldPassword;
 
-    @NotBlank(message = "новый пароль не может быть пустым")
-    @Size(min = 4,message = "новый пароль должен содержать минимум 4 символа")
+    @NotBlank(message = "{password.new.blank}")
+    @Size(min = 4,message = "{password.new.size}")
     private String newPassword;
 
 

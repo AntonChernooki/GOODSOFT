@@ -18,13 +18,13 @@
             <div class="form-group">
                 <label for="login"><spring:message code="login.username"/></label>
                 <input type="text" id="login" name="login" required>
-                <form:errors path="login"/>
+                <form:errors path="login" cssClass="error-text"/>
             </div>
 
             <div class="form-group">
                 <label for="password"><spring:message code="login.password"/></label>
                 <input type="password" id="password" name="password" required>
-                 <form:errors path="password"/>
+                 <form:errors path="password" cssClass="error-text"/>
             </div>
 
             <button type="submit" class="btn-login"><spring:message code="login.submit"/></button>

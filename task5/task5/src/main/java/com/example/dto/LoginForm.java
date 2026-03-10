@@ -3,10 +3,10 @@ package com.example.dto;
 import javax.validation.constraints.NotBlank;
 
 public class LoginForm {
-    @NotBlank(message = "Логин не может быть пустым")
+    @NotBlank(message = "{login.blank}")
     private String login;
 
-    @NotBlank(message = "Пароль не может быть пустым")
+    @NotBlank(message = "{password.blank}")
     private String password;
 
     public String getLogin() {
