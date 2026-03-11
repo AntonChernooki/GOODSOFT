@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.example.constants.Constants;
 import com.example.dto.UserForm;
 import com.example.model.Role;
 import com.example.model.User;
@@ -11,14 +10,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,10 +26,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    private boolean isAdmin(HttpSession session) {
-        User user = (User) session.getAttribute(Constants.USER_SESSION_KEY);
-        return user != null && user.getRoles().contains(Role.ADMIN);
-    }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/userlist.jhtml")
@@ -97,9 +90,7 @@ public class UserController {
 
 
         Set<Role> roles = userForm.getRoles();
-        if (roles == null) {
-            roles = new HashSet<>();
-        }
+
 
         boolean success;
         Map<String, String> serviceErrors = new HashMap<>();
