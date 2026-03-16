@@ -1,0 +1,43 @@
+<div class="body">
+    <div class="profile-card">
+        <h1>{{ 'WELCOME_TITLE' | translate }}</h1>
+        @if (currentUser) {
+        <p class="greeting">{{ 'WELCOME_MESSAGE' | translate : { name: currentUser.getName() } }}</p>
+
+        <div class="info-grid">
+            <span class="info-label">{{ 'LOGIN' | translate }}</span>
+            <span class="info-value">{{ currentUser.getLogin() }}</span>
+
+            <span class="info-label">{{ 'NAME' | translate }}</span>
+            <span class="info-value">{{ currentUser.getName() }}</span>
+
+            <span class="info-label">{{ 'SURNAME' | translate }}</span>
+            <span class="info-value">{{ currentUser.getSurname() }}</span>
+
+            <span class="info-label">{{ 'PATRONYMIC' | translate }}</span>
+            <span class="info-value">{{ currentUser.getPatronymic() }}</span>
+
+            <span class="info-label">{{ 'EMAIL' | translate }}</span>
+            <span class="info-value">{{ currentUser.getEmail() }}</span>
+
+            <span class="info-label">{{ 'BIRTHDAY' | translate }}</span>
+            <span class="info-value">{{ currentUser.getBirthday() | date: 'dd.mm.yyyy' }}</span>
+
+            <span class="info-label">{{ 'ROLES' | translate }}</span>
+            <span class="info-value">
+                @for (role of currentUser.getRoles(); track role) {
+                <span> {{ role }}</span>
+                }
+            </span>
+        </div>
+        }
+
+        <div class="actions">
+            @if (currentUser?.isAdmin()) {
+            <a routerLink="/userlist" class="btn btn-primary">{{ 'USER_MANAGEMENT' | translate }}</a>
+            }
+            <a routerLink="/loginedit" class="btn btn-primary">{{ 'CHANGE_PASSWORD' | translate }}</a>
+            <button class="btn btn-danger" (click)="logout()">{{ 'LOGOUT' | translate }}</button>
+        </div>
+    </div>
+</div>

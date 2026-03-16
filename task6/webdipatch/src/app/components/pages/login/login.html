@@ -1,0 +1,43 @@
+<div class="login-page">
+  <div class="login-container">
+    <h1>{{ 'LOGIN_TITLE' | translate }}</h1>
+
+    @if (errorMessage()) {
+      <div class="error-message">{{ errorMessage() | translate }}</div>
+    }
+
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="login">{{ 'LOGIN_LABEL' | translate }}</label>
+        <input
+          type="text"
+          id="login"
+          name="login"
+          [(ngModel)]="login"
+          #loginModel="ngModel"
+          required
+        />
+        @if (loginModel.invalid && (loginModel.dirty || loginModel.touched)) {
+          <div class="field-error">{{ 'LOGIN_REQUIRED' | translate }}</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">{{ 'PASSWORD' | translate }}</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          #passwordModel="ngModel"
+          required
+        />
+        @if (passwordModel.invalid && (passwordModel.dirty || passwordModel.touched)) {
+          <div class="field-error">{{ 'PASSWORD_REQUIRED' | translate }}</div>
+        }
+      </div>
+
+      <button type="submit" class="btn-login">{{ 'LOGIN_BUTTON' | translate }}</button>
+    </form>
+  </div>
+</div>

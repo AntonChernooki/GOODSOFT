@@ -1,0 +1,42 @@
+<div class="body">
+  <div class="container">
+    <h1>{{ 'USER_LIST_TITLE' | translate }}</h1>
+
+    <div class="actions">
+      <a routerLink="/useredit/new" class="btn btn-add">{{ 'ADD_USER' | translate }}</a>
+      <a routerLink="/welcome" class="btn btn-back">{{ 'BACK_TO_HOME' | translate }}</a>
+    </div>
+
+    <table class="user-table">
+      <thead>
+        <tr>
+          <th>{{ 'LOGIN' | translate }}</th>
+          <th>{{ 'NAME' | translate }}</th>
+          <th>{{ 'SURNAME' | translate }}</th>
+          <th>{{ 'EMAIL' | translate }}</th>
+          <th>{{ 'ROLES' | translate }}</th>
+          <th>{{ 'ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of userList; track user.getLogin()) {
+          <tr>
+            <td>{{ user.getLogin() }}</td>
+            <td>{{ user.getName() }}</td>
+            <td>{{ user.getSurname() }}</td>
+            <td>{{ user.getEmail() }}</td>
+            <td>{{ [...user.getRoles()].join(',') }}</td>
+            <td>
+              <a [routerLink]="['/useredit', user.getLogin()]" class="btn-edit">{{
+                'EDIT_BUTTON' | translate
+              }}</a>
+              <button class="btn-delete" (click)="onDeleteUser(user.getLogin())">
+                {{ 'DELETE_BUTTON' | translate }}
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

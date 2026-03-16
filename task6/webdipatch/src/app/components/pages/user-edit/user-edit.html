@@ -1,0 +1,130 @@
+<div class="body">
+  <div class="edit-card">
+    <h2>
+      @if (isEditMode) {
+        {{ 'EDIT_USER' | translate }}
+      } @else {
+        {{ 'ADD_USER' | translate }}
+      }
+    </h2>
+
+    @if (errorMessage()) {
+      <div class="error-message">{{ errorMessage() | translate }}</div>
+    }
+
+    <form #userForm="ngForm" (ngSubmit)="onSubmit(userForm)">
+      <div class="form-group">
+        <label for="login">{{ 'LOGIN' | translate }} *</label>
+        <input
+          type="text"
+          id="login"
+          name="login"
+          [(ngModel)]="login"
+          required
+          #loginCtrl="ngModel"
+          [readonly]="isEditMode"
+        />
+        @if (loginCtrl.invalid && loginCtrl.touched) {
+          <small class="field-error">{{ 'LOGIN_REQUIRED' | translate }}</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">{{ 'PASSWORD' | translate }} *</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          #passwordCtrl="ngModel"
+        />
+        @if (passwordCtrl.invalid && passwordCtrl.touched) {
+          <small class="field-error">{{ 'PASSWORD_REQUIRED' | translate }}</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="email">{{ 'EMAIL' | translate }} *</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          email
+          #emailCtrl="ngModel"
+        />
+        @if (emailCtrl.invalid && emailCtrl.touched) {
+          <small class="field-error">{{ 'EMAIL_INVALID' | translate }}</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="surname">{{ 'SURNAME' | translate }} *</label>
+        <input
+          type="text"
+          id="surname"
+          name="surname"
+          [(ngModel)]="surname"
+          required
+          #surnameCtrl="ngModel"
+        />
+        @if (surnameCtrl.invalid && surnameCtrl.touched) {
+          <small class="field-error">{{ 'SURNAME_REQUIRED' | translate }}</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="name">{{ 'NAME' | translate }} *</label>
+        <input type="text" id="name" name="name" [(ngModel)]="name" required #nameCtrl="ngModel" />
+        @if (nameCtrl.invalid && nameCtrl.touched) {
+          <small class="field-error">{{ 'NAME_REQUIRED' | translate }}</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="patronymic">{{ 'PATRONYMIC' | translate }}</label>
+        <input type="text" id="patronymic" name="patronymic" [(ngModel)]="patronymic" />
+      </div>
+
+      <div class="form-group">
+        <label for="birthday">{{ 'BIRTHDAY' | translate }} *</label>
+        <input
+          type="date"
+          id="birthday"
+          name="birthday"
+          [(ngModel)]="birthday"
+          required
+          #birthdayCtrl="ngModel"
+        />
+        @if (birthdayCtrl.invalid && birthdayCtrl.touched) {
+          <small class="field-error">{{ 'BIRTHDAY_REQUIRED' | translate }}</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'ROLES' | translate }}</label>
+        <div class="checkbox-group">
+          @for (role of allRoles; track role) {
+            <label>
+              <input
+                type="checkbox"
+                [checked]="isRoleChecked(role)"
+                (change)="toggleRole(role, $event)"
+              />
+              {{ role }}
+            </label>
+          }
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn-submit" [disabled]="userForm.invalid">
+          {{ 'SAVE' | translate }}
+        </button>
+        <a routerLink="/userlist" class="btn-cancel">{{ 'CANCEL' | translate }}</a>
+      </div>
+    </form>
+  </div>
+</div>

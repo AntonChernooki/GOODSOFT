@@ -42,7 +42,7 @@
 
             <a href="${pageContext.request.contextPath}/loginedit.jhtml" class="btn btn-primary"><spring:message code="welcome.changePassword"/></a>
 
-            <%-- Форма для выхода (POST с CSRF) --%>
+
             <form id="logoutForm" action="${pageContext.request.contextPath}/logout" method="post" style="display:none;">
                 <sec:csrfInput/>
             </form>
