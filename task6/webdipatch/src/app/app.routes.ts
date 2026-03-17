@@ -1,19 +1,41 @@
 import { Routes } from '@angular/router';
-import { Login } from './components/pages/login/login';
-import { UserEdit } from './components/pages/user-edit/user-edit';
-import { UserList } from './components/pages/user-list/user-list';
-import { ChangePassword } from './components/pages/change-password/change-password';
-import { Welcome } from './components/pages/welcome/welcome';
+import { LoginComponent } from './components/pages/login/login';
+import { UserEditComponent } from './components/pages/user-edit/user-edit';
+import { UserListComponent } from './components/pages/user-list/user-list';
+import { ChangePasswordComponent } from './components/pages/change-password/change-password';
+import { WelcomeComponent } from './components/pages/welcome/welcome';
+import { AuthGuard } from './guards/auth.guard';
+import { RoleGuard } from './guards/role.guard';
+import { Role } from './models/role';
 
 export const routes: Routes = [
-  { path: 'login', component: Login },
-  { path: 'useredit', component: UserEdit },
-  { path: 'welcome', component: Welcome },
-  { path: 'userlist', component: UserList },
-  { path: 'loginedit', component: ChangePassword },
-
-  { path: 'useredit/:login', component: UserEdit },
-
-  { path: '', component: Welcome },
-  { path: '**', component: Welcome },
+  {
+    path: 'login',
+    loadComponent: () => import('./components/pages/login/login').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'welcome',
+    loadComponent: () => import('./components/pages/welcome/welcome').then((m) => m.WelcomeComponent),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'userlist',
+    loadComponent: () => import('./components/pages/user-list/user-list').then((m) => m.UserListComponent),
+    canActivate: [AuthGuard,RoleGuard],
+     data:{roles: [Role.ADMIN]}
+  },
+  {
+    path: 'useredit/:login',
+    loadComponent: () => import('./components/pages/user-edit/user-edit').then((m) => m.UserEditComponent),
+    canActivate: [AuthGuard,RoleGuard],
+    data:{roles: [Role.ADMIN]}
+  },
+  {
+    path: 'loginedit',
+    loadComponent: () =>
+      import('./components/pages/change-password/change-password').then((m) => m.ChangePasswordComponent),
+    canActivate: [AuthGuard],
+  },
+  { path: '', redirectTo: '/welcome', pathMatch: 'full' },
+  { path: '**', redirectTo: '/welcome' },
 ];

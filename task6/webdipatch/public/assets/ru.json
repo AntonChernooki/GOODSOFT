@@ -47,5 +47,10 @@
   "NAME_REQUIRED": "Имя обязательно",
   "BIRTHDAY_REQUIRED": "Дата рождения обязательна",
   "SAVE_ERROR": "Ошибка при сохранении",
-  "USER_ALREADY_EXISTS": "Пользователь с таким логином уже существует"
+  "USER_ALREADY_EXISTS": "Пользователь с таким логином уже существует",
+   "CONFIRM_DELETE_TITLE": "Подтверждение удаления",
+  "ACTION_FORBIDDEN": "Действие запрещено",
+  "SUCCESS": "Успех",
+  "ERROR": "Ошибка",
+  "USER_DELETED": "Пользователь {{login}} удалён"
 }

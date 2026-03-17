@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UserService } from '../../../service/user-service';
-import { AuthService } from '../../../service/auth';
+import { AuthService } from '../../../service/auth-service';
 import { User } from '../../../models/user';
 import { Role } from '../../../models/role';
 import { TranslateModule } from '@ngx-translate/core';
@@ -14,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './user-edit.html',
   styleUrl: './user-edit.css',
 })
-export class UserEdit {
+export class UserEditComponent {
   login: string = '';
   password: string = '';
   email: string = '';

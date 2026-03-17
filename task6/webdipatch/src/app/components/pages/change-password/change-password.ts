@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { AuthService } from '../../../service/auth';
+import { AuthService } from '../../../service/auth-service';
 import { RouterLink } from '@angular/router';
 import { User } from '../../../models/user';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './change-password.html',
   styleUrl: './change-password.css',
 })
-export class ChangePassword {
+export class ChangePasswordComponent {
   oldPassword = '';
   newPassword = '';
 
@@ -28,9 +28,7 @@ export class ChangePassword {
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
-    if (this.currentUser === null) {
-      this.router.navigate(['/login']);
-    }
+   
   }
 
   onChangePassword(form: NgForm): void {

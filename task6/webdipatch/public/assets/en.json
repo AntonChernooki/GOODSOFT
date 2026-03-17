@@ -46,5 +46,10 @@
   "NAME_REQUIRED": "Name is required",
   "BIRTHDAY_REQUIRED": "Birthday is required",
   "SAVE_ERROR": "Error saving user",
-  "USER_ALREADY_EXISTS": "User with this login already exists"
+  "USER_ALREADY_EXISTS": "User with this login already exists",
+    "CONFIRM_DELETE_TITLE": "Confirm deletion",
+  "ACTION_FORBIDDEN": "Action forbidden",
+  "SUCCESS": "Success",
+  "ERROR": "Error",
+  "USER_DELETED": "User {{login}} deleted"
 }

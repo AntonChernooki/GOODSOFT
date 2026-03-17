@@ -1,8 +1,9 @@
 import { Component, signal } from '@angular/core';
-import { AuthService } from '../../../service/auth';
+import { AuthService } from '../../../service/auth-service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-login',
@@ -10,7 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class Login {
+export class LoginComponent {
   login = '';
   password = '';
   errorMessage = signal<string>(''); 

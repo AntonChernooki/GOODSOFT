@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../../service/user-service';
 import { User } from '../../../models/user';
-import { AuthService } from '../../../service/auth';
+import { AuthService } from '../../../service/auth-service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -13,7 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './welcome.html',
   styleUrl: './welcome.css',
 })
-export class Welcome {
+export class WelcomeComponent {
   constructor(
     private userService: UserService,
     private authService: AuthService,
@@ -24,9 +24,7 @@ export class Welcome {
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
-    if (this.currentUser === null) {
-      this.router.navigate(['/login']);
-    }
+    
   }
 
   logout(): void {

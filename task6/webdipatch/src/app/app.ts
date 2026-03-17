@@ -1,10 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ChangeLanguage } from './components/change-language/change-language';
+import { ChangeLanguageComponent } from './components/change-language/change-language';
 import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,ChangeLanguage],
+  imports: [RouterOutlet,ChangeLanguageComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
