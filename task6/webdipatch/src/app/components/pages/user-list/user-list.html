@@ -1,8 +1,7 @@
 <div class="body">
-    <p-confirmDialog /> 
-    <p-toast />
+  <p-confirmDialog />
+  <p-toast />
   <div class="container">
-    
     <h1>{{ 'USER_LIST_TITLE' | translate }}</h1>
     <div class="actions">
       <a routerLink="/useredit/new" class="btn btn-add">{{ 'ADD_USER' | translate }}</a>
@@ -27,7 +26,7 @@
             <td>{{ user.getName() }}</td>
             <td>{{ user.getSurname() }}</td>
             <td>{{ user.getEmail() }}</td>
-            <td>{{ [...user.getRoles()].join(',') }}</td>
+            <td>{{ getRolesString(user) }}</td>
             <td>
               <a [routerLink]="['/useredit', user.getLogin()]" class="btn-edit">{{
                 'EDIT_BUTTON' | translate

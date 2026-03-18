@@ -50,15 +50,18 @@ export class ChangePasswordComponent {
       currentUser.getLogin(),
       this.oldPassword,
       this.newPassword,
-    );
-
-    if (success) {
-      this.successMessage.set('PASSWORD_CHANGED_SUCCESS');
+    ).subscribe(success=>{
+      if(success){
+         this.successMessage.set('PASSWORD_CHANGED_SUCCESS');
       this.oldPassword = '';
       this.newPassword = '';
       form.resetForm();
     } else {
       this.errorMessage.set('INVALID_OLD_PASSWORD');
     }
+      }
+    )
+
+    
   }
 }

@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
-
 @Component({
   selector: 'app-login',
   imports: [FormsModule, TranslateModule],
@@ -14,7 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class LoginComponent {
   login = '';
   password = '';
-  errorMessage = signal<string>(''); 
+  errorMessage = signal<string>('');
 
   constructor(
     private authService: AuthService,
@@ -28,13 +27,14 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    
     this.errorMessage.set('');
 
-    if (this.authService.login(this.login, this.password)) {
-      this.router.navigate(['/welcome']);
-    } else {
-      this.errorMessage.set('INVALID_CREDENTIALS');
-    }
+    this.authService.login(this.login, this.password).subscribe((success) => {
+      if (success) {
+        this.router.navigate(['/welcome']);
+      } else {
+        this.errorMessage.set('INVALID_CREDENTIALS');
+      }
+    });
   }
 }

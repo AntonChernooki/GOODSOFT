@@ -1,4 +1,4 @@
-package com.example.config;
+/*package com.example.config;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -43,4 +43,4 @@ public class LanguageConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
     }
-}
+}*/

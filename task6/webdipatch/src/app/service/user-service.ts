@@ -1,75 +1,47 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
 import { Role } from '../models/role';
-import { AuthService } from './auth-service';
+import { HttpClient } from '@angular/common/http';
+import { UserMapper } from '../mappers/UserMapper';
+import { catchError, map, Observable, of } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private users: User[] = [
-    new User(
-      'admin',
-      '1234',
-      'admin@example.com',
-      'Админов',
-      'Админ',
-      'Админович',
-      new Date('1980-01-01'),
-      new Set([Role.ADMIN, Role.USER]),
-    ),
-    new User(
-      'user1',
-      'pass1',
-      'user1@example.com',
-      'Иванов',
-      'Иван',
-      'Иванович',
-      new Date('1990-05-15'),
-      new Set([Role.USER]),
-    ),
-    new User(
-      'user2',
-      'pass2',
-      'user2@example.com',
-      'Петров',
-      'Петр',
-      'Петрович',
-      new Date('1985-10-20'),
-      new Set([Role.USER]),
-    ),
-  ];
+  private apiUrl = 'http://localhost:8081/webdipatch/api/users';
+  constructor(private httpClient: HttpClient) {}
 
-  getAllUsers(): User[] {
-    return [...this.users];
+  getAllUsers(): Observable<User[]> {
+    return this.httpClient
+      .get<any[]>(this.apiUrl)
+      .pipe(map((users) => users.map((user) => UserMapper.toUser(user))));
   }
 
-  addUser(user: User): boolean {
-    if (this.users.some(u => u.getLogin() === user.getLogin())) {
-      return false;
-    }
-    this.users.push(user);
-    return true;
+  addUser(user: User): Observable<boolean> {
+    const userDto = UserMapper.toDto(user, true);
+    return this.httpClient.post(this.apiUrl, userDto, { observe: 'response' }).pipe(
+      map((response) => response.status === 201),
+      catchError((error) => {
+        console.error(error, 'ошибка добавления пользователя');
+        return of(false);
+      }),
+    );
   }
 
-  updatePassword(login: string, newPassword: string): boolean {
-    const user = this.users.find((u) => u.getLogin() === login);
-    if (user) {
-      user.setPassword(newPassword);
-      return true;
-    }
-    return false;
-  }
-  getUserByLogin(login: string): User | undefined {
-    return this.users.find((u) => u.getLogin() === login);
+  getUserByLogin(login: string): Observable<User> {
+    return this.httpClient
+      .get<any>(this.apiUrl + `/${login}`)
+      .pipe(map((user) => UserMapper.toUser(user)));
   }
 
-  deleteUser(login: string): boolean {
-    const index = this.users.findIndex((u) => u.getLogin() === login);
-    if (index === -1) {
-      return false;
-    }
-    this.users.splice(index, 1);
-    return true;
+  deleteUser(login: string): Observable<boolean> {
+    return this.httpClient.delete(this.apiUrl + `/${login}`, { observe: 'response' }).pipe(
+      map((response) => response.status === 200),
+      catchError((error) => {
+        console.error('Ошибка удаления пользователя', error);
+        return of(false);
+      }),
+    );
   }
 
   updateUser(
@@ -82,20 +54,8 @@ export class UserService {
     patronymic: string,
     birthday: Date,
     roles: Set<Role>,
-  ): boolean {
-    if (originalLogin !== login) {
-      const existingUser = this.users.find(u => u.getLogin() === login);
-      if (existingUser) {
-        return false;
-      }
-    }
-
-    const index = this.users.findIndex((u) => u.getLogin() === originalLogin);
-    if (index === -1) {
-      return false;
-    }
-
-    const updatedUser = new User(
+  ): Observable<boolean> {
+    const dto = UserMapper.toDtoForUpdate(
       login,
       password,
       email,
@@ -105,8 +65,14 @@ export class UserService {
       birthday,
       roles,
     );
-    this.users[index] = updatedUser;
-
-    return true;
+    return this.httpClient
+      .put(`${this.apiUrl}/${originalLogin}`, dto, { observe: 'response' })
+      .pipe(
+        map((response) => response.status === 200),
+        catchError((error) => {
+          console.error('Ошибка обновления пользователя', error);
+          return of(false);
+        }),
+      );
   }
 }

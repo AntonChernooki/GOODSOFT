@@ -1,114 +1,106 @@
 package com.example.controller;
 
-import com.example.dto.UserForm;
-import com.example.model.Role;
+import com.example.dto.UserDto;
+import com.example.dto.request.AddUserRequest;
+import com.example.dto.request.UserRequest;
+import com.example.dto.response.ErrorResponse;
 import com.example.model.User;
 import com.example.service.UserService;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-@Controller
+@RestController
+@RequestMapping("api/users")
 public class UserController {
     private final UserService userService;
+
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/userlist.jhtml")
-    public String userListForm(Model model) throws SQLException {
-
-        model.addAttribute("users", userService.getAllUsers());
-        return "userlist";
-
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/useredit.jhtml")
-    public String editUser(@RequestParam(required = false) String login,
-                           Model model
-    ) throws SQLException {
-
-
-        UserForm userForm;
-        if (login != null && !login.isEmpty()) {
-            User editUser = userService.getUserByLogin(login);
-            if (editUser == null) {
-                model.addAttribute("error", "Пользователь не найден");
-                return "redirect:/userlist.jhtml";
+    @GetMapping
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        try {
+            Collection<User> users = userService.getAllUsers();
+            List<UserDto> userDtos = new ArrayList<>();
+            for (User user : users) {
+                userDtos.add(new UserDto(user));
             }
-            userForm = new UserForm(editUser, editUser.getLogin());
-        } else {
-            userForm = new UserForm();
-            userForm.setOriginalLogin(null);
-        }
-        model.addAttribute("user", userForm);
-        model.addAttribute("allRoles", Role.values());
-        return "useredit";
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/userdelete.jhtml")
-    public String deleteUser(@RequestParam String login,
-
-                             Model model) throws SQLException {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (login.equals(authentication.getName())) {
-            model.addAttribute("error", "Нельзя удалить свою учётную запись");
-            return "redirect:/userlist.jhtml";
-        }
-        userService.deleteUser(login);
-        return "redirect:/userlist.jhtml";
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/useredit.jhtml")
-    public String saveUser(@Valid @ModelAttribute("user") UserForm userForm,
-                           BindingResult bindingResult,
-                           Model model) throws SQLException {
-
-
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("allRoles", Role.values());
-            return "useredit";
-        }
-
-
-        Set<Role> roles = userForm.getRoles();
-
-
-        boolean success;
-        Map<String, String> serviceErrors = new HashMap<>();
-        if (userForm.getOriginalLogin() == null || userForm.getOriginalLogin().isEmpty()) {
-            success = userService.addUser(userForm.getLogin(), userForm.getPassword(), userForm.getEmail(),
-                    userForm.getSurname(), userForm.getName(), userForm.getPatronymic(), userForm.getBirthday(), roles, serviceErrors);
-        } else {
-            success = userService.updateUser(
-                    userForm.getOriginalLogin(), userForm.getLogin(), userForm.getPassword(), userForm.getEmail(), userForm.getSurname(), userForm.getName(),
-                    userForm.getPatronymic(), userForm.getBirthday(), roles, serviceErrors);
-        }
-
-        if (success) {
-            return "redirect:/userlist.jhtml";
-        } else {
-            model.addAttribute("errors", serviceErrors);
-            model.addAttribute("allRoles", Role.values());
-            return "useredit";
+            return ResponseEntity.ok(userDtos);
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/{login}")
+    public ResponseEntity<?> getUserByLogin(@PathVariable String login) {
+
+        try {
+            User user = userService.getUserByLogin(login);
+            if (user != null) {
+                return ResponseEntity.ok(new UserDto(user));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("error", "не нашелся пользователь"));
+            }
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createUser(@RequestBody @Valid AddUserRequest addUserRequest) {
+        Map<String, String> errors = new HashMap<>();
+        if (userService.addUser(
+                addUserRequest.getLogin(),
+                addUserRequest.getPassword(),
+                addUserRequest.getEmail(),
+                addUserRequest.getSurname(),
+                addUserRequest.getName(),
+                addUserRequest.getPatronymic(),
+                addUserRequest.getBirthday(),
+                addUserRequest.getRoles(),
+                errors)) {
+
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+        }
+    }
+
+    @PutMapping("/{originalLogin}")
+    public ResponseEntity<?> updateUser(@PathVariable String originalLogin, @RequestBody @Valid UserRequest userRequest) {
+        Map<String, String> errors = new HashMap<>();
+        if (userService.updateUser(
+                originalLogin,
+                userRequest.getLogin(),
+                userRequest.getPassword(),
+                userRequest.getEmail(),
+                userRequest.getSurname(),
+                userRequest.getName(),
+                userRequest.getPatronymic(),
+                userRequest.getBirthday(),
+                userRequest.getRoles(),
+                errors)) {
+            return ResponseEntity.ok().build();
+        }else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+        }
+    }
+
+    @DeleteMapping("/{login}")
+    public ResponseEntity<?> deleteUser(@PathVariable String login) {
+
+      if(  userService.deleteUser(login)){
+          return ResponseEntity.ok().build();
+      }else {
+          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("error", "не получилось удалить пользователя"));
+      }
+    }
+
 }

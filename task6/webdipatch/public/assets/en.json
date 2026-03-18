@@ -51,5 +51,6 @@
   "ACTION_FORBIDDEN": "Action forbidden",
   "SUCCESS": "Success",
   "ERROR": "Error",
-  "USER_DELETED": "User {{login}} deleted"
+  "USER_DELETED": "User {{login}} deleted",
+  "LOAD_USERS_ERROR":"LOAD_USERS_ERROR"
 }

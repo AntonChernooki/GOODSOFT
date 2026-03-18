@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../../service/user-service';
 import { AuthService } from '../../../service/auth-service';
@@ -14,7 +14,7 @@ import { NotificationService } from '../../../service/notification-service';
 @Component({
   selector: 'app-user-list',
   imports: [CommonModule, RouterLink, TranslateModule, ConfirmDialogModule, ToastModule],
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService],
   templateUrl: './user-list.html',
   styleUrl: './user-list.css',
 })
@@ -26,12 +26,35 @@ export class UserListComponent {
     private translate: TranslateService,
     private confirmationService: ConfirmationService,
     private notificationService: NotificationService,
+     private changeDetector: ChangeDetectorRef
   ) {}
 
   userList: User[] = [];
 
   ngOnInit(): void {
-    this.userList = this.userService.getAllUsers();
+    this.loadUsers();
+    
+  }
+  loadUsers() {
+    this.userService.getAllUsers().subscribe({
+      next: (users) => {
+        
+        console.log('Загружены пользователи:', users);
+        this.userList = users;
+        this.changeDetector.detectChanges();
+      },
+
+      error: (err) =>{
+        console.log(err),
+        this.notificationService.error(
+          this.translate.instant('ERROR'),
+          this.translate.instant('LOAD_USERS_ERROR'),
+        )},
+    });
+  }
+   getRolesString(user: User): string {
+    console.log('getRolesString for', user.getLogin(), user.getRoles());
+    return Array.from(user.getRoles()).join(', ');
   }
 
   onDeleteUser(login: string): void {
@@ -48,9 +71,9 @@ export class UserListComponent {
             this.translate.instant('CANNOT_DELETE_SELF'),
           );
         } else {
-          const success = this.userService.deleteUser(login);
-          if (success) {
-            this.userList = this.userService.getAllUsers();
+          const success = this.userService.deleteUser(login).subscribe(success=>{
+if (success) {
+            this.loadUsers();
             this.notificationService.success(
               this.translate.instant('SUCCESS'),
               this.translate.instant('USER_DELETED', { login }),
@@ -61,6 +84,8 @@ export class UserListComponent {
               this.translate.instant('DELETE_USER_ERROR'),
             );
           }
+          });
+          
         }
       },
       reject: () => {},

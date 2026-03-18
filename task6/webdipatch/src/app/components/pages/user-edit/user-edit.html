@@ -36,7 +36,7 @@
           id="password"
           name="password"
           [(ngModel)]="password"
-          required
+          [required]="!isEditMode"
           #passwordCtrl="ngModel"
         />
         @if (passwordCtrl.invalid && passwordCtrl.touched) {

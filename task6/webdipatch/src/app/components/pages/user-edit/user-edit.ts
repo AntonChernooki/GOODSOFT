@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -33,7 +33,7 @@ export class UserEditComponent {
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService,
-    private authService: AuthService,
+     private changeDetector: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -41,23 +41,29 @@ export class UserEditComponent {
     if (loginParam && loginParam !== 'new') {
       this.isEditMode = true;
       this.originalLogin = loginParam;
-      const user = this.userService.getUserByLogin(loginParam);
-      if (user) {
-        this.login = user.getLogin();
-        this.password = user.getPassword();
-        this.email = user.getEmail();
-        this.surname = user.getSurname();
-        this.name = user.getName();
-        this.patronymic = user.getPatronymic();
-        this.birthday = user.getBirthday().toISOString().split('T')[0];
-        this.roles = new Set(user.getRoles());
-      } else {
-        this.router.navigate(['/userlist']);
-      }
+      const user = this.userService.getUserByLogin(loginParam).subscribe({
+        next: (user) => {
+          this.login = user.getLogin();
+          this.password = '';
+          this.email = user.getEmail();
+          this.surname = user.getSurname();
+          this.name = user.getName();
+          this.patronymic = user.getPatronymic();
+          this.birthday = user.getBirthday().toISOString().split('T')[0];
+          this.roles = new Set(user.getRoles());
+          this.changeDetector.detectChanges();
+        },
+        error: (err) => {
+          this.router.navigate(['/userlist']);
+          console.error('Ошибка загрузки пользователя', err);
+        },
+      });
     } else {
       this.isEditMode = false;
       this.roles.add(Role.USER);
     }
+
+    
   }
 
   toggleRole(role: Role, event: Event): void {
@@ -84,22 +90,25 @@ export class UserEditComponent {
     const birthdayDate = this.birthday ? new Date(this.birthday + 'T00:00:00') : new Date();
 
     if (this.isEditMode) {
-      const success = this.userService.updateUser(
-        this.originalLogin!,
-        this.login,
-        this.password,
-        this.email,
-        this.surname,
-        this.name,
-        this.patronymic,
-        birthdayDate,
-        this.roles,
-      );
-      if (success) {
-        this.router.navigate(['/userlist']);
-      } else {
-        this.errorMessage.set('SAVE_ERROR');
-      }
+      this.userService
+        .updateUser(
+          this.originalLogin!,
+          this.login,
+          this.password,
+          this.email,
+          this.surname,
+          this.name,
+          this.patronymic,
+          birthdayDate,
+          this.roles,
+        )
+        .subscribe((success) => {
+          if (success) {
+            this.router.navigate(['/userlist']);
+          } else {
+            this.errorMessage.set('SAVE_ERROR');
+          }
+        });
     } else {
       const newUser = new User(
         this.login,
@@ -111,12 +120,13 @@ export class UserEditComponent {
         birthdayDate,
         this.roles,
       );
-      const added = this.userService.addUser(newUser);
-      if (added) {
-        this.router.navigate(['/userlist']);
-      } else {
-        this.errorMessage.set('USER_ALREADY_EXISTS');
-      }
+      this.userService.addUser(newUser).subscribe((success) => {
+        if (success) {
+          this.router.navigate(['/userlist']);
+        } else {
+          this.errorMessage.set('USER_ALREADY_EXISTS');
+        }
+      });
     }
   }
 }

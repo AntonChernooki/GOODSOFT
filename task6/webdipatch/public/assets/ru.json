@@ -52,5 +52,6 @@
   "ACTION_FORBIDDEN": "Действие запрещено",
   "SUCCESS": "Успех",
   "ERROR": "Ошибка",
-  "USER_DELETED": "Пользователь {{login}} удалён"
+  "USER_DELETED": "Пользователь {{login}} удалён",
+  "LOAD_USERS_ERROR":"Ошибка загрузки пользователя"
 }
