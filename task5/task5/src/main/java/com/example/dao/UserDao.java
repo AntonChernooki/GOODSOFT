@@ -9,7 +9,7 @@ import java.util.Collection;
 public interface UserDao {
     Collection<User> getAllUsers() throws SQLException;
 
-    User getUserByLogin( String login) throws SQLException;
+    User getUserByLogin( String login) throws SQLException ;
 
     void addUser( User user) throws SQLException;
 

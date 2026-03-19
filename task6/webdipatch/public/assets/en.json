@@ -34,6 +34,7 @@
   "USER_NOT_AUTHORIZED": "User is not authorized",
   "INVALID_OLD_PASSWORD": "Invalid old password",
   "PASSWORD_CHANGED_SUCCESS": "Password changed successfully",
+  "PASSWORD_CHANGED_ERROR": "Rrror Password changed ",
     "USER_LIST_TITLE": "User List",
   "ACTIONS": "Actions",
   "EDIT_BUTTON": "Edit",

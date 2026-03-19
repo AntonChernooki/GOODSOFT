@@ -1,6 +1,9 @@
 package com.example.service;
 
 import com.example.dao.UserDao;
+import com.example.exeption.DatabaseException;
+import com.example.exeption.InvalidCredentialsException;
+import com.example.exeption.UserNotFoundException;
 import com.example.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,30 +21,35 @@ public class SecurityService {
     }
 
 
-    public User login(String login, String password) throws SQLException {
-        User user = userDao.getUserByLogin(login);
-        if (user != null && user.getPassword().equals(password)) {
-            return user;
+    public User login(String login, String password) {
+        try {
+            User user = userDao.getUserByLogin(login);
+            if (user != null && user.getPassword().equals(password)) {
+                return user;
+            }
+            throw new InvalidCredentialsException();
+        } catch (SQLException e) {
+            throw new DatabaseException("Ошибка базы данных при попытки входа", e);
         }
-        return null;
     }
 
-    public boolean changePassword(String login, String oldPassword, String newPassword) {
+    public void changePassword(String login, String oldPassword, String newPassword) {
 
         try {
             User user = userDao.getUserByLogin(login);
             if (user == null) {
-                return false;
+                throw new UserNotFoundException(login);
             }
             if (user.getPassword().equals(oldPassword)) {
                 user.setPassword(newPassword);
                 userDao.updateUser(login, user);
-                return true;
+                return;
+
             }
-            return false;
+            throw new InvalidCredentialsException();
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new DatabaseException("Ошибка базы данных при смене пароля", e);
+
         }
     }
 }

@@ -5,6 +5,7 @@ import { User } from '../../../models/user';
 import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-change-password',
@@ -21,6 +22,8 @@ export class ChangePasswordComponent {
 
   currentUser: User | null = null;
 
+  private destoy = new Subject<void>();
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -28,7 +31,11 @@ export class ChangePasswordComponent {
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
-   
+  }
+
+  ngOnDestroy(): void {
+    this.destoy.next();
+    this.destoy.complete();
   }
 
   onChangePassword(form: NgForm): void {
@@ -46,22 +53,24 @@ export class ChangePasswordComponent {
       return;
     }
 
-    const success = this.authService.changePassword(
-      currentUser.getLogin(),
-      this.oldPassword,
-      this.newPassword,
-    ).subscribe(success=>{
-      if(success){
-         this.successMessage.set('PASSWORD_CHANGED_SUCCESS');
-      this.oldPassword = '';
-      this.newPassword = '';
-      form.resetForm();
-    } else {
-      this.errorMessage.set('INVALID_OLD_PASSWORD');
-    }
-      }
-    )
-
-    
+    this.authService
+      .changePassword(currentUser.getLogin(), this.oldPassword, this.newPassword)
+      .pipe(takeUntil(this.destoy))
+      .subscribe({
+        next: (success) => {
+          if (success) {
+            this.successMessage.set('PASSWORD_CHANGED_SUCCESS');
+            this.oldPassword = '';
+            this.newPassword = '';
+            form.resetForm();
+          } else {
+            this.errorMessage.set('INVALID_OLD_PASSWORD');
+          }
+        },
+        error: (err) => {
+          console.error('Ошибка при смене пароля:', err);
+          this.errorMessage.set('PASSWORD_CHANGE_ERROR');
+        },
+      });
   }
 }

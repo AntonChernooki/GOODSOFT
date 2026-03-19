@@ -53,7 +53,7 @@ export class AuthService {
 
   changePassword(login: string, oldPassword: string, newPassword: string): Observable<boolean> {
     const body = { login, oldPassword, newPassword };
-    return this.httpClient.post(`${this.authUrl}/loginedit`, body, { observe: 'response' }).pipe(
+    return this.httpClient.post(`${this.authUrl}/change-password`, body, { observe: 'response' }).pipe(
       map((response) => response.status === 200),
       tap((success) => {
         if (success && this.currentUser && this.currentUser.getLogin() === login) {
