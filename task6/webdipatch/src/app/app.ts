@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrl: './app.css'
 })
 export class App {
+   isLoading = true;
   protected readonly title = signal('webdipatch');
    constructor(private translate: TranslateService) {
    const savedLang = localStorage.getItem('preferredLang') || 'ru';

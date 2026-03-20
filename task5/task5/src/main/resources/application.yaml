@@ -3,3 +3,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/task5
     username: postgres
     password: 12344321
+
+
+app:
+  jwtSecret: "jkebyenk3443lbjk2lk34lj23n42534jlb5k243l563bj5l6n345"
+  jwtExpiration: 86400000

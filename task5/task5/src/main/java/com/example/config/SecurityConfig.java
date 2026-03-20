@@ -1,15 +1,23 @@
-/*package com.example.config;
+package com.example.config;
 
+import com.example.security.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
+
 
 @Configuration
 @EnableWebSecurity
@@ -17,25 +25,38 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/login.jhtml", "/css/**", "/images/**").permitAll()
-                .antMatchers("/userlist.jhtml", "/useredit.jhtml", "/userdelete.jhtml").hasRole("ADMIN")
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
+
+
+
+        http
+                .cors(cors->{
+                    CorsConfiguration configuration=new CorsConfiguration();
+                    configuration.addAllowedOrigin("http://localhost:4200");
+                    configuration.setAllowedMethods(Arrays.asList("GET","POST","DELETE","PUT","OPTIONS","PATCH"));
+                    configuration.setAllowCredentials(true);
+                    configuration.addAllowedHeader("*");
+                    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                    source.registerCorsConfiguration("/api/**", configuration);
+                    cors.configurationSource(source);
+                })
+
+
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers("/api/auth/login").permitAll()
+                .antMatchers("/api/auth/change-password").authenticated()
+                .antMatchers("/api/users/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/login.jhtml")
-                .loginProcessingUrl("/kjnervpeone.jhtml")
-                .defaultSuccessUrl("/welcome.jhtml", true)
-                .failureUrl("/login.jhtml")
-                .usernameParameter("login")
-                .passwordParameter("password")
-                .permitAll()
-                .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login.jhtml")
-                .permitAll();
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+
+
         return http.build();
     }
 
@@ -50,4 +71,4 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
-}*/
+}

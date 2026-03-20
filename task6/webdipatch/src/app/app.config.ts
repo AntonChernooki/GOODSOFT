@@ -4,16 +4,22 @@ import {
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
 import LaraLightBlue from '@primeuix/themes/lara';
-
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { routes } from './app.routes';
+import { AuthService } from './service/auth-service';
+import { provideAppInitializer, inject } from '@angular/core';
 
 
 
@@ -35,7 +41,12 @@ export const appConfig: ApplicationConfig = {
 
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptorsFromDi()),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {
@@ -45,6 +56,12 @@ export const appConfig: ApplicationConfig = {
         },
       }),
     ),
+
+    provideAppInitializer(() => {
+      const authService = inject(AuthService);
+      return authService.restoreUserFromSession();
+    }),
+
     MessageService,
   ],
 };

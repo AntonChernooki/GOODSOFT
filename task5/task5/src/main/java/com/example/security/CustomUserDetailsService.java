@@ -1,4 +1,4 @@
-/*package com.example.security;
+package com.example.security;
 
 import com.example.dao.UserDao;
 import com.example.model.User;
@@ -36,4 +36,3 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
     }
 }
-*/

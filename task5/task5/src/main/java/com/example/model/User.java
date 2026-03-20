@@ -1,6 +1,7 @@
 package com.example.model;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 public class User {
@@ -25,6 +26,11 @@ public class User {
     }
     public User(){
 
+    }
+
+    public User(String login, Set<Role> roles) {
+        this.login=login;
+        this.roles=roles;
     }
 
     public String getLogin() {
