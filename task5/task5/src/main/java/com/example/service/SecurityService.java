@@ -5,6 +5,7 @@ import com.example.exeption.DatabaseException;
 import com.example.exeption.InvalidCredentialsException;
 import com.example.exeption.UserNotFoundException;
 import com.example.model.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,16 +16,18 @@ import java.sql.SQLException;
 public class SecurityService {
 
     private final UserDao userDao;
+    private final PasswordEncoder passwordEncoder;
 
-    public SecurityService(UserDao userDao) {
+    public SecurityService(UserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
     public User login(String login, String password) {
         try {
             User user = userDao.getUserByLogin(login);
-            if (user != null && user.getPassword().equals(password)) {
+            if (user != null && passwordEncoder.matches(password, user.getPassword())) {
                 return user;
             }
             throw new InvalidCredentialsException();
@@ -40,8 +43,8 @@ public class SecurityService {
             if (user == null) {
                 throw new UserNotFoundException(login);
             }
-            if (user.getPassword().equals(oldPassword)) {
-                user.setPassword(newPassword);
+            if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(newPassword));
                 userDao.updateUser(login, user);
                 return;
 

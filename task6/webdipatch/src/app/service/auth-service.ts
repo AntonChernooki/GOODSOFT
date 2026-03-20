@@ -3,7 +3,7 @@ import { UserService } from './user-service';
 import { User } from '../models/user';
 import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { UserMapper } from '../mappers/UserMapper';
+import { lastValueFrom } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
@@ -77,28 +77,29 @@ export class AuthService {
     return this.currentUser !== null;
   }
 
-  restoreUserFromSession(): Promise<boolean> {
-    const token = localStorage.getItem(this.tokenKey);
-    const login = localStorage.getItem(this.loginKey);
-    if (login && token) {
-      return this.userService
-        .getUserByLogin(login)
-        .toPromise()
-        .then((user) => {
-          if (user) {
-            this.currentUser = user;
-            return true;
-          } else {
-            this.logout();
-            return false;
-          }
-        })
-        .catch((err) => {
-          console.error('Ошибка восстановления', err);
-          this.logout();
-          return false;
-        });
-    }
-    return Promise.resolve(false);
+  
+
+restoreUserFromSession(): Promise<boolean> {
+  const token = localStorage.getItem(this.tokenKey);
+  const login = localStorage.getItem(this.loginKey);
+  if (login && token) {
+    return lastValueFrom(
+      this.userService.getUserByLogin(login),
+      { defaultValue: undefined } 
+    ).then((user) => {
+      if (user) {
+        this.currentUser = user;
+        return true;
+      } else {
+        this.logout();
+        return false;
+      }
+    }).catch((err) => {
+      console.error('Ошибка восстановления', err);
+      this.logout();
+      return false;
+    });
   }
+  return Promise.resolve(false);
+}
 }

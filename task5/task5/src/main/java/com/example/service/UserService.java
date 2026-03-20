@@ -6,6 +6,7 @@ import com.example.exeption.UserAlreadyExistsException;
 import com.example.exeption.UserNotFoundException;
 import com.example.model.Role;
 import com.example.model.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +20,11 @@ import java.util.*;
 public class UserService {
 
     private final UserDao userDao;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserDao userDao) {
+    public UserService(UserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -52,7 +55,8 @@ public class UserService {
             if (userDao.getUserByLogin(login) != null) {
                 throw new UserAlreadyExistsException(login);
             }
-            User user = new User(login, password, email, surname, name, patronymic, birthday, roles);
+            String encodedPassword = passwordEncoder.encode(password);
+            User user = new User(login, encodedPassword, email, surname, name, patronymic, birthday, roles);
             userDao.addUser(user);
 
         } catch (SQLException e) {
@@ -67,8 +71,8 @@ public class UserService {
             if (!originalLogin.equals(login) && userDao.getUserByLogin(login) != null) {
                 throw new UserAlreadyExistsException(login);
             }
-
-            User user = new User(login, password, email, surname, name, patronymic, birthday, roles);
+            String encodedPassword = passwordEncoder.encode(password);
+            User user = new User(login, encodedPassword, email, surname, name, patronymic, birthday, roles);
             userDao.updateUser(originalLogin, user);
 
         } catch (SQLException e) {

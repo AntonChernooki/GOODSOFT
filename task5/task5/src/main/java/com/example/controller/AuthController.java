@@ -1,10 +1,8 @@
 package com.example.controller;
 
 import com.example.dto.LoginForm;
-import com.example.dto.UserDto;
 import com.example.dto.request.ChangePasswordRequest;
 import com.example.dto.response.JwtResponse;
-import com.example.model.User;
 import com.example.security.JwtUtils;
 import com.example.service.SecurityService;
 import com.example.service.UserService;
@@ -49,8 +47,10 @@ public class AuthController {
 
     @PostMapping("/change-password")
     public ResponseEntity<Void> changePassword(@RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String login=auth.getName();
         securityService.changePassword(
-                changePasswordRequest.getLogin(),
+                login,
                 changePasswordRequest.getOldPassword(),
                 changePasswordRequest.getNewPassword());
         return ResponseEntity.ok().build();
