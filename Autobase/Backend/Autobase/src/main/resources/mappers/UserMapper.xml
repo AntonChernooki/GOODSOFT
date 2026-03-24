@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.Autobase.dao.UserDao">
+
+    <resultMap id="userResultMap" type="com.example.Autobase.model.entities.User">
+        <id property="id" column="id"/>
+        <result property="login" column="login"/>
+        <result property="password" column="password"/>
+        <result property="enabled" column="enabled"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+
+        <collection property="roles" ofType="com.example.Autobase.model.entities.Role">
+            <id property="id" column="role_id"/>
+            <result property="name" column="role_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAllUsers" resultMap="userResultMap">
+        SELECT u.id, u.login, u.password, u.enabled, u.created_at, u.updated_at,
+        r.id as role_id, r.name as role_name
+        FROM users u
+        LEFT JOIN user_roles ur ON u.id = ur.user_id
+        LEFT JOIN roles r ON ur.role_id = r.id
+    </select>
+
+    <select id="getUserByLogin" resultMap="userResultMap">
+        SELECT u.id, u.login, u.password, u.enabled, u.created_at, u.updated_at,
+        r.id as role_id, r.name as role_name
+        FROM users u
+        LEFT JOIN user_roles ur ON u.id = ur.user_id
+        LEFT JOIN roles r ON ur.role_id = r.id
+        WHERE u.login = #{login}
+    </select>
+
+    <select id="getUserById" resultMap="userResultMap">
+        SELECT u.id, u.login, u.password, u.enabled, u.created_at, u.updated_at,
+        r.id as role_id, r.name as role_name
+        FROM users u
+        LEFT JOIN user_roles ur ON u.id = ur.user_id
+        LEFT JOIN roles r ON ur.role_id = r.id
+        WHERE u.id = #{id}
+    </select>
+
+    <insert id="addUser" parameterType="com.example.Autobase.model.entities.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (login, password, enabled, created_at, updated_at)
+        VALUES (#{login}, #{password}, #{enabled}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="updateUser" parameterType="com.example.Autobase.model.entities.User">
+        UPDATE users
+        SET login = #{login},
+        password = #{password},
+        enabled = #{enabled},
+        updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteUser">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+
+    <insert id="addUserRole">
+        INSERT INTO user_roles (user_id, role_id) VALUES (#{userId}, #{roleId})
+    </insert>
+
+    <delete id="deleteUserRoles">
+        DELETE FROM user_roles WHERE user_id = #{userId}
+    </delete>
+
+    <select id="getRolesByUserId" resultType="com.example.Autobase.model.entities.Role">
+        SELECT r.id, r.name
+        FROM roles r
+        JOIN user_roles ur ON r.id = ur.role_id
+        WHERE ur.user_id = #{userId}
+    </select>
+
+</mapper>
