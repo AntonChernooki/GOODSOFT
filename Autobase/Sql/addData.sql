@@ -4,8 +4,8 @@ INSERT INTO roles (name) VALUES ('ROLE_ADMIN');
 
 INSERT INTO users (login, password, enabled) VALUES
     ('admin', '$2a$12$No9TvuB69ON9AZ6v.DntCeNngdrOVOiuoiAmP3uSuIJe2.nbUTq.2', TRUE), 
-    ('dispatcher1', '$$2a$12$No9TvuB69ON9AZ6v.DntCeNngdrOVOiuoiAmP3uSuIJe2.nbUTq.2', TRUE),
-    ('dispatcher2', '$$2a$12$No9TvuB69ON9AZ6v.DntCeNngdrOVOiuoiAmP3uSuIJe2.nbUTq.2', TRUE),
+    ('dispatcher1', '$2a$12$No9TvuB69ON9AZ6v.DntCeNngdrOVOiuoiAmP3uSuIJe2.nbUTq.2', TRUE),
+    ('dispatcher2', '$2a$12$No9TvuB69ON9AZ6v.DntCeNngdrOVOiuoiAmP3uSuIJe2.nbUTq.2', TRUE),
     ('driver1', '$2a$12$No9TvuB69ON9AZ6v.DntCeNngdrOVOiuoiAmP3uSuIJe2.nbUTq.2', TRUE),
     ('driver2', '$2a$12$No9TvuB69ON9AZ6v.DntCeNngdrOVOiuoiAmP3uSuIJe2.nbUTq.2', TRUE),
     ('driver3', '$2a$12$No9TvuB69ON9AZ6v.DntCeNngdrOVOiuoiAmP3uSuIJe2.nbUTq.2', TRUE),

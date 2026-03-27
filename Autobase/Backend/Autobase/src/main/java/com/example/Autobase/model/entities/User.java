@@ -1,8 +1,11 @@
 package com.example.Autobase.model.entities;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@Data
 public class User {
     private Long id;
     private String login;
@@ -23,65 +26,16 @@ public class User {
         this.enabled = true;
     }
 
-
-    public boolean hasRole(Role role) {
-        return roles != null && roles.contains(role);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
+    public User(String login,Long id, String password, Set<Role> roles, Boolean enabled) {
+        this.login= login;
+        this.id= id;
         this.password = password;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
+        this.roles = roles;
         this.enabled = enabled;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public boolean hasRole(Role role) {
+        return roles != null && roles.contains(role);
     }
 
     public boolean hasRole(String roleName) {
