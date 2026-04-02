@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 public class TripMark {
     private Long id;
-    private Trip trip;
+    private Long tripId;
     private BigDecimal fuelConsumed;
     private String conditionNotes;
     private LocalDateTime markDate;

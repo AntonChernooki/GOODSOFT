@@ -2,7 +2,7 @@ package com.example.Autobase.controller.Advice;
 
 
 
-import com.example.Autobase.dto.response.ErrorResponse;
+import com.example.Autobase.dto.response.error.ErrorResponse;
 import com.example.Autobase.exception.DuplicateLoginException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

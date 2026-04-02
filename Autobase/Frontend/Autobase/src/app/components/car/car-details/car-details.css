@@ -1,0 +1,120 @@
+.car-details-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.btn-back {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: #3498db;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    transition: all 0.2s;
+}
+
+.btn-back:hover {
+    background: #f8f9fa;
+    color: #2980b9;
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+    font-size: 1.2rem;
+}
+
+.error-message {
+    background: #f8d7da;
+    border-left: 4px solid #dc3545;
+    padding: 20px;
+    border-radius: 8px;
+    color: #721c24;
+    text-align: center;
+}
+
+.car-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+.car-card h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #2c3e50;
+    font-size: 1.8rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+.car-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.detail-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.detail-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #6c757d;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.in_progress {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-badge.available {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.maintenance {
+    background: #fff3cd;
+    color: #856404;
+}
+
+@media (max-width: 768px) {
+    .car-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .car-card {
+        padding: 20px;
+    }
+}

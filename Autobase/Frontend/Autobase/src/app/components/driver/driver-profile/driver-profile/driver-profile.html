@@ -1,0 +1,45 @@
+<div class="profile-container">
+  <button (click)="goBack()" class="btn-back">← Назад</button>
+
+  @if (loading) {
+    <div class="loading-spinner">Загрузка...</div>
+  }
+  @if (error) {
+    <div class="error-message">
+      <p>⚠️ Не удалось загрузить данные профиля.</p>
+    </div>
+  }
+  @if (!loading && !error && user && driver) {
+    <div class="profile-card">
+      <h2>Профиль водителя</h2>
+      <div class="profile-details">
+        <div class="detail-item">
+          <span class="detail-label">Логин:</span>
+          <span class="detail-value">{{ user.login }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Имя:</span>
+          <span class="detail-value">{{ driver.name }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Телефон:</span>
+          <span class="detail-value">{{ driver.phone }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Опыт работы:</span>
+          <span class="detail-value">{{ driver.experienceYears }} лет</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Статус:</span>
+          <span class="detail-value status-badge" [class]="driver.status">{{ driver.status }}</span>
+        </div>
+        @if (driver.notes) {
+          <div class="detail-item full-width">
+            <span class="detail-label">Примечания:</span>
+            <span class="detail-value">{{ driver.notes }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

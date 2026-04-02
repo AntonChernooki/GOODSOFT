@@ -1,0 +1,32 @@
+
+<p>navbar works!</p>
+
+
+<nav>
+    <ul>
+        <li><a routerLink="/cars">Машины</a></li>
+        <li><a routerLink="/drivers">Водители</a></li>
+        <li><a routerLink="/repair-requests">Заявки на ремонт</a></li>
+        <li><a routerLink="/trips">Поездки</a></li>
+
+
+        @if(authService.isAdmin()){
+        <li ><a routerLink="/users">Пользователи</a></li>
+        }
+
+        
+        <li><a routerLink="/profile">Профиль</a></li>
+
+
+        @if(authService.isLoggedIn()){
+        <li><button (click)="logout()">Выйти</button></li>
+        }
+
+
+        @if(authService.isLoggedIn()){
+        <li><a routerLink="/login">Войти</a></li>
+        }
+
+
+    </ul>
+</nav>

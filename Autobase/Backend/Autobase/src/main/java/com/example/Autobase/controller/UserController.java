@@ -1,12 +1,11 @@
 package com.example.Autobase.controller;
 
-
-import com.example.Autobase.dto.request.SetUserEnabledDto;
-import com.example.Autobase.dto.request.UserLoginDto;
-import com.example.Autobase.dto.request.UserRegistrationDto;
-import com.example.Autobase.dto.request.UserUpdateDto;
-import com.example.Autobase.dto.response.LoginResponseDto;
-import com.example.Autobase.dto.response.UserResponseDto;
+import com.example.Autobase.dto.request.user.UserLoginDto;
+import com.example.Autobase.dto.request.user.UserRegistrationDto;
+import com.example.Autobase.dto.request.user.UserSetEnabledDto;
+import com.example.Autobase.dto.request.user.UserUpdateDto;
+import com.example.Autobase.dto.response.user.LoginResponseDto;
+import com.example.Autobase.dto.response.user.UserResponseDto;
 import com.example.Autobase.security.JwtUtils;
 import com.example.Autobase.service.UserService;
 import jakarta.validation.Valid;
@@ -16,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,14 +32,12 @@ public class UserController {
         this.jwtUtils = jwtUtils;
     }
 
-
     @GetMapping("/login/{login}")
     @PreAuthorize("hasRole('ADMIN') or #login == authentication.principal.username")
     public ResponseEntity<UserResponseDto> getUserByLogin(@PathVariable("login") String login) {
         UserResponseDto userResponseDto = userService.getUserByLogin(login);
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDto);
     }
-
 
     @GetMapping("/id/{id}")
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
@@ -58,21 +54,27 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDto> registerUser(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
-        UserResponseDto userResponseDto = userService.registerUser(userRegistrationDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
+    public ResponseEntity<LoginResponseDto> registerUser(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
+        userService.registerUser(userRegistrationDto);
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                userRegistrationDto.getLogin(), userRegistrationDto.getPassword()));
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        UserResponseDto userResponseDto = userService.getUserByLogin(userRegistrationDto.getLogin());
+        LoginResponseDto loginResponseDto = new LoginResponseDto(jwt, userResponseDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(loginResponseDto);
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody UserLoginDto userLoginDto) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.getLogin(), userLoginDto.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userLoginDto.getLogin(), userLoginDto.getPassword()));
 
-        String jwt=jwtUtils.generateJwtToken(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
 
         UserResponseDto userResponseDto = userService.getUserByLogin(userLoginDto.getLogin());
         LoginResponseDto loginResponseDto = new LoginResponseDto(jwt, userResponseDto);
-
 
         return ResponseEntity.status(HttpStatus.OK).body(loginResponseDto);
     }
@@ -86,14 +88,16 @@ public class UserController {
 
     @PutMapping("/{id}/enabled")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponseDto> setUserEnabled(@PathVariable("id") Long id, @Valid @RequestBody SetUserEnabledDto setUserEnabledDto) {
-        UserResponseDto userResponseDto = userService.setUserEnabled(id, setUserEnabledDto);
+    public ResponseEntity<UserResponseDto> setUserEnabled(@PathVariable("id") Long id,
+                                                          @Valid @RequestBody UserSetEnabledDto userSetEnabledDto) {
+        UserResponseDto userResponseDto = userService.setUserEnabled(id, userSetEnabledDto);
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDto);
     }
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserUpdateDto userUpdateDto) {
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable("id") Long id,
+                                                      @Valid @RequestBody UserUpdateDto userUpdateDto) {
         UserResponseDto userResponseDto = userService.updateUser(id, userUpdateDto);
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDto);
     }

@@ -1,33 +1,68 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
+import { RoleGuard } from './guards/role.guards';
 
 export const routes: Routes = [
   {
     path: 'login',
-    loadComponent: () => import('./components/pages/login/login').then((m) => m.LoginComponent),
+    loadComponent: () => import('./components/login/login').then((m) => m.LoginComponent),
   },
   {
-    path: 'welcome',
-    loadComponent: () => import('./components/pages/welcome/welcome').then((m) => m.WelcomeComponent),
+    path: 'registration',
+    loadComponent: () => import('./components/register/register').then((m) => m.RegisterComponent),
+  },
+
+  {
+    path: 'driver',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['ROLE_DRIVER'] },
+    children: [
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./components/driver/driver-profile/driver-profile/driver-profile').then(
+            (c) => c.DriverProfileComponent,
+          ),
+      },
+
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./components/driver/driverDashboard/driver-dachboard').then(
+            (c) => c.DriverDachboard,
+          ),
+      },
+      {
+        path: 'trips',
+        loadComponent: () =>
+          import('./components/driver/driver-trips/driver-trips').then(
+            (c) => c.DriverTripsComponent,
+          ),
+      },
+      {
+        path: 'all-trips',
+        loadComponent: () =>
+          import('./components/driver/driver-all-trips/driver-all-trips').then(
+            (c) => c.DriverAllTripsComponent,
+          ),
+      },
+    ],
+  },
+
+  {
+    path: 'cars/details/:id',
     canActivate: [AuthGuard],
-  },
-  {
-    path: 'userlist',
-    loadComponent: () => import('./components/pages/user-list/user-list').then((m) => m.UserListComponent),
-    canActivate: [AuthGuard,RoleGuard],
-     data:{roles: [Role.ADMIN]}
-  },
-  {
-    path: 'useredit/:login',
-    loadComponent: () => import('./components/pages/user-edit/user-edit').then((m) => m.UserEditComponent),
-    canActivate: [AuthGuard,RoleGuard],
-    data:{roles: [Role.ADMIN]}
-  },
-  {
-    path: 'loginedit',
     loadComponent: () =>
-      import('./components/pages/change-password/change-password').then((m) => m.ChangePasswordComponent),
-    canActivate: [AuthGuard],
+      import('./components/car/car-details/car-details').then((c) => c.CarDetailsComponent),
   },
-  { path: '', redirectTo: '/welcome', pathMatch: 'full' },
-  { path: '**', redirectTo: '/welcome' },
+
+  {
+    path: '',
+    redirectTo: '/login',
+    pathMatch: 'full',
+  },
+  {
+    path: '**',
+    redirectTo: '/login',
+  },
 ];

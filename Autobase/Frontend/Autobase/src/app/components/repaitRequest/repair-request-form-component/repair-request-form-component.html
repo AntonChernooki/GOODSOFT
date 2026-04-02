@@ -1,0 +1,16 @@
+<div class="modal-overlay">
+    <div class="modal-content">
+        <h3>Создание заявки на ремонт</h3>
+
+        <div class="form-group">
+            <label>Опишите поломку:</label>
+            <textarea [(ngModel)]="description" class="form-control" rows="4"
+                placeholder="Подробно опишите неисправность..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+            <button (click)="submit()" class="btn-modal btn-danger">Отправить заявку</button>
+            <button (click)="close.emit()" class="btn-modal btn-secondary">Отмена</button>
+        </div>
+    </div>
+</div>

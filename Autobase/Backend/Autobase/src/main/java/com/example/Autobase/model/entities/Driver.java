@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class Driver {
     private Long id;
-    private User user;
+    private Long userId;
     private String name;
     private String phone;
     private DriverStatus status;

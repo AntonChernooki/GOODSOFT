@@ -1,0 +1,12 @@
+<div class="dashboard-container">
+    <div class="dashboard-card">
+        <h1>Личный кабинет водителя</h1>
+        <p class="welcome-text">Добро пожаловать, <strong>{{ user?.login }}</strong>!</p>
+        <div class="actions">
+            <a routerLink="/driver/profile" class="btn btn-info">👤 Профиль</a>
+            <a routerLink="/driver/trips" class="btn btn-primary">🚛 Мои рейсы</a>
+            <a routerLink="/driver/repair-requests" class="btn btn-secondary">🔧 Ремонтные заявки</a>
+            <button (click)="logout()" class="btn btn-danger">🚪 Выйти</button>
+        </div>
+    </div>
+</div>

@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Data
 public class RepairRequest {
     private Long id;
-    private Driver driver;
-    private Car car;
+    private Long driverId;
+    private Long carId;
     private String description;
     private RepairRequestStatus status;
     private LocalDateTime createdAt;
@@ -22,3 +22,4 @@ public class RepairRequest {
     }
 
 }
+

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.Autobase.dao.RepairRequestDao">
+
+    <resultMap id="repairRequestResultMap" type="com.example.Autobase.model.entities.RepairRequest">
+        <id property="id" column="id"/>
+        <result property="driverId" column="driver_id"/>
+        <result property="carId" column="car_id"/>
+        <result property="description" column="description"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="completedAt" column="completed_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="getRepairRequestById" resultMap="repairRequestResultMap">
+        SELECT * FROM repair_requests WHERE id = #{id}
+    </select>
+
+    <select id="getAllRepairRequest" resultMap="repairRequestResultMap">
+        SELECT * FROM repair_requests
+    </select>
+
+    <select id="getRepairRequestByDriverId" resultMap="repairRequestResultMap">
+        SELECT * FROM repair_requests WHERE driver_id = #{driverId}
+    </select>
+
+    <select id="getRepairRequestByCarId" resultMap="repairRequestResultMap">
+        SELECT * FROM repair_requests WHERE car_id = #{carId}
+    </select>
+
+    <select id="getRepairRequestByStatus" resultMap="repairRequestResultMap">
+        SELECT * FROM repair_requests WHERE status = #{status}
+    </select>
+
+    <insert id="addRepairRequest" parameterType="com.example.Autobase.model.entities.RepairRequest" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO repair_requests (driver_id, car_id, description, status)
+        VALUES (#{driverId}, #{carId}, #{description}, #{status})
+    </insert>
+
+    <update id="updateRepairRequestStatus">
+        UPDATE repair_requests SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <update id="completeRepairRequest">
+        UPDATE repair_requests SET status = 'complete', completed_at = #{completedAt} WHERE id = #{id}
+    </update>
+
+    <update id="updateRepairRequest" parameterType="com.example.Autobase.model.entities.RepairRequest">
+        UPDATE repair_requests
+        <set>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="carId != null">car_id = #{carId},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="completedAt != null">completed_at = #{completedAt},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteRepairRequest">
+        DELETE FROM repair_requests WHERE id = #{id}
+    </delete>
+
+</mapper>

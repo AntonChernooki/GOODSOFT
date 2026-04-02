@@ -1,6 +1,5 @@
 package com.example.Autobase.security;
 
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +15,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -29,9 +27,9 @@ public class JwtFilter extends OncePerRequestFilter {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws  ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         logger.info("jwt filter");
         final String authorizationHeader = request.getHeader("Authorization");
         logger.info("Authorization header:  " + authorizationHeader);
@@ -45,25 +43,23 @@ public class JwtFilter extends OncePerRequestFilter {
             roles = jwtUtils.getRolesFromToken(jwt);
             logger.info("Login: , Roles:  " + login + " " + roles);
 
-            if (Objects.nonNull(login) && Objects.nonNull(roles) && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (Objects.nonNull(login) && Objects.nonNull(roles)
+                    && SecurityContextHolder.getContext().getAuthentication() == null) {
                 boolean isTokenValid = jwtUtils.validateJwtToken(jwt);
-
 
                 if (isTokenValid) {
                     UserDetails userDetails = customUserDetailsService.loadUserByUsername(login);
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    usernamePasswordAuthenticationToken
+                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                     logger.info("Authentication set with authorities:  " + userDetails.getAuthorities());
                 } else {
                     logger.warn("JWT validation failed");
                 }
             }
-
-
         }
-
-
         filterChain.doFilter(request, response);
     }
 }

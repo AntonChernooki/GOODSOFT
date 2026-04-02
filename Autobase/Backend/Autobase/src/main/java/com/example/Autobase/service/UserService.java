@@ -2,17 +2,17 @@ package com.example.Autobase.service;
 
 import com.example.Autobase.dao.RoleDao;
 import com.example.Autobase.dao.UserDao;
-import com.example.Autobase.dto.request.SetUserEnabledDto;
-import com.example.Autobase.dto.request.UserLoginDto;
-import com.example.Autobase.dto.request.UserRegistrationDto;
-import com.example.Autobase.dto.request.UserUpdateDto;
-import com.example.Autobase.dto.response.UserResponseDto;
+import com.example.Autobase.dto.request.user.UserLoginDto;
+import com.example.Autobase.dto.request.user.UserRegistrationDto;
+import com.example.Autobase.dto.request.user.UserSetEnabledDto;
+import com.example.Autobase.dto.request.user.UserUpdateDto;
+import com.example.Autobase.dto.response.user.UserResponseDto;
 import com.example.Autobase.exception.DuplicateLoginException;
 import com.example.Autobase.exception.RoleNotFoundException;
 import com.example.Autobase.exception.UserNotFoundException;
 import com.example.Autobase.model.entities.Role;
 import com.example.Autobase.model.entities.User;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +26,9 @@ import java.util.Set;
 public class UserService {
     private final UserDao userDao;
     private final RoleDao roleDao;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder bCryptPasswordEncoder;
 
-    public UserService(UserDao userDao, RoleDao roleDao, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserDao userDao, RoleDao roleDao, PasswordEncoder bCryptPasswordEncoder) {
         this.userDao = userDao;
         this.roleDao = roleDao;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -36,7 +36,8 @@ public class UserService {
 
     public UserResponseDto registerUser(UserRegistrationDto userRegistrationDto) {
         if (userDao.getUserByLogin(userRegistrationDto.getLogin()).isPresent()) {
-            throw new DuplicateLoginException("Пользователь с логином: " + userRegistrationDto + " уже зарегистрирован ");
+            throw new DuplicateLoginException(
+                    "Пользователь с логином: " + userRegistrationDto + " уже зарегистрирован ");
 
         }
         String encodedPassword = bCryptPasswordEncoder.encode(userRegistrationDto.getPassword());
@@ -44,25 +45,38 @@ public class UserService {
         userDao.addUser(user);
         if (userRegistrationDto.getRoles() != null && !userRegistrationDto.getRoles().isEmpty()) {
             for (String roleName : userRegistrationDto.getRoles()) {
-                Role role = roleDao.getRoleByName(roleName).orElseThrow(() -> new RoleNotFoundException("роль с именем:  " + roleName + " не нашлось в бд "));
+                Role role = roleDao.getRoleByName(roleName).orElseThrow(
+                        () -> new RoleNotFoundException("роль с именем:  " + roleName + " не нашлось в бд "));
 
                 userDao.addUserRole(user.getId(), role.getId());
             }
         }
-        user = userDao.getUserById(user.getId()).orElseThrow(() -> new UserNotFoundException("не нашелся пользователь по id"));
+        user = userDao.getUserById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException("не нашелся пользователь по id"));
 
         return userToResponseDto(user);
     }
 
-    public UserResponseDto getUserByLogin(String login) {
-        User user = userDao.getUserByLogin(login).orElseThrow(() -> new UserNotFoundException("не нашелся пользователь по логину"));
+    public UserResponseDto login(UserLoginDto userLoginDto) {
+        User user = userDao.getUserByLogin(userLoginDto.getLogin())
+                .orElseThrow(() -> new UserNotFoundException("не нашелся пользователь по login"));
+        if (bCryptPasswordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
+            return userToResponseDto(user);
+        } else {
+            throw new UserNotFoundException("неверный пароль");
+        }
+    }
 
+    public UserResponseDto getUserByLogin(String login) {
+        User user = userDao.getUserByLogin(login)
+                .orElseThrow(() -> new UserNotFoundException("не нашелся пользователь по логину"));
 
         return userToResponseDto(user);
     }
 
     public UserResponseDto getUserById(Long userId) {
-        User user = userDao.getUserById(userId).orElseThrow(() -> new UserNotFoundException("не нашелся пользователь по id"));
+        User user = userDao.getUserById(userId)
+                .orElseThrow(() -> new UserNotFoundException("не нашелся пользователь по id"));
         return userToResponseDto(user);
     }
 
@@ -75,9 +89,10 @@ public class UserService {
         return userResponseDtoArrayList;
     }
 
-    public UserResponseDto setUserEnabled(Long id, SetUserEnabledDto setUserEnabledDto) {
-        User user = userDao.getUserById(id).orElseThrow(() -> new UserNotFoundException("не нашелся пользователь по id"));
-        user.setEnabled(Boolean.valueOf(setUserEnabledDto.getEnabled()));
+    public UserResponseDto setUserEnabled(Long id, UserSetEnabledDto userSetEnabledDto) {
+        User user = userDao.getUserById(id)
+                .orElseThrow(() -> new UserNotFoundException("не нашелся пользователь по id"));
+        user.setEnabled(Boolean.valueOf(userSetEnabledDto.getEnabled()));
         userDao.updateUser(user);
         return userToResponseDto(user);
     }
@@ -87,16 +102,6 @@ public class UserService {
         userDao.getUserById(userId).orElseThrow(() -> new UserNotFoundException("не нашелся пользователь по id"));
         userDao.deleteUserRoles(userId);
         userDao.deleteUser(userId);
-    }
-
-
-    public UserResponseDto login(UserLoginDto userLoginDto) {
-        User user = userDao.getUserByLogin(userLoginDto.getLogin()).orElseThrow(() -> new UserNotFoundException("не нашелся пользователь по login"));
-        if (bCryptPasswordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
-            return userToResponseDto(user);
-        } else {
-            throw new UserNotFoundException("неверный пароль");
-        }
     }
 
     public UserResponseDto updateUser(Long id, UserUpdateDto updateDto) {
@@ -123,23 +128,25 @@ public class UserService {
             userDao.deleteUserRoles(user.getId());
 
             for (String roleName : updateDto.getRoles()) {
-                Role role = roleDao.getRoleByName(roleName).orElseThrow(() -> new RoleNotFoundException("Роль не найдена: " + roleName));
+                Role role = roleDao.getRoleByName(roleName)
+                        .orElseThrow(() -> new RoleNotFoundException("Роль не найдена: " + roleName));
                 userDao.addUserRole(user.getId(), role.getId());
             }
         }
 
-        User updatedUser = userDao.getUserById(id).orElseThrow(() -> new UserNotFoundException("Пользователь не найден после обновления"));
+        User updatedUser = userDao.getUserById(id)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден после обновления"));
         return userToResponseDto(updatedUser);
     }
 
     /*
-    public void addRoleToUser(Long userId, Long roleId) {
-        userDao.getUserById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-        roleDao.getRoleById(roleId)
-                .orElseThrow(() -> new RoleNotFoundException("Роль не найдена"));
-        userDao.addUserRole(userId, roleId);
-    }
+     * public void addRoleToUser(Long userId, Long roleId) {
+     * userDao.getUserById(userId)
+     * .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+     * roleDao.getRoleById(roleId)
+     * .orElseThrow(() -> new RoleNotFoundException("Роль не найдена"));
+     * userDao.addUserRole(userId, roleId);
+     * }
      */
 
     private UserResponseDto userToResponseDto(User user) {
@@ -157,6 +164,5 @@ public class UserService {
         userResponseDto.setRoles(roleString);
         return userResponseDto;
     }
-
 
 }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.Autobase.dao.TripDao">
+
+    <resultMap id="tripResultMap" type="com.example.Autobase.model.entities.Trip">
+        <id property="id" column="id"/>
+        <result property="origin" column="origin"/>
+        <result property="destination" column="destination"/>
+        <result property="status" column="status"/>
+        <result property="driverId" column="driver_id"/>
+        <result property="carId" column="car_id"/>
+        <result property="startedAt" column="started_at"/>
+        <result property="completedAt" column="completed_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="getTripById" resultMap="tripResultMap">
+        SELECT * FROM trips WHERE id = #{id}
+    </select>
+
+    <select id="getAllTrip" resultMap="tripResultMap">
+        SELECT * FROM trips
+    </select>
+
+    <select id="getTripByDriverId" resultMap="tripResultMap">
+        SELECT * FROM trips WHERE driver_id = #{driverId}
+    </select>
+
+    <select id="getTripByCarId" resultMap="tripResultMap">
+        SELECT * FROM trips WHERE car_id = #{carId}
+    </select>
+
+    <select id="getTripByStatus" resultMap="tripResultMap">
+        SELECT * FROM trips WHERE status = #{status}
+    </select>
+
+    <insert id="addTrip" parameterType="com.example.Autobase.model.entities.Trip" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO trips (origin, destination, status, driver_id, car_id, started_at, completed_at)
+        VALUES (#{origin}, #{destination}, #{status}, #{driverId}, #{carId}, #{startedAt}, #{completedAt})
+    </insert>
+
+
+    <update id="assignDriverAndCar">
+        UPDATE trips SET driver_id = #{driverId}, car_id = #{carId} WHERE id = #{id}
+    </update>
+
+
+    <update id="startTrip">
+        UPDATE trips SET started_at = #{startedAt}, status = 'in_progress' WHERE id = #{id}
+    </update>
+
+    <update id="completeTrip">
+        UPDATE trips SET completed_at = #{completedAt}, status = 'completed' WHERE id = #{id}
+    </update>
+
+    <update id="cancelTrip">
+        UPDATE trips SET status = 'cancelled' WHERE id = #{id}
+    </update>
+
+    <update id="updateTrip" parameterType="com.example.Autobase.model.entities.Trip">
+        UPDATE trips
+        <set>
+            <if test="origin != null">origin = #{origin},</if>
+            <if test="destination != null">destination = #{destination},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="carId != null">car_id = #{carId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="startedAt != null">started_at = #{startedAt},</if>
+            <if test="completedAt != null">completed_at = #{completedAt},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

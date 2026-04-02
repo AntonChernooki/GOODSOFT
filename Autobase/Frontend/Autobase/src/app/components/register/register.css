@@ -1,0 +1,133 @@
+:host {
+    display: block;
+    --primary: #1e2a5e;
+    --bg-light: #f8f9fc;
+    --white: #ffffff;
+    --text-dark: #2d3748;
+    --text-muted: #718096;
+    --success: #28a745;
+    --border-color: #e2e8f0;
+    --radius-card: 12px;
+    --radius-input: 8px;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    --transition: all 0.2s ease;
+    font-family: 'Inter', 'Roboto', system-ui, sans-serif;
+    font-size: 16px;
+    color: var(--text-dark);
+    background-color: var(--bg-light);
+    min-height: 100vh;
+}
+
+.register-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    min-height: inherit;
+}
+
+/* Карточка */
+.register-card {
+    max-width: 500px;
+    width: 100%;
+    background-color: var(--white);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.register-card__header {
+    padding: 1.5rem 1.5rem 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.register-card__header h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.register-card__body {
+    padding: 1.5rem;
+}
+
+.register-card__footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Форма */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    font-size: 1rem;
+    font-family: inherit;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-input);
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30, 42, 94, 0.1);
+}
+
+/* Кнопка */
+.btn {
+    display: inline-block;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: inherit;
+    text-align: center;
+    border: none;
+    border-radius: var(--radius-input);
+    cursor: pointer;
+    transition: var(--transition);
+    background-color: var(--success);
+    color: white;
+}
+
+.btn:hover {
+    background-color: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Ссылка */
+.link {
+    color: var(--primary);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.link:hover {
+    text-decoration: underline;
+    color: #0f1a3d;
+}
+
+.driver-fields {
+    border-top: 1px solid var(--border-color);
+    margin-top: 1rem;
+    padding-top: 1rem;
+}

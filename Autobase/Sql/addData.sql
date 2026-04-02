@@ -60,8 +60,3 @@ INSERT INTO repair_requests (driver_id, car_id, description, status, created_at,
 INSERT INTO trip_marks (trip_id, fuel_consumed, condition_notes) VALUES
     (1, 45.5, 'Машина в порядке, требуется замена масла'),
     (5, 38.2, 'Всё отлично, расход в норме');
-
-
-
-
-

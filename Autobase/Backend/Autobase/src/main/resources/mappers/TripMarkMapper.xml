@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.Autobase.dao.TripMarkDao">
+
+    <resultMap id="tripMarkResultMap" type="com.example.Autobase.model.entities.TripMark">
+        <id property="id" column="id"/>
+        <result property="tripId" column="trip_id"/>
+        <result property="fuelConsumed" column="fuel_consumed"/>
+        <result property="conditionNotes" column="condition_notes"/>
+        <result property="markDate" column="mark_date"/>
+    </resultMap>
+
+    <select id="getTripMarkById" resultMap="tripMarkResultMap">
+        SELECT * FROM trip_marks WHERE id = #{id}
+    </select>
+
+    <select id="getTripMarkByTripId" resultMap="tripMarkResultMap">
+        SELECT * FROM trip_marks WHERE trip_id = #{tripId}
+    </select>
+
+    <insert id="insertTripMark" parameterType="com.example.Autobase.model.entities.TripMark" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO trip_marks (trip_id, fuel_consumed, condition_notes, mark_date)
+        VALUES (#{tripId}, #{fuelConsumed}, #{conditionNotes}, #{markDate})
+    </insert>
+
+    <update id="updateTripMark" parameterType="com.example.Autobase.model.entities.TripMark">
+        UPDATE trip_marks
+        <set>
+            <if test="tripId != null">trip_id = #{tripId},</if>
+            <if test="fuelConsumed != null">fuel_consumed = #{fuelConsumed},</if>
+            <if test="conditionNotes != null">condition_notes = #{conditionNotes},</if>
+            <if test="markDate != null">mark_date = #{markDate},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteTripMark">
+        DELETE FROM trip_marks WHERE id = #{id}
+    </delete>
+
+</mapper>

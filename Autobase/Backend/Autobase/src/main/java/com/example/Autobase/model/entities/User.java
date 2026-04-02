@@ -1,4 +1,5 @@
 package com.example.Autobase.model.entities;
+
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -15,20 +16,20 @@ public class User {
     private LocalDateTime updatedAt;
     private Set<Role> roles;
 
-    public User(){
-        this.roles=new HashSet<>();
+    public User() {
+        this.roles = new HashSet<>();
     }
 
     public User(String login, String password) {
-        this.roles=new HashSet<>();
+        this.roles = new HashSet<>();
         this.login = login;
         this.password = password;
         this.enabled = true;
     }
 
-    public User(String login,Long id, String password, Set<Role> roles, Boolean enabled) {
-        this.login= login;
-        this.id= id;
+    public User(String login, Long id, String password, Set<Role> roles, Boolean enabled) {
+        this.login = login;
+        this.id = id;
         this.password = password;
         this.roles = roles;
         this.enabled = enabled;
@@ -42,6 +43,6 @@ public class User {
         if (roles == null) {
             return false;
         }
-        return roles.stream().anyMatch( role -> role.getName().equals(roleName));
+        return roles.stream().anyMatch(role -> role.getName().equals(roleName));
     }
 }
