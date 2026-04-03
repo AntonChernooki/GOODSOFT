@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Optional;
 
-
 public interface CarDao {
 
     Optional<Car> getCarById(Long id);
@@ -23,7 +22,6 @@ public interface CarDao {
 
     List<Car> getCarByYearOfRelease(Integer yearOfRelease);
 
-
     void updateCar(Car car);
 
     void updateCarStatus(@Param("id") Long id, @Param("status") String status);
@@ -33,6 +31,3 @@ public interface CarDao {
     void addCar(Car car);
 
 }
-
-
-

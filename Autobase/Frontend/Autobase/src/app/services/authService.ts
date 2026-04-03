@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environments';
@@ -10,10 +10,28 @@ import { UserResponseDto } from '../models/dto/response/user/UserResponseDto';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/users`;
-  private token = 'token';
-  private user = 'user';
+  private tokenKey = 'token';
+  private userKey = 'user';
 
-  constructor(private http: HttpClient) {}
+  private tokenSignal = signal<string | null>(localStorage.getItem(this.tokenKey));
+  private userSignal = signal<UserResponseDto | null>(this.getStoredUser());
+
+  isAuthenticated = computed(() => this.tokenSignal() !== null);
+  currentUser = computed(() => this.userSignal());
+  isAdmin = computed(() => {
+    const user = this.userSignal();
+    return user?.roles.includes('ROLE_ADMIN') ?? false;
+  });
+  isDispatcher = computed(() => {
+    const user = this.userSignal();
+    return user?.roles.includes('ROLE_DISPATCHER') ?? false;
+  });
+  isDriver = computed(() => {
+    const user = this.userSignal();
+    return user?.roles.includes('ROLE_DRIVER') ?? false;
+  });
+
+  private readonly http = inject(HttpClient);
 
   login(userLoginDto: UserLoginDto): Observable<LoginResponseDto> {
     return this.http
@@ -21,37 +39,39 @@ export class AuthService {
       .pipe(tap((response) => this.handleAuthResponse(response)));
   }
 
-  register(userRegistgationDto: UserRegistrationDto): Observable<UserResponseDto> {
-    return this.http.post<UserResponseDto>(`${this.apiUrl}/register`, userRegistgationDto);
+  register(userRegistrationDto: UserRegistrationDto): Observable<LoginResponseDto> {
+    return this.http.post<LoginResponseDto>(`${this.apiUrl}/register`, userRegistrationDto);
   }
 
   logout(): void {
-    this.clearStorage();
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
+    this.tokenSignal.set(null);
+    this.userSignal.set(null);
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.token);
+    return this.tokenSignal();
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem(this.token);
-  }
-
-  isAdmin(): boolean {
-    const user = this.getStoredUser();
-    if(user?.roles.includes('ROLE_ADMIN')){
-      return true;
-    }else{
-      return false;
-    }
+    return this.isAuthenticated();
   }
 
   getCurrentUser(): UserResponseDto | null {
-    return this.getStoredUser();
+    return this.currentUser();
+  }
+
+  private handleAuthResponse(response: unknown): void {
+    const loginResponse = response as LoginResponseDto;
+    localStorage.setItem(this.tokenKey, loginResponse.token);
+    localStorage.setItem(this.userKey, JSON.stringify(loginResponse.user));
+    this.tokenSignal.set(loginResponse.token);
+    this.userSignal.set(loginResponse.user);
   }
 
   private getStoredUser(): UserResponseDto | null {
-    const userStr = localStorage.getItem(this.user);
+    const userStr = localStorage.getItem(this.userKey);
     if (userStr) {
       try {
         return JSON.parse(userStr);
@@ -60,15 +80,5 @@ export class AuthService {
       }
     }
     return null;
-  }
-
-  private handleAuthResponse(response: LoginResponseDto): void {
-    localStorage.setItem(this.token, response.token);
-    localStorage.setItem(this.user, JSON.stringify(response.user));
-  }
-
-  private clearStorage(): void {
-    localStorage.removeItem(this.token);
-    localStorage.removeItem(this.user);
   }
 }

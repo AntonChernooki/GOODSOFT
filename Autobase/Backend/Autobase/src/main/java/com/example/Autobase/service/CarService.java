@@ -43,7 +43,7 @@ public class CarService {
     }
 
     public List<CarResponseDto> getCarsByStatus(String status) {
-        return carDao.getCarByStatus(status.toUpperCase()).stream()
+        return carDao.getCarByStatus(status).stream()
                 .map(this::toResponseDto)
                 .toList();
     }
@@ -114,7 +114,7 @@ public class CarService {
         if (updateDto.getNotes() != null)
             car.setNotes(updateDto.getNotes());
         if (updateDto.getStatus() != null)
-            car.setStatus(CarStatus.valueOf(updateDto.getStatus().toUpperCase()));
+            car.setStatus(CarStatus.valueOf(updateDto.getStatus()));
 
         carDao.updateCar(car);
         Car updated = carDao.getCarById(id)
@@ -125,7 +125,7 @@ public class CarService {
     public void updateCarStatus(Long id, String status) {
         Car car = carDao.getCarById(id)
                 .orElseThrow(() -> new CarNotFoundException("Автомобиль не найден по id = " + id));
-        carDao.updateCarStatus(id, status.toUpperCase());
+        carDao.updateCarStatus(id, status);
     }
 
     public void deleteCar(Long id) {

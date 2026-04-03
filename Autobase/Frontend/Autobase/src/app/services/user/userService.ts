@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environments';
@@ -8,9 +8,8 @@ import { UserUpdateDto } from '../../models/dto/request/user/UserUpdateDto';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private apiUrl = `${environment.apiUrl}/users`;
-
-  constructor(private http: HttpClient) {}
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = `${environment.apiUrl}/users`;
 
   getAll(): Observable<UserResponseDto[]> {
     return this.http.get<UserResponseDto[]>(this.apiUrl);
@@ -32,7 +31,7 @@ export class UserService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  setEnabled(id: number, dto: UserSetEnabledDto): Observable<UserResponseDto> {
-    return this.http.put<UserResponseDto>(`${this.apiUrl}/${id}/enabled`, dto);
+  setEnabled(id: number, setEnabledDto: UserSetEnabledDto): Observable<UserResponseDto> {
+    return this.http.put<UserResponseDto>(`${this.apiUrl}/${id}/enabled`, setEnabledDto);
   }
 }

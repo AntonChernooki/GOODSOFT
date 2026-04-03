@@ -1,21 +1,20 @@
-import { Component } from '@angular/core';
-import { AuthService } from '../../services/authService';
-import { routes } from '../../app.routes';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { AuthService } from '../../services/authService';
 
 @Component({
   selector: 'app-navbar',
   imports: [RouterLink],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css',
+  styleUrls: ['./navbar.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Navbar {
+  readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  constructor(public authService : AuthService, public router:Router){}
-
-  public logout():void{
-    this.router.navigateByUrl("/login")
+  logout(): void {
+    this.authService.logout();
   }
-  
-
 }

@@ -1,21 +1,26 @@
 <div class="modal-overlay">
-    <div class="modal-content">
-        <h3>Оценка завершенного рейса #{{ trip?.id }}</h3>
+  <div class="modal-content">
+    <h3>Оценка завершенного рейса #{{ trip()?.id }}</h3>
 
-        <div class="form-group">
-            <label>Потрачено топлива (литры):</label>
-            <input type="number" [(ngModel)]="fuelConsumed" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label>Заметки о состоянии:</label>
-            <textarea [(ngModel)]="conditionNotes" class="form-control" rows="3"></textarea>
-        </div>
-
-        <div class="modal-actions">
-            <button (click)="submit()" class="btn-modal btn-success">Сохранить оценку</button>
-            <button (click)="openRepair.emit()" class="btn-modal btn-warning">Сломалась? Заявка на ремонт</button>
-            <button (click)="close.emit()" class="btn-modal btn-secondary">Пропустить</button>
-        </div>
+    <div class="form-group">
+      <label for="fuelConsumed">Потрачено топлива (литры):</label>
+      <input
+        type="number"
+        id="fuelConsumed"
+        [(ngModel)]="fuelConsumed"
+        class="form-control"
+      />
     </div>
+
+    <div class="form-group">
+      <label for="conditionNotes">Заметки о состоянии:</label>
+      <textarea id="conditionNotes" [(ngModel)]="conditionNotes" class="form-control" rows="3"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button (click)="submit()" class="btn-modal btn-success">Сохранить оценку</button>
+      <button (click)="openRepair.emit()" class="btn-modal btn-warning">Сломалась? Заявка на ремонт</button>
+      <button (click)="close.emit()" class="btn-modal btn-secondary">Пропустить</button>
+    </div>
+  </div>
 </div>

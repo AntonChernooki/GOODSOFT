@@ -81,7 +81,7 @@ public class DriverService {
             driver.setNotes(updateDto.getNotes());
         }
         if (updateDto.getStatus() != null) {
-            driver.setStatus(DriverStatus.valueOf(updateDto.getStatus().toUpperCase()));
+            driver.setStatus(DriverStatus.valueOf(updateDto.getStatus()));
         }
 
         driverDao.updateDriver(driver);
@@ -91,7 +91,7 @@ public class DriverService {
 
     public void updateDriverStatus(Long driverId, String status) {
         Driver driver = driverDao.getDriverById(driverId).orElseThrow(() -> new DriverNotFoundException("Водитель не найден по id = " + driverId));
-        driverDao.updateDriverStatus(driverId, status.toUpperCase());
+        driverDao.updateDriverStatus(driverId, status);
     }
 
     public void deleteDriver(Long driverId) {

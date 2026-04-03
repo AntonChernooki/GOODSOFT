@@ -1,7 +1,8 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../services/authService';
 import { DriverService } from '../../services/driver/driverService';
@@ -9,95 +10,100 @@ import { ErrorModalService } from '../../services/error-modal-service';
 
 @Component({
   selector: 'app-register',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './register.html',
   styleUrls: ['./register.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent {
-  login = '';
-  password = '';
-  confirmPassword = '';
-  role: string = 'ROLE_DRIVER';
+  private readonly authService = inject(AuthService);
+  private readonly driverService = inject(DriverService);
+  private readonly errorModalService = inject(ErrorModalService);
+  private readonly router = inject(Router);
+  private readonly formBuilder = inject(FormBuilder);
 
-  driverName = '';
-  driverPhone = '';
-  driverExperienceYears: number = 0;
-  driverNotes = '';
+  registerForm: FormGroup;
+  driverForm: FormGroup;
+  isLoading = signal<boolean>(false);
+  selectedRole = signal<string>('ROLE_DRIVER');
 
-  loading = false;
+  constructor() {
+    this.registerForm = this.formBuilder.group({
+      login: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(4)]],
+      confirmPassword: ['', [Validators.required]],
+    });
 
-  constructor(
-    private authService: AuthService,
-    private driverService: DriverService,
-    private errorModalService: ErrorModalService,
-    private router: Router,
-    private cdr: ChangeDetectorRef
-  ) {}
+    this.driverForm = this.formBuilder.group({
+      name: ['', [Validators.required]],
+      phone: ['', [Validators.required]],
+      experienceYears: [0, [Validators.required, Validators.min(0)]],
+      notes: [''],
+    });
+  }
+
+  onRoleChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.selectedRole.set(target.value);
+  }
 
   async onSubmit(): Promise<void> {
-    // Валидация
-    if (!this.login || !this.password || !this.confirmPassword) {
-      this.errorModalService.showError('Все поля обязательны для заполнения');
+    if (this.registerForm.invalid || (this.selectedRole() === 'ROLE_DRIVER' && this.driverForm.invalid)) {
+      this.registerForm.markAllAsTouched();
+      this.driverForm.markAllAsTouched();
       return;
     }
-    if (this.password !== this.confirmPassword) {
+
+    const { password, confirmPassword } = this.registerForm.value;
+    if (password !== confirmPassword) {
       this.errorModalService.showError('Пароли не совпадают');
       return;
     }
-    if (this.role === 'ROLE_DRIVER') {
-      if (!this.driverName || !this.driverPhone || this.driverExperienceYears <= 0) {
-        this.errorModalService.showError('Заполните все данные водителя');
-        return;
-      }
-    }
 
-    this.loading = true;
-    this.cdr.detectChanges();
+    this.isLoading.set(true);
 
     try {
-      // 1. Регистрация пользователя
-const loginResponse = await firstValueFrom(
-  this.authService.register({
-    login: this.login,
-    password: this.password,
-    roles: [this.role],
-  })
-);
-const user = loginResponse.user; // теперь user – это UserResponseDto
-console.log('Пользователь создан:', user);
+      await firstValueFrom(
+        this.authService.register({
+          login: this.registerForm.value.login,
+          password: this.registerForm.value.password,
+          roles: [this.selectedRole()],
+        })
+      );
 
-if (this.role === 'ROLE_DRIVER') {
-  // 2. Автоматический вход
-  await firstValueFrom(
-    this.authService.login({ login: this.login, password: this.password })
-  );
-  console.log('Автовход выполнен, токен сохранён');
+      if (this.selectedRole() === 'ROLE_DRIVER') {
+        await firstValueFrom(
+          this.authService.login({
+            login: this.registerForm.value.login,
+            password: this.registerForm.value.password,
+          })
+        );
 
-  // 3. Создание профиля водителя
-  const driverData = {
-    userId: user.id,     // теперь корректный ID
-    name: this.driverName,
-    phone: this.driverPhone,
-    experienceYears: this.driverExperienceYears,
-    notes: this.driverNotes || undefined,
-  };
-  console.log('Отправляем данные водителя:', driverData);
+        const currentUser = this.authService.getCurrentUser();
+        if (!currentUser?.id) {
+          this.errorModalService.showError('Ошибка: не удалось получить ID пользователя');
+          return;
+        }
 
-  await firstValueFrom(this.driverService.create(driverData));
-  console.log('Водитель создан');
-}
+        const driverData = {
+          userId: currentUser.id,
+          name: this.driverForm.value.name,
+          phone: this.driverForm.value.phone,
+          experienceYears: this.driverForm.value.experienceYears,
+          notes: this.driverForm.value.notes || undefined,
+        };
 
-      this.loading = false;
-      this.cdr.detectChanges();
+        await firstValueFrom(this.driverService.create(driverData));
+      }
+
       this.errorModalService.showError('Регистрация успешна! Теперь вы можете войти.');
       this.router.navigate(['/login']);
-    } catch (err: any) {
-      this.loading = false;
-      this.cdr.detectChanges();
-      console.error('Ошибка регистрации:', err);
-      const errorMsg = err.error?.message || 'Ошибка регистрации';
+    } catch (err: unknown) {
+      const error = err as { error?: { message?: string } };
+      const errorMsg = error.error?.message ?? 'Ошибка регистрации';
       this.errorModalService.showError(errorMsg);
+    } finally {
+      this.isLoading.set(false);
     }
   }
 }

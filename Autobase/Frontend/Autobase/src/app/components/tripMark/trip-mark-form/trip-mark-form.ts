@@ -1,50 +1,65 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, inject, input, output, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { Subject } from 'rxjs';
 import { TripMarkRequestDto } from '../../../models/dto/request/tripMark/TripMarkRequestDto';
 import { TripResponseDto } from '../../../models/dto/response/trip/TripResponseDto';
 import { TripMarkService } from '../../../services/trip-mark/trip-markService';
-
-
-
-
-
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-trip-mark-form',
-  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './trip-mark-form.html',
-  styleUrl: './trip-mark-form.css',
+  styleUrls: ['./trip-mark-form.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TripMarkFormComponent {
-  @Input() trip: TripResponseDto | null = null;
-  @Output() close = new EventEmitter<void>();
-  @Output() openRepair = new EventEmitter<void>();
+export class TripMarkFormComponent implements OnDestroy {
+  private readonly tripMarkService = inject(TripMarkService);
+  private readonly destroySubject = new Subject<void>();
+
+  readonly trip = input<TripResponseDto | null>(null);
+  readonly close = output<void>();
+  readonly openRepair = output<void>();
 
   fuelConsumed = 0;
   conditionNotes = '';
 
-  constructor(private tripMarkService: TripMarkService) {}
+  ngOnDestroy(): void {
+    this.destroySubject.next();
+    this.destroySubject.complete();
+  }
 
   submit(): void {
-    if (!this.trip) return;
+    const trip = this.trip();
+    if (!trip) {
+      return;
+    }
+
+    if (this.fuelConsumed < 0 || this.fuelConsumed > 99999999.99) {
+      alert('Потрачено топлива должно быть от 0 до 99 999 999.99 литров');
+      return;
+    }
 
     const request: TripMarkRequestDto = {
-      tripId: this.trip.id,
-      fuelConsumed: this.fuelConsumed,
+      tripId: trip.id,
+      fuelConsumed: Number(this.fuelConsumed),
       conditionNotes: this.conditionNotes,
     };
 
-    this.tripMarkService.create(request).subscribe({
-      next: () => {
-        alert('Оценка сохранена!');
-        this.close.emit();
-      },
-      error: (err) => {
-        console.error('Ошибка при сохранении оценки:', err);
-        alert('Не удалось сохранить оценку');
-      },
-    });
+    this.tripMarkService
+      .create(request)
+      .pipe(takeUntil(this.destroySubject))
+      .subscribe({
+        next: () => {
+          alert('Оценка сохранена!');
+          this.close.emit();
+        },
+        error: (error) => {
+          console.error('Ошибка при сохранении оценки:', error);
+          alert('Не удалось сохранить оценку');
+        },
+      });
   }
 }

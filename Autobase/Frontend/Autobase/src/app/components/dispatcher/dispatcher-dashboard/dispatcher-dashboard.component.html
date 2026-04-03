@@ -1,0 +1,43 @@
+<div class="container">
+  <div class="dashboard-content">
+    <div class="welcome-section">
+      <h1>Панель диспетчера</h1>
+      <h2>Добро пожаловать, <strong>{{ user()?.login }}</strong>!</h2>
+      <p>Выберите раздел для работы</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">🚛</div>
+        <h3>Рейсы</h3>
+        <p>Управление рейсами, назначение водителей и автомобилей</p>
+        <a routerLink="/dispatcher/trips" class="stat-link">Перейти →</a>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">👨‍✈️</div>
+        <h3>Водители</h3>
+        <p>Список водителей, отстранение от работы</p>
+        <a routerLink="/dispatcher/drivers" class="stat-link">Перейти →</a>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🚗</div>
+        <h3>Автомобили</h3>
+        <p>Автопарк, статус транспортных средств</p>
+        <a routerLink="/dispatcher/cars" class="stat-link">Перейти →</a>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🔧</div>
+        <h3>Ремонт</h3>
+        <p>Заявки на ремонт, обработка и контроль</p>
+        <a routerLink="/dispatcher/repair-requests" class="stat-link">Перейти →</a>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button (click)="logout()" class="btn btn-danger">🚪 Выйти</button>
+    </div>
+  </div>
+</div>

@@ -4,7 +4,6 @@ import com.example.Autobase.dao.TripMarkDao;
 import com.example.Autobase.dto.request.tripMark.TripMarkRequestDto;
 import com.example.Autobase.dto.response.tripMark.TripMarkResponseDto;
 import com.example.Autobase.exception.TripMarkNotFoundException;
-import com.example.Autobase.exception.TripNotFoundException;
 import com.example.Autobase.model.entities.TripMark;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,7 @@ import java.util.Optional;
 public class TripMarkService {
 
     private final TripMarkDao tripMarkDao;
-    private final TripService tripService;  // для проверки существования поездки
+    private final TripService tripService;
 
     public TripMarkService(TripMarkDao tripMarkDao, TripService tripService) {
         this.tripMarkDao = tripMarkDao;
@@ -37,13 +36,12 @@ public class TripMarkService {
     }
 
     public TripMarkResponseDto saveOrUpdateTripMark(TripMarkRequestDto dto) {
-        // Проверяем, существует ли поездка
-        tripService.getTripById(dto.getTripId());  // если не существует, выбросит исключение
+        tripService.getTripById(dto.getTripId());
 
         Optional<TripMark> existing = tripMarkDao.getTripMarkByTripId(dto.getTripId());
         TripMark mark;
         if (existing.isPresent()) {
-            // Обновляем существующую отметку
+
             mark = existing.get();
             if (dto.getFuelConsumed() != null) {
                 mark.setFuelConsumed(dto.getFuelConsumed());
@@ -54,7 +52,7 @@ public class TripMarkService {
             mark.setMarkDate(LocalDateTime.now());
             tripMarkDao.updateTripMark(mark);
         } else {
-            // Создаём новую
+
             mark = new TripMark();
             mark.setTripId(dto.getTripId());
             mark.setFuelConsumed(dto.getFuelConsumed());

@@ -1,73 +1,131 @@
 <div class="register-container">
-    <div class="register-card">
-        <div class="register-card__header">
-            <h3>Регистрация</h3>
-        </div>
-
-        <div class="register-card__body">
-            <form (ngSubmit)="onSubmit()">
-                <div class="form-group">
-                    <label for="login">Логин</label>
-                    <input type="text" id="login" class="form-control" [(ngModel)]="login" name="login" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Пароль</label>
-                    <input type="password" id="password" class="form-control" [(ngModel)]="password" name="password"
-                        required />
-                </div>
-
-                <div class="form-group">
-                    <label for="confirmPassword">Подтверждение пароля</label>
-                    <input type="password" id="confirmPassword" class="form-control" [(ngModel)]="confirmPassword"
-                        name="confirmPassword" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="role">Роль</label>
-                    <select id="role" class="form-control" [(ngModel)]="role" name="role">
-                        <option value="ROLE_DRIVER">Водитель</option>
-                        <option value="ROLE_DISPATCHER">Диспетчер</option>
-                        <option value="ROLE_ADMIN">Администратор</option>
-                    </select>
-                </div>
-
-                @if (role === 'ROLE_DRIVER') {
-                <div class="driver-fields">
-                    <div class="form-group">
-                        <label for="driverName">Имя водителя</label>
-                        <input type="text" id="driverName" class="form-control" [(ngModel)]="driverName"
-                            name="driverName" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="driverPhone">Телефон</label>
-                        <input type="tel" id="driverPhone" class="form-control" [(ngModel)]="driverPhone"
-                            name="driverPhone" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="driverExperienceYears">Опыт работы (лет)</label>
-                        <input type="number" id="driverExperienceYears" class="form-control"
-                            [(ngModel)]="driverExperienceYears" name="driverExperienceYears" min="0" step="1" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="driverNotes">Примечания (необязательно)</label>
-                        <textarea id="driverNotes" class="form-control" rows="2" [(ngModel)]="driverNotes"
-                            name="driverNotes"></textarea>
-                    </div>
-                </div>
-                }
-
-                <button type="submit" class="btn btn--primary" [disabled]="loading">
-                    {{ loading ? 'Регистрация...' : 'Зарегистрироваться' }}
-                </button>
-            </form>
-        </div>
-
-        <div class="register-card__footer">
-            <a routerLink="/login" class="link">Уже есть аккаунт? Войти</a>
-        </div>
+  <div class="register-card">
+    <div class="register-card__header">
+      <h3>Регистрация</h3>
     </div>
+
+    <div class="register-card__body">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="login">Логин</label>
+          <input
+            type="text"
+            id="login"
+            class="form-control"
+            formControlName="login"
+            [class.is-invalid]="registerForm.get('login')?.invalid && registerForm.get('login')?.touched"
+          />
+          @if(registerForm.get('login')?.invalid && registerForm.get('login')?.touched){
+          <span class="invalid-feedback">Логин обязателен</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="password">Пароль</label>
+          <input
+            type="password"
+            id="password"
+            class="form-control"
+            formControlName="password"
+            [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+          />
+          @if(registerForm.get('password')?.invalid && registerForm.get('password')?.touched){
+          <span class="invalid-feedback">Пароль обязателен (минимум 4 символа)</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Подтверждение пароля</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            class="form-control"
+            formControlName="confirmPassword"
+            [class.is-invalid]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
+          />
+          @if(registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched){
+          <span class="invalid-feedback">Подтверждение пароля обязательно</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="role">Роль</label>
+          <select
+            id="role"
+            class="form-control"
+            [value]="selectedRole()"
+            (change)="onRoleChange($event)"
+          >
+            <option value="ROLE_DRIVER">Водитель</option>
+            <option value="ROLE_DISPATCHER">Диспетчер</option>
+            <option value="ROLE_ADMIN">Администратор</option>
+          </select>
+        </div>
+
+        @if (selectedRole() === 'ROLE_DRIVER') {
+        <div class="driver-fields" [formGroup]="driverForm">
+          <div class="form-group">
+            <label for="driverName">Имя водителя</label>
+            <input
+              type="text"
+              id="driverName"
+              class="form-control"
+              formControlName="name"
+              [class.is-invalid]="driverForm.get('name')?.invalid && driverForm.get('name')?.touched"
+            />
+            @if(driverForm.get('name')?.invalid && driverForm.get('name')?.touched){
+            <span class="invalid-feedback">Имя обязательно</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="driverPhone">Телефон</label>
+            <input
+              type="tel"
+              id="driverPhone"
+              class="form-control"
+              formControlName="phone"
+              [class.is-invalid]="driverForm.get('phone')?.invalid && driverForm.get('phone')?.touched"
+            />
+            @if(driverForm.get('phone')?.invalid && driverForm.get('phone')?.touched){
+            <span class="invalid-feedback">Телефон обязателен</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="driverExperienceYears">Опыт работы (лет)</label>
+            <input
+              type="number"
+              id="driverExperienceYears"
+              class="form-control"
+              formControlName="experienceYears"
+              min="0"
+              step="1"
+              [class.is-invalid]="driverForm.get('experienceYears')?.invalid && driverForm.get('experienceYears')?.touched"
+            />
+            @if(driverForm.get('experienceYears')?.invalid && driverForm.get('experienceYears')?.touched){
+            <span class="invalid-feedback">Укажите корректный опыт</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="driverNotes">Примечания (необязательно)</label>
+            <textarea id="driverNotes" class="form-control" rows="2" formControlName="notes"></textarea>
+          </div>
+        </div>
+        }
+
+        <button type="submit" class="btn btn--primary" [disabled]="isLoading()">
+          @if(isLoading()){
+          <span class="spinner"></span>
+          }
+          Зарегистрироваться
+        </button>
+      </form>
+    </div>
+
+    <div class="register-card__footer">
+      <a routerLink="/login" class="link">Уже есть аккаунт? Войти</a>
+    </div>
+  </div>
 </div>

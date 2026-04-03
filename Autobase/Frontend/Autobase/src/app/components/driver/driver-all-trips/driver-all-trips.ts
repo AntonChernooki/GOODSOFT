@@ -1,33 +1,39 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { TripResponseDto } from '../../../models/dto/response/trip/TripResponseDto';
-import { AuthService } from '../../../services/authService';
-import { DriverService } from '../../../services/driver/driverService';
+import { RouterLink } from '@angular/router';
 import { TripService } from '../../../services/trip/tripService';
+import { DriverService } from '../../../services/driver/driverService';
+import { AuthService } from '../../../services/authService';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { TripResponseDto } from '../../../models/dto/response/trip/TripResponseDto';
 import { Location } from '@angular/common';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-driver-all-trips',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './driver-all-trips.html',
   styleUrls: ['./driver-all-trips.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DriverAllTripsComponent implements OnInit {
-  trips: TripResponseDto[] = [];
-  loading = false;
+export class DriverAllTripsComponent implements OnDestroy {
+  private readonly tripService = inject(TripService);
+  private readonly driverService = inject(DriverService);
+  private readonly authService = inject(AuthService);
+  private readonly location = inject(Location);
+  private readonly destroySubject = new Subject<void>();
 
-  constructor(
-    private tripService: TripService,
-    private driverService: DriverService,
-    private authService: AuthService,
-    private cdr: ChangeDetectorRef, 
-    private location:Location,
-  ) {}
+  trips = signal<TripResponseDto[]>([]);
+  loading = signal<boolean>(false);
 
-  ngOnInit(): void {
+  constructor() {
     this.loadAllTrips();
+  }
+
+  ngOnDestroy(): void {
+    this.destroySubject.next();
+    this.destroySubject.complete();
   }
 
   goBack(): void {
@@ -48,39 +54,40 @@ export class DriverAllTripsComponent implements OnInit {
   }
 
   loadAllTrips(): void {
-    this.loading = true;
+    this.loading.set(true);
     const user = this.authService.getCurrentUser();
 
     if (!user?.id) {
-      this.loading = false;
-      this.cdr.detectChanges();
+      this.loading.set(false);
       return;
     }
 
-    this.driverService.getByUserId(user.id).subscribe({
-      next: (driver) => {
-        this.tripService.getByDriverId(driver.id).subscribe({
-          next: (trips) => {
-            this.trips = trips;
-            this.loading = false;
-            this.cdr.detectChanges(); 
-          },
-          error: (err) => {
-            console.error('Ошибка загрузки рейсов:', err);
-            this.loading = false;
-            this.cdr.detectChanges();
-          },
-        });
-      },
-      error: (err) => {
-        console.error('Ошибка загрузки водителя:', err);
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-    });
+    this.driverService
+      .getByUserId(user.id)
+      .pipe(takeUntil(this.destroySubject))
+      .subscribe({
+        next: (driver) => {
+          this.tripService
+            .getByDriverId(driver.id)
+            .pipe(takeUntil(this.destroySubject))
+            .subscribe({
+              next: (trips) => {
+                this.trips.set(trips);
+                this.loading.set(false);
+              },
+              error: () => {
+                this.loading.set(false);
+              },
+            });
+        },
+        error: () => {
+          this.loading.set(false);
+        },
+      });
   }
 
   getRoute(trip: TripResponseDto): string {
     return `${trip.origin} → ${trip.destination}`;
   }
 }
+

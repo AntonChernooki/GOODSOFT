@@ -1,66 +1,63 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
-import { CarResponseDto } from '../../../models/dto/response/car/CarResponseDto';
 import { CarService } from '../../../services/car/carService';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { CarResponseDto } from '../../../models/dto/response/car/CarResponseDto';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-car-details',
-  standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './car-details.html',
   styleUrls: ['./car-details.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CarDetailsComponent implements OnInit {
-  car: CarResponseDto | null = null;
-  loading = false;
-  error = false;
+export class CarDetailsComponent implements OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+  private readonly carService = inject(CarService);
+  private readonly location = inject(Location);
+  private readonly destroySubject = new Subject<void>();
 
-  constructor(
-    private route: ActivatedRoute,
-    private carService: CarService,
-    private location: Location,
-    private cdr: ChangeDetectorRef
-  ) {}
+  car = signal<CarResponseDto | null>(null);
+  loading = signal<boolean>(false);
+  error = signal<boolean>(false);
 
-  ngOnInit(): void {
+  constructor() {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       this.loadCar(+idParam);
     }
   }
 
-  loadCar(id: number): void {
-    this.loading = true;
-    this.error = false;
-    this.cdr.detectChanges();
+  ngOnDestroy(): void {
+    this.destroySubject.next();
+    this.destroySubject.complete();
+  }
 
-    this.carService.getById(id).pipe(
-      catchError((err) => {
-        console.error('Ошибка загрузки автомобиля:', err);
-        this.error = true;
-        this.loading = false;
-        this.cdr.detectChanges();
-        return of(null);
-      })
-    ).subscribe({
-      next: (data) => {
-        if (data) {
-          this.car = data;
-        } else {
-          this.error = true;
-        }
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      // error уже обработан в catchError
-    });
+  loadCar(id: number): void {
+    this.loading.set(true);
+    this.error.set(false);
+
+    this.carService
+      .getById(id)
+      .pipe(takeUntil(this.destroySubject))
+      .subscribe({
+        next: (data) => {
+          this.car.set(data);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.error.set(true);
+          this.loading.set(false);
+        },
+      });
   }
 
   goBack(): void {
     this.location.back();
   }
 }
+

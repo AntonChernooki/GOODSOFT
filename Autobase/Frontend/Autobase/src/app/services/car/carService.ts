@@ -1,61 +1,58 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environments';
-import { Observable } from 'rxjs';
-import { CarResponseDto } from '../../models/dto/response/car/CarResponseDto';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environments';
+import { CarResponseDto } from '../../models/dto/response/car/CarResponseDto';
 import { CarCreateDto } from '../../models/dto/request/car/carCreateDto';
 import { CarUpdateDto } from '../../models/dto/request/car/CarUpdateDto';
 import { CarStatus } from '../../models/enums/CarStatus';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class CarService {
-  private apiUrl = `${environment.apiUrl}/cars`;
-
-  constructor(private httpClient: HttpClient) {}
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = `${environment.apiUrl}/cars`;
 
   getAllCars(): Observable<CarResponseDto[]> {
-    return this.httpClient.get<CarResponseDto[]>(this.apiUrl);
+    return this.http.get<CarResponseDto[]>(this.apiUrl);
   }
 
   getById(id: number): Observable<CarResponseDto> {
-    return this.httpClient.get<CarResponseDto>(`${this.apiUrl}/${id}`);
+    return this.http.get<CarResponseDto>(`${this.apiUrl}/${id}`);
   }
 
   create(carCreateDto: CarCreateDto): Observable<CarResponseDto> {
-    return this.httpClient.post<CarResponseDto>(this.apiUrl, carCreateDto);
+    return this.http.post<CarResponseDto>(this.apiUrl, carCreateDto);
   }
 
-  update(id: number, dto: CarUpdateDto): Observable<CarResponseDto> {
-    return this.httpClient.patch<CarResponseDto>(`${this.apiUrl}/${id}`, dto);
+  update(id: number, updateDto: CarUpdateDto): Observable<CarResponseDto> {
+    return this.http.patch<CarResponseDto>(`${this.apiUrl}/${id}`, updateDto);
   }
 
   delete(id: number): Observable<void> {
-    return this.httpClient.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
   updateStatus(id: number, status: CarStatus): Observable<CarResponseDto> {
-    return this.httpClient.patch<CarResponseDto>(`${this.apiUrl}/${id}/status`, { status });
+    return this.http.patch<CarResponseDto>(`${this.apiUrl}/${id}/status`, { status });
   }
 
   getByYear(year: number): Observable<CarResponseDto[]> {
-    return this.httpClient.get<CarResponseDto[]>(`${this.apiUrl}/year/${year}`);
+    return this.http.get<CarResponseDto[]>(`${this.apiUrl}/year/${year}`);
   }
 
   getByStatus(status: CarStatus): Observable<CarResponseDto[]> {
-    return this.httpClient.get<CarResponseDto[]>(`${this.apiUrl}/status/${status}`);
+    return this.http.get<CarResponseDto[]>(`${this.apiUrl}/status/${status}`);
   }
 
   getByStateNumber(stateNumber: string): Observable<CarResponseDto[]> {
-    return this.httpClient.get<CarResponseDto[]>(`${this.apiUrl}/state-number/${stateNumber}`);
+    return this.http.get<CarResponseDto[]>(`${this.apiUrl}/state-number/${stateNumber}`);
   }
 
   getByMark(mark: string): Observable<CarResponseDto[]> {
-    return this.httpClient.get<CarResponseDto[]>(`${this.apiUrl}/mark/${mark}`);
+    return this.http.get<CarResponseDto[]>(`${this.apiUrl}/mark/${mark}`);
   }
 
   getByColor(color: string): Observable<CarResponseDto[]> {
-    return this.httpClient.get<CarResponseDto[]>(`${this.apiUrl}/color/${color}`);
+    return this.http.get<CarResponseDto[]>(`${this.apiUrl}/color/${color}`);
   }
 }

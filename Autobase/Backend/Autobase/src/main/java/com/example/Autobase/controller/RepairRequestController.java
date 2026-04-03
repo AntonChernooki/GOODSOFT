@@ -1,6 +1,7 @@
 package com.example.Autobase.controller;
 
 import com.example.Autobase.dto.request.repairRequest.RepairRequestCreateDto;
+import com.example.Autobase.dto.request.repairRequest.RepairRequestStatusUpdateDto;
 import com.example.Autobase.dto.request.repairRequest.RepairRequestUpdateDto;
 import com.example.Autobase.dto.response.repairRequest.RepairRequestResponseDto;
 import com.example.Autobase.exception.DriverNotFoundException;
@@ -81,8 +82,8 @@ public class RepairRequestController {
     @PatchMapping("/{id}/status")
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public ResponseEntity<Void> updateRepairRequestStatus(@PathVariable("id") Long id,
-            @RequestParam RepairRequestStatus repairRequestStatus) {
-        repairRequestService.updateRepairRequestStatus(id, repairRequestStatus);
+            @Valid @RequestBody RepairRequestStatusUpdateDto statusDto) {
+        repairRequestService.updateRepairRequestStatus(id, RepairRequestStatus.valueOf(statusDto.getStatus()));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

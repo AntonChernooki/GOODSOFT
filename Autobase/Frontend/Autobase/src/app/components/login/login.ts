@@ -1,30 +1,49 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from '../../services/authService';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrls: ['./login.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-  login = '';
-  password = '';
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly formBuilder = inject(FormBuilder);
 
-  constructor(private authService: AuthService, private router: Router) {}
+  loginForm: FormGroup;
+  isLoading = signal<boolean>(false);
 
-  onSubmit() {
-    this.authService.login({ login: this.login, password: this.password }).subscribe({
+  constructor() {
+    this.loginForm = this.formBuilder.group({
+      login: ['', [Validators.required]],
+      password: ['', [Validators.required]],
+    });
+  }
+
+  onSubmit(): void {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading.set(true);
+    const { login, password } = this.loginForm.value;
+
+    this.authService.login({ login, password }).subscribe({
       next: () => {
         const user = this.authService.getCurrentUser();
-        const roles = user?.roles || [];
+        const roles = user?.roles ?? [];
         this.redirectBasedOnRole(roles);
       },
-      error: (err) => {
-        console.error('Ошибка входа', err);
+      error: () => {
+        this.isLoading.set(false);
       },
     });
   }

@@ -1,70 +1,61 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Location } from '@angular/common';
-import { catchError, of } from 'rxjs';
 import { AuthService } from '../../../../services/authService';
 import { DriverService } from '../../../../services/driver/driverService';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { Subject } from 'rxjs';
 import { DriverResponseDto } from '../../../../models/dto/response/driver/DriverResponseDto';
-import { UserResponseDto } from '../../../../models/dto/response/user/UserResponseDto';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-driver-profile',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './driver-profile.html',
   styleUrls: ['./driver-profile.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DriverProfileComponent implements OnInit {
-  user: UserResponseDto | null = null;
-  driver: DriverResponseDto | null = null;
-  loading = false;
-  error = false;
+export class DriverProfileComponent implements OnDestroy {
+  private readonly authService = inject(AuthService);
+  private readonly driverService = inject(DriverService);
+  private readonly location = inject(Location);
+  private readonly destroySubject = new Subject<void>();
 
-  constructor(
-    private authService: AuthService,
-    private driverService: DriverService,
-    private location: Location,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  driver = signal<DriverResponseDto | null>(null);
+  loading = signal<boolean>(false);
+  error = signal<boolean>(false);
 
-  ngOnInit(): void {
+  constructor() {
     this.loadProfile();
   }
 
+  ngOnDestroy(): void {
+    this.destroySubject.next();
+    this.destroySubject.complete();
+  }
+
   loadProfile(): void {
-    this.loading = true;
-    this.error = false;
-    this.cdr.detectChanges();
+    this.loading.set(true);
+    this.error.set(false);
 
-    this.user = this.authService.getCurrentUser();
-
-    if (!this.user?.id) {
-      this.loading = false;
-      this.error = true;
-      this.cdr.detectChanges();
+    const user = this.authService.getCurrentUser();
+    if (!user?.id) {
+      this.loading.set(false);
+      this.error.set(true);
       return;
     }
 
     this.driverService
-      .getByUserId(this.user.id)
-      .pipe(
-        catchError((err) => {
-          console.error('Ошибка загрузки профиля водителя:', err);
-          this.error = true;
-          this.loading = false;
-          this.cdr.detectChanges();
-          return of(null);
-        }),
-      )
+      .getByUserId(user.id)
+      .pipe(takeUntil(this.destroySubject))
       .subscribe({
         next: (driver) => {
-          if (driver) {
-            this.driver = driver;
-          } else {
-            this.error = true;
-          }
-          this.loading = false;
-          this.cdr.detectChanges();
+          this.driver.set(driver);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.error.set(true);
+          this.loading.set(false);
         },
       });
   }
@@ -73,3 +64,4 @@ export class DriverProfileComponent implements OnInit {
     this.location.back();
   }
 }
+

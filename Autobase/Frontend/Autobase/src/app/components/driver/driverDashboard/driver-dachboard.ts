@@ -1,27 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { UserResponseDto } from '../../../models/dto/response/user/UserResponseDto';
+import { ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from '../../../services/authService';
-
+import { UserResponseDto } from '../../../models/dto/response/user/UserResponseDto';
 
 @Component({
-  selector: 'app-driver-dachboard',
-  standalone: true,
-  imports: [RouterLink],
+  selector: 'app-driver-dashboard',
+  imports: [CommonModule, RouterLink],
   templateUrl: './driver-dachboard.html',
-  styleUrl: './driver-dachboard.css',
+  styleUrls: ['./driver-dachboard.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DriverDachboard {
+export class DriverDachboard implements OnInit {
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  user: UserResponseDto | null = null;
-
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  user = signal<UserResponseDto | null>(null);
 
   ngOnInit(): void {
-    this.user = this.authService.getCurrentUser();
+    this.user.set(this.authService.getCurrentUser());
   }
 
   logout(): void {

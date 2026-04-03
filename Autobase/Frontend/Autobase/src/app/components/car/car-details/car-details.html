@@ -1,43 +1,43 @@
 <div class="car-details-container">
     <button (click)="goBack()" class="btn-back">← Назад</button>
 
-    @if (loading) {
+    @if (loading()) {
     <div class="loading-spinner">Загрузка...</div>
     }
-    @if (error) {
+    @if (error()) {
     <div class="error-message">
         <p>⚠️ Не удалось загрузить данные об автомобиле.</p>
         <p>Возможно, у вас нет прав доступа.</p>
     </div>
     }
-    @if (!loading && !error && car) {
+    @if (!loading() && !error() && car()) {
     <div class="car-card">
-        <h2>{{ car.mark }} {{ car.model || '' }}</h2>
+        <h2>{{ car()?.mark }} {{ car()?.model || '' }}</h2>
         <div class="car-details-grid">
             <div class="detail-item">
                 <span class="detail-label">Гос. номер:</span>
-                <span class="detail-value">{{ car.stateNumber }}</span>
+                <span class="detail-value">{{ car()?.stateNumber }}</span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Цвет:</span>
-                <span class="detail-value">{{ car.color }}</span>
+                <span class="detail-value">{{ car()?.color }}</span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Год выпуска:</span>
-                <span class="detail-value">{{ car.yearOfRelease }}</span>
+                <span class="detail-value">{{ car()?.yearOfRelease }}</span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Статус:</span>
-                <span class="detail-value status-badge" [class]="car.status">{{ car.status }}</span>
+                <span class="detail-value status-badge" [class]="car()?.status">{{ car()?.status }}</span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Пробег:</span>
-                <span class="detail-value">{{ car.mileage | number }} км</span>
+                <span class="detail-value">{{ car()?.mileage | number }} км</span>
             </div>
-            @if (car.notes) {
+            @if (car()?.notes) {
             <div class="detail-item full-width">
                 <span class="detail-label">Примечания:</span>
-                <span class="detail-value">{{ car.notes }}</span>
+                <span class="detail-value">{{ car()?.notes }}</span>
             </div>
             }
         </div>

@@ -1,0 +1,57 @@
+<div class="container">
+  <div class="header">
+    <button (click)="goBack()" class="btn-back">← Назад</button>
+    <h1>Автопарк</h1>
+  </div>
+
+  @if (!loading()) {
+  <div class="cars-grid">
+    @for (car of cars(); track car.id) {
+    <div class="car-card">
+      <div class="car-image">
+        <span class="car-icon">🚗</span>
+      </div>
+
+      <div class="car-info">
+        <h3>{{ car.mark }} {{ car.model }}</h3>
+        <p class="car-state-number">{{ car.stateNumber }}</p>
+        <span [class]="getStatusBadgeClass(car.status)">
+          {{ getStatusText(car.status) }}
+        </span>
+      </div>
+
+      <div class="car-details">
+        <div class="detail-row">
+          <span class="label"> Цвет:</span>
+          <span class="value">{{ car.color }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label"> Год выпуска:</span>
+          <span class="value">{{ car.yearOfRelease }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label"> Пробег:</span>
+          <span class="value">{{ getMileageUnit(car.mileage) }}</span>
+        </div>
+        @if (car.notes) {
+        <div class="detail-row">
+          <span class="label"> Заметки:</span>
+          <span class="value">{{ car.notes }}</span>
+        </div>
+        }
+      </div>
+
+      <div class="car-actions">
+        <a [routerLink]="'/cars/details/' + car.id" class="btn-details"> Подробнее → </a>
+      </div>
+    </div>
+    } @empty {
+    <div class="no-data">
+      <p>Автомобилей нет</p>
+    </div>
+    }
+  </div>
+  } @else {
+  <div class="loading">Загрузка автомобилей...</div>
+  }
+</div>

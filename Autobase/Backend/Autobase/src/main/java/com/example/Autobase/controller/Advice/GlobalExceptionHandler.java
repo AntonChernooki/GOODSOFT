@@ -3,7 +3,12 @@ package com.example.Autobase.controller.Advice;
 
 
 import com.example.Autobase.dto.response.error.ErrorResponse;
+import com.example.Autobase.exception.CarNotAvailableException;
+import com.example.Autobase.exception.DriverNotActiveException;
 import com.example.Autobase.exception.DuplicateLoginException;
+import com.example.Autobase.exception.DuplicateRepairRequestException;
+import com.example.Autobase.exception.RepairRequestOperationNotAllowedException;
+import com.example.Autobase.exception.TripOperationNotAllowedException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.ibatis.javassist.NotFoundException;
@@ -78,6 +83,56 @@ public class GlobalExceptionHandler {
                 errors
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(TripOperationNotAllowedException.class)
+    public ResponseEntity<ErrorResponse> handleTripOperationNotAllowed(TripOperationNotAllowedException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(RepairRequestOperationNotAllowedException.class)
+    public ResponseEntity<ErrorResponse> handleRepairRequestOperationNotAllowed(RepairRequestOperationNotAllowedException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(DriverNotActiveException.class)
+    public ResponseEntity<ErrorResponse> handleDriverNotActive(DriverNotActiveException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(CarNotAvailableException.class)
+    public ResponseEntity<ErrorResponse> handleCarNotAvailable(CarNotAvailableException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(DuplicateRepairRequestException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateRepairRequest(DuplicateRepairRequestException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
     @ExceptionHandler(Exception.class)

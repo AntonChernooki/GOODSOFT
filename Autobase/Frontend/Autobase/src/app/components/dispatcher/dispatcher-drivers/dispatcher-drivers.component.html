@@ -1,0 +1,64 @@
+<div class="container">
+  <div class="header">
+    <button (click)="goBack()" class="btn-back">← Назад</button>
+    <h1>Управление водителями</h1>
+  </div>
+
+  @if (!loading()) {
+  <div class="drivers-grid">
+    @for (driver of drivers(); track driver.id) {
+    <div class="driver-card">
+      <div class="driver-header">
+        <div class="driver-avatar">
+          <span>👨‍✈️</span>
+        </div>
+        <div class="driver-info">
+          <h3>{{ driver.name }}</h3>
+          <span [class]="getStatusBadgeClass(driver.status)">
+            {{ getStatusText(driver.status) }}
+          </span>
+        </div>
+      </div>
+
+      <div class="driver-details">
+        <div class="detail-row">
+          <span class="label">📱 Телефон:</span>
+          <span class="value">{{ driver.phone }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">💼 Стаж:</span>
+          <span class="value">{{ driver.experienceYears }} лет</span>
+        </div>
+        @if (driver.notes) {
+        <div class="detail-row">
+          <span class="label">📝 Заметки:</span>
+          <span class="value">{{ driver.notes }}</span>
+        </div>
+        }
+        <div class="detail-row">
+          <span class="label">📅 Создан:</span>
+          <span class="value">{{ driver.createdAt | date: 'dd.MM.yyyy' }}</span>
+        </div>
+      </div>
+
+      <div class="driver-actions">
+        <button
+          (click)="toggleDriverStatus(driver)"
+          class="btn-toggle"
+          [class.btn-suspend]="driver.status === DriverStatus.active"
+          [class.btn-activate]="driver.status === DriverStatus.inactive"
+        >
+          {{ driver.status === DriverStatus.active ? '⛔ Отстранить' : '✅ Активировать' }}
+        </button>
+      </div>
+    </div>
+    } @empty {
+    <div class="no-data">
+      <p>Водителей нет</p>
+    </div>
+    }
+  </div>
+  } @else {
+  <div class="loading">Загрузка водителей...</div>
+  }
+</div>

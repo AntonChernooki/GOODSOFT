@@ -89,7 +89,7 @@ public class UserController {
     @PutMapping("/{id}/enabled")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDto> setUserEnabled(@PathVariable("id") Long id,
-                                                          @Valid @RequestBody UserSetEnabledDto userSetEnabledDto) {
+            @Valid @RequestBody UserSetEnabledDto userSetEnabledDto) {
         UserResponseDto userResponseDto = userService.setUserEnabled(id, userSetEnabledDto);
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDto);
     }
@@ -97,7 +97,7 @@ public class UserController {
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable("id") Long id,
-                                                      @Valid @RequestBody UserUpdateDto userUpdateDto) {
+            @Valid @RequestBody UserUpdateDto userUpdateDto) {
         UserResponseDto userResponseDto = userService.updateUser(id, userUpdateDto);
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDto);
     }

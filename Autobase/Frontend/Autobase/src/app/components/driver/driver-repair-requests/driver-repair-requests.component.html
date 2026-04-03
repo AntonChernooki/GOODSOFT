@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="header">
+    <button (click)="goBack()" class="btn-back">← Назад</button>
+    <h1>Мои заявки на ремонт</h1>
+  </div>
+
+  @if (loading()) {
+  <div class="loading">Загрузка заявок...</div>
+  } @else {
+  <div class="requests-list">
+    @for (request of requests(); track request.id) {
+    <div class="request-card">
+      <div class="request-header">
+        <div class="request-id">Заявка #{{ request.id }}</div>
+        <span [class]="getStatusBadgeClass(request.status)">
+          {{ getStatusText(request.status) }}
+        </span>
+      </div>
+
+      <div class="request-body">
+        <div class="info-row">
+          <strong>🚗 Автомобиль:</strong>
+          <span>{{ getCarInfo(request) }}</span>
+        </div>
+        <div class="info-row">
+          <strong>📝 Описание:</strong>
+          <span>{{ request.description }}</span>
+        </div>
+        <div class="info-row">
+          <strong>📅 Создана:</strong>
+          <span>{{ request.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+        </div>
+        @if (request.completedAt) {
+        <div class="info-row">
+          <strong>✅ Завершена:</strong>
+          <span>{{ request.completedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+        </div>
+        }
+      </div>
+    </div>
+    } @empty {
+    <div class="no-data">
+      <p>У вас нет заявок на ремонт</p>
+    </div>
+    }
+  </div>
+  }
+</div>

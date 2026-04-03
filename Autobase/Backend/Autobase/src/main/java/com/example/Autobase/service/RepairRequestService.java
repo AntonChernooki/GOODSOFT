@@ -8,9 +8,12 @@ import com.example.Autobase.dto.request.repairRequest.RepairRequestUpdateDto;
 import com.example.Autobase.dto.response.repairRequest.RepairRequestResponseDto;
 import com.example.Autobase.exception.CarNotFoundException;
 import com.example.Autobase.exception.DriverNotFoundException;
+import com.example.Autobase.exception.DuplicateRepairRequestException;
 import com.example.Autobase.exception.RepairRequestNotFoundException;
 import com.example.Autobase.exception.RepairRequestOperationNotAllowedException;
+import com.example.Autobase.model.entities.Car;
 import com.example.Autobase.model.entities.RepairRequest;
+import com.example.Autobase.model.enums.CarStatus;
 import com.example.Autobase.model.enums.RepairRequestStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +60,7 @@ public class RepairRequestService {
     }
 
     public List<RepairRequestResponseDto> getRepairRequestsByStatus(String status) {
-        return repairRequestDao.getRepairRequestByStatus(status.toUpperCase()).stream()
+        return repairRequestDao.getRepairRequestByStatus(status).stream()
                 .map(this::toResponseDto)
                 .toList();
     }
@@ -68,6 +71,15 @@ public class RepairRequestService {
                         () -> new DriverNotFoundException("Водитель не найден по id = " + createDto.getDriverId()));
         carDao.getCarById(createDto.getCarId())
                 .orElseThrow(() -> new CarNotFoundException("Автомобиль не найден по id = " + createDto.getCarId()));
+
+        boolean hasActiveRequest = repairRequestDao.getRepairRequestByCarId(createDto.getCarId()).stream()
+                .anyMatch(r -> r.getDriverId().equals(createDto.getDriverId()) &&
+                        (r.getStatus() == RepairRequestStatus.submitted ||
+                                r.getStatus() == RepairRequestStatus.in_progress));
+        if (hasActiveRequest) {
+            throw new DuplicateRepairRequestException(
+                    "У вас уже есть активная заявка на ремонт этого автомобиля. Дождитесь её завершения.");
+        }
 
         RepairRequest request = new RepairRequest();
         request.setDriverId(createDto.getDriverId());
@@ -86,7 +98,7 @@ public class RepairRequestService {
                 .orElseThrow(() -> new RepairRequestNotFoundException("Заявка на ремонт не найдена по id = " + id));
 
         if (updateDto.getStatus() != null) {
-            RepairRequestStatus newStatus = RepairRequestStatus.valueOf(updateDto.getStatus().toUpperCase());
+            RepairRequestStatus newStatus = RepairRequestStatus.valueOf(updateDto.getStatus());
             if (!canChangeStatus(request.getStatus(), newStatus)) {
                 throw new RepairRequestOperationNotAllowedException(
                         String.format("Недопустимый переход статуса из %s в %s", request.getStatus(), newStatus));
@@ -94,6 +106,9 @@ public class RepairRequestService {
             request.setStatus(newStatus);
             if (newStatus == RepairRequestStatus.complete && request.getCompletedAt() == null) {
                 request.setCompletedAt(LocalDateTime.now());
+                if (request.getCarId() != null) {
+                    carDao.updateCarStatus(request.getCarId(), CarStatus.available.name());
+                }
             }
         }
 
@@ -115,8 +130,17 @@ public class RepairRequestService {
             throw new RepairRequestOperationNotAllowedException(
                     String.format("Недопустимый переход статуса из %s в %s", request.getStatus(), repairRequestStatus));
         }
-        if (repairRequestStatus == RepairRequestStatus.complete) {
+
+        if (repairRequestStatus == RepairRequestStatus.in_progress) {
+            repairRequestDao.updateRepairRequestStatus(id, repairRequestStatus.name());
+            if (request.getCarId() != null) {
+                carDao.updateCarStatus(request.getCarId(), CarStatus.repair.name());
+            }
+        } else if (repairRequestStatus == RepairRequestStatus.complete) {
             repairRequestDao.completeRepairRequest(id, LocalDateTime.now());
+            if (request.getCarId() != null) {
+                carDao.updateCarStatus(request.getCarId(), CarStatus.available.name());
+            }
         } else {
             repairRequestDao.updateRepairRequestStatus(id, repairRequestStatus.name());
         }

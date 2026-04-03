@@ -73,7 +73,7 @@ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 CREATE TABLE trip_marks(
   id serial PRIMARY KEY,
     trip_id INTEGER UNIQUE REFERENCES trips(id) ON DELETE CASCADE,
-    fuel_consumed DECIMAL(5,2),
+    fuel_consumed DECIMAL(10,2),
     condition_notes TEXT,
     mark_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

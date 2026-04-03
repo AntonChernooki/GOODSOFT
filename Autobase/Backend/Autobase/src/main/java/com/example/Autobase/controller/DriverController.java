@@ -1,6 +1,7 @@
 package com.example.Autobase.controller;
 
 import com.example.Autobase.dto.request.driver.DriverCreateDto;
+import com.example.Autobase.dto.request.driver.DriverStatusUpdateDto;
 import com.example.Autobase.dto.request.driver.DriverUpdateDto;
 import com.example.Autobase.dto.response.driver.DriverResponseDto;
 import com.example.Autobase.security.CustomUserDetails;
@@ -54,7 +55,7 @@ public class DriverController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN','DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN','DRIVER')")
     public ResponseEntity<DriverResponseDto> createDriver(@Valid @RequestBody DriverCreateDto createDto) {
         DriverResponseDto created = driverService.addDriver(createDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
@@ -69,10 +70,10 @@ public class DriverController {
     }
 
     @PatchMapping("/{id}/status")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public ResponseEntity<Void> updateDriverStatus(@PathVariable("id") Long id,
-            @RequestParam String status) {
-        driverService.updateDriverStatus(id, status);
+            @Valid @RequestBody DriverStatusUpdateDto statusDto) {
+        driverService.updateDriverStatus(id, statusDto.getStatus());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

@@ -1,5 +1,6 @@
 package com.example.Autobase.dto.request.tripMark;
 
+import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
@@ -11,6 +12,7 @@ public class TripMarkRequestDto {
     private Long tripId;
 
     @PositiveOrZero(message = "количество топлива обязательно")
+    @DecimalMax(value = "99999999.99", message = "Количество топлива не должно превышать 99 999 999.99")
     private BigDecimal fuelConsumed;
 
     private String conditionNotes;

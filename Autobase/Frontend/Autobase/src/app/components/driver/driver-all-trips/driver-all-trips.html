@@ -1,46 +1,46 @@
 <div class="trips-container">
-    <div class="trips-header">
-        <button (click)="goBack()" class="btn-back">← Назад</button>
-        <h2>История всех рейсов</h2>
-        <a routerLink="/driver/trips" class="btn-outline">🔙 К активным</a>
-    </div>
+  <div class="trips-header">
+    <button (click)="goBack()" class="btn-back">← Назад</button>
+    <h2>История всех рейсов</h2>
+    <a routerLink="/driver/trips" class="btn-outline">🔙 К активным</a>
+  </div>
 
-    @if (loading) {
-    <div class="loading-spinner">Загрузка...</div>
-    }
-    @if (!loading && trips.length === 0) {
-    <div class="empty-state">
-        <p>Нет рейсов</p>
-        <span>📋</span>
-    </div>
-    }
+  @if (loading()) {
+  <div class="loading-spinner">Загрузка...</div>
+  }
+  @if (!loading() && trips().length === 0) {
+  <div class="empty-state">
+    <p>Нет рейсов</p>
+    <span>📋</span>
+  </div>
+  }
 
-    @if (!loading && trips.length > 0) {
-    <div class="table-responsive">
-        <table class="trips-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Маршрут</th>
-                    <th>Статус</th>
-                    <th>Дата начала</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (trip of trips; track trip.id) {
-                <tr>
-                    <td data-label="ID">{{ trip.id }}</td>
-                    <td data-label="Маршрут">{{ getRoute(trip) }}</td>
-                    <td data-label="Статус">
-                        <span class="status-badge" [class]="getStatusClass(trip.status)">
-                            {{ trip.status }}
-                        </span>
-                    </td>
-                    <td data-label="Дата начала">{{ trip.startedAt | date:'dd.MM.yyyy HH:mm' }}</td>
-                </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    }
+  @if (!loading() && trips().length > 0) {
+  <div class="table-responsive">
+    <table class="trips-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Маршрут</th>
+          <th>Статус</th>
+          <th>Дата начала</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (trip of trips(); track trip.id) {
+        <tr>
+          <td data-label="ID">{{ trip.id }}</td>
+          <td data-label="Маршрут">{{ getRoute(trip) }}</td>
+          <td data-label="Статус">
+            <span class="status-badge" [class]="getStatusClass(trip.status)">
+              {{ trip.status }}
+            </span>
+          </td>
+          <td data-label="Дата начала">{{ trip.startedAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
 </div>
