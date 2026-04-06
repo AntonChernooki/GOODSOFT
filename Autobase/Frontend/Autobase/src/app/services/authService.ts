@@ -5,33 +5,21 @@ import { environment } from '../../environments/environments';
 import { UserLoginDto } from '../models/dto/request/user/UserLoginDto';
 import { UserRegistrationDto } from '../models/dto/request/user/UserRegistrationDto';
 import { LoginResponseDto } from '../models/dto/response/user/LoginResponseDto';
+import { Router } from '@angular/router';
+import { TokenService } from './auth/tokenService';
+import { UserStore } from './auth/userStore';
 import { UserResponseDto } from '../models/dto/response/user/UserResponseDto';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/users`;
-  private tokenKey = 'token';
-  private userKey = 'user';
-
-  private tokenSignal = signal<string | null>(localStorage.getItem(this.tokenKey));
-  private userSignal = signal<UserResponseDto | null>(this.getStoredUser());
-
-  isAuthenticated = computed(() => this.tokenSignal() !== null);
-  currentUser = computed(() => this.userSignal());
-  isAdmin = computed(() => {
-    const user = this.userSignal();
-    return user?.roles.includes('ROLE_ADMIN') ?? false;
-  });
-  isDispatcher = computed(() => {
-    const user = this.userSignal();
-    return user?.roles.includes('ROLE_DISPATCHER') ?? false;
-  });
-  isDriver = computed(() => {
-    const user = this.userSignal();
-    return user?.roles.includes('ROLE_DRIVER') ?? false;
-  });
-
+  private router = inject(Router);
   private readonly http = inject(HttpClient);
+  private tokenService = inject(TokenService);
+  private userStore = inject(UserStore);
+
+  isAuthenticated = this.tokenService.isAuthenticated;
+  currentUser = this.userStore.currentUser;
 
   login(userLoginDto: UserLoginDto): Observable<LoginResponseDto> {
     return this.http
@@ -44,41 +32,29 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.userKey);
-    this.tokenSignal.set(null);
-    this.userSignal.set(null);
+    this.tokenService.clearToken();
+    this.userStore.clearUser();
+    this.router.navigate(['/login']);
   }
-
-  getToken(): string | null {
-    return this.tokenSignal();
+  hasRole(role: string): boolean {
+    return this.userStore.hasRole(role);
   }
 
   isLoggedIn(): boolean {
     return this.isAuthenticated();
   }
 
-  getCurrentUser(): UserResponseDto | null {
-    return this.currentUser();
-  }
-
   private handleAuthResponse(response: unknown): void {
     const loginResponse = response as LoginResponseDto;
-    localStorage.setItem(this.tokenKey, loginResponse.token);
-    localStorage.setItem(this.userKey, JSON.stringify(loginResponse.user));
-    this.tokenSignal.set(loginResponse.token);
-    this.userSignal.set(loginResponse.user);
+    this.tokenService.setToken(loginResponse.token);
+    this.userStore.setUser(loginResponse.user);
   }
 
-  private getStoredUser(): UserResponseDto | null {
-    const userStr = localStorage.getItem(this.userKey);
-    if (userStr) {
-      try {
-        return JSON.parse(userStr);
-      } catch {
-        return null;
-      }
-    }
-    return null;
+  getToken(): string | null {
+    return this.tokenService.getToken();
+  }
+
+  getCurrentUser(): UserResponseDto | null {
+    return this.userStore.getCurrentUser();
   }
 }

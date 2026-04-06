@@ -26,7 +26,7 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./components/driver/driverDashboard/driver-dachboard').then(
+          import('./components/driver/driver-dashboard/driver-dachboard').then(
             (c) => c.DriverDachboard
           ),
       },

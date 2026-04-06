@@ -1,0 +1,24 @@
+<div class="dashboard-container">
+  <div class="dashboard-card">
+    <h1>Личный кабинет водителя</h1>
+    <p class="welcome-text">Добро пожаловать, <strong>{{ user()?.login }}</strong>!</p>
+    <div class="actions">
+      <a routerLink="/driver/profile" class="btn btn-info">
+        <img src="assets/icons/profile.svg" alt="Профиль" class="btn-icon" />
+        Профиль
+      </a>
+      <a routerLink="/driver/trips" class="btn btn-primary">
+        <img src="assets/icons/truck.svg" alt="Рейсы" class="btn-icon" />
+        Мои рейсы
+      </a>
+      <a routerLink="/driver/repair-requests" class="btn btn-secondary">
+        <img src="assets/icons/wrench.svg" alt="Ремонтные заявки" class="btn-icon" />
+        Ремонтные заявки
+      </a>
+      <button (click)="logout()" class="btn btn-danger">
+        <img src="assets/icons/logout.svg" alt="Выйти" class="btn-icon" />
+        Выйти
+      </button>
+    </div>
+  </div>
+</div>

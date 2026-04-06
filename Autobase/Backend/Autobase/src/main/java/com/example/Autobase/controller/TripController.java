@@ -29,6 +29,7 @@ public class TripController {
     public TripController(TripService tripService, DriverService driverService) {
         this.tripService = tripService;
         this.driverService = driverService;
+
     }
 
     @GetMapping

@@ -123,13 +123,13 @@ public class CarService {
     }
 
     public void updateCarStatus(Long id, String status) {
-        Car car = carDao.getCarById(id)
+        carDao.getCarById(id)
                 .orElseThrow(() -> new CarNotFoundException("Автомобиль не найден по id = " + id));
         carDao.updateCarStatus(id, status);
     }
 
     public void deleteCar(Long id) {
-        Car car = carDao.getCarById(id)
+        carDao.getCarById(id)
                 .orElseThrow(() -> new CarNotFoundException("Автомобиль не найден по id = " + id));
         carDao.deleteCar(id);
     }

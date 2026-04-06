@@ -6,7 +6,7 @@
   }
   @if (error()) {
     <div class="error-message">
-      <p>⚠️ Не удалось загрузить данные профиля.</p>
+      <img src="assets/icons/warning.svg" alt="Ошибка" class="error-icon" /> Не удалось загрузить данные профиля.
     </div>
   }
   @if (!loading() && !error() && driver()) {

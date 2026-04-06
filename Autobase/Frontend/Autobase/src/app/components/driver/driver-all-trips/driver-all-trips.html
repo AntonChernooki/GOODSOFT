@@ -2,7 +2,9 @@
   <div class="trips-header">
     <button (click)="goBack()" class="btn-back">← Назад</button>
     <h2>История всех рейсов</h2>
-    <a routerLink="/driver/trips" class="btn-outline">🔙 К активным</a>
+    <a routerLink="/driver/trips" class="btn-outline">
+      <img src="assets/icons/back-arrow.svg" alt="Назад" class="btn-icon" /> К активным
+    </a>
   </div>
 
   @if (loading()) {
@@ -11,7 +13,7 @@
   @if (!loading() && trips().length === 0) {
   <div class="empty-state">
     <p>Нет рейсов</p>
-    <span>📋</span>
+    <img src="assets/icons/list.svg" alt="Нет рейсов" class="empty-icon" />
   </div>
   }
 

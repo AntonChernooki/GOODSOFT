@@ -17,24 +17,29 @@
 
       <div class="request-body">
         <div class="info-row">
-          <strong>🚗 Автомобиль:</strong>
+          <strong>
+            <img src="assets/icons/car.svg" alt="Авто" class="inline-icon" /> Автомобиль:</strong>
           <span>{{ getCarInfo(request.carId) }}</span>
         </div>
         <div class="info-row">
-          <strong>👨‍✈️ Водитель:</strong>
+          <strong>
+            <img src="assets/icons/driver.svg" alt="Водитель" class="inline-icon" /> Водитель:</strong>
           <span>{{ getDriverName(request.driverId) }}</span>
         </div>
         <div class="info-row">
-          <strong>📝 Описание:</strong>
+          <strong>
+            <img src="assets/icons/description.svg" alt="Описание" class="inline-icon" /> Описание:</strong>
           <span>{{ request.description }}</span>
         </div>
         <div class="info-row">
-          <strong>📅 Создана:</strong>
+          <strong>
+            <img src="assets/icons/calendar.svg" alt="Дата" class="inline-icon" /> Создана:</strong>
           <span>{{ request.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
         </div>
         @if (request.completedAt) {
         <div class="info-row">
-          <strong>✅ Завершена:</strong>
+          <strong>
+            <img src="assets/icons/check-circle.svg" alt="Завершена" class="inline-icon" /> Завершена:</strong>
           <span>{{ request.completedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
         </div>
         }
@@ -46,13 +51,13 @@
           (click)="updateStatus(request.id, RepairRequestStatus.in_progress)"
           class="btn-action btn-in-progress"
         >
-          📋 В работу
+          <img src="assets/icons/clipboard.svg" alt="В работу" class="btn-icon" /> В работу
         </button>
         <button
           (click)="updateStatus(request.id, RepairRequestStatus.rejected)"
           class="btn-action btn-reject"
         >
-          ✕ Отклонить
+          Отклонить
         </button>
         }
         @if (request.status === RepairRequestStatus.in_progress) {
@@ -60,7 +65,7 @@
           (click)="updateStatus(request.id, RepairRequestStatus.complete)"
           class="btn-action btn-complete"
         >
-          ✅ Завершить
+          <img src="assets/icons/check-circle.svg" alt="Завершить" class="btn-icon" /> Завершить
         </button>
         }
         @if (

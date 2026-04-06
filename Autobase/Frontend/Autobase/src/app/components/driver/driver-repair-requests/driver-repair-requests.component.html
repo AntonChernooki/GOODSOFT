@@ -19,20 +19,24 @@
 
       <div class="request-body">
         <div class="info-row">
-          <strong>🚗 Автомобиль:</strong>
+          <strong>
+            <img src="assets/icons/car.svg" alt="Авто" class="inline-icon" /> Автомобиль:</strong>
           <span>{{ getCarInfo(request) }}</span>
         </div>
         <div class="info-row">
-          <strong>📝 Описание:</strong>
+          <strong>
+            <img src="assets/icons/description.svg" alt="Описание" class="inline-icon" /> Описание:</strong>
           <span>{{ request.description }}</span>
         </div>
         <div class="info-row">
-          <strong>📅 Создана:</strong>
+          <strong>
+            <img src="assets/icons/calendar.svg" alt="Дата" class="inline-icon" /> Создана:</strong>
           <span>{{ request.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
         </div>
         @if (request.completedAt) {
         <div class="info-row">
-          <strong>✅ Завершена:</strong>
+          <strong>
+            <img src="assets/icons/check-circle.svg" alt="Завершена" class="inline-icon" /> Завершена:</strong>
           <span>{{ request.completedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
         </div>
         }

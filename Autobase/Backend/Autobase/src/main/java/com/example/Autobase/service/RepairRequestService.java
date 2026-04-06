@@ -11,7 +11,6 @@ import com.example.Autobase.exception.DriverNotFoundException;
 import com.example.Autobase.exception.DuplicateRepairRequestException;
 import com.example.Autobase.exception.RepairRequestNotFoundException;
 import com.example.Autobase.exception.RepairRequestOperationNotAllowedException;
-import com.example.Autobase.model.entities.Car;
 import com.example.Autobase.model.entities.RepairRequest;
 import com.example.Autobase.model.enums.CarStatus;
 import com.example.Autobase.model.enums.RepairRequestStatus;

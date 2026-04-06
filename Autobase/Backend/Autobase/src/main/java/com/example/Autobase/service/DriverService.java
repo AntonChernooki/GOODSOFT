@@ -85,17 +85,19 @@ public class DriverService {
         }
 
         driverDao.updateDriver(driver);
-        Driver updatedDriver = driverDao.getDriverById(driverId).orElseThrow(() -> new DriverNotFoundException("Водитель не найден после обновления"));
+        Driver updatedDriver = driverDao.getDriverById(driverId)
+                .orElseThrow(() -> new DriverNotFoundException("Водитель не найден после обновления"));
         return driverToResponseDto(updatedDriver);
     }
 
     public void updateDriverStatus(Long driverId, String status) {
-        Driver driver = driverDao.getDriverById(driverId).orElseThrow(() -> new DriverNotFoundException("Водитель не найден по id = " + driverId));
+        driverDao.getDriverById(driverId)
+                .orElseThrow(() -> new DriverNotFoundException("Водитель не найден по id = " + driverId));
         driverDao.updateDriverStatus(driverId, status);
     }
 
     public void deleteDriver(Long driverId) {
-        Driver driver = driverDao.getDriverById(driverId)
+        driverDao.getDriverById(driverId)
                 .orElseThrow(() -> new DriverNotFoundException("Водитель не найден по id = " + driverId));
         driverDao.deleteDriver(driverId);
     }
@@ -110,7 +112,6 @@ public class DriverService {
                 driver.getExperienceYears(),
                 driver.getNotes(),
                 driver.getCreatedAt(),
-                driver.getUpdatedAt()
-        );
+                driver.getUpdatedAt());
     }
 }

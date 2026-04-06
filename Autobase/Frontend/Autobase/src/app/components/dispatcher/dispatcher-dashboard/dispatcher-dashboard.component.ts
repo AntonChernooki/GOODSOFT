@@ -13,8 +13,6 @@ import { UserResponseDto } from '../../../models/dto/response/user/UserResponseD
 })
 export class DispatcherDashboardComponent {
   private authService = inject(AuthService);
-  private router = inject(Router);
-
   user = signal<UserResponseDto | null>(null);
 
   constructor() {
@@ -23,6 +21,5 @@ export class DispatcherDashboardComponent {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }

@@ -10,7 +10,7 @@
     <div class="driver-card">
       <div class="driver-header">
         <div class="driver-avatar">
-          <span>👨‍✈️</span>
+          <img src="assets/icons/driver.svg" alt="Водитель" class="avatar-icon" />
         </div>
         <div class="driver-info">
           <h3>{{ driver.name }}</h3>
@@ -22,21 +22,25 @@
 
       <div class="driver-details">
         <div class="detail-row">
-          <span class="label">📱 Телефон:</span>
+          <span class="label">
+            <img src="assets/icons/phone.svg" alt="Телефон" class="inline-icon" /> Телефон:</span>
           <span class="value">{{ driver.phone }}</span>
         </div>
         <div class="detail-row">
-          <span class="label">💼 Стаж:</span>
+          <span class="label">
+            <img src="assets/icons/briefcase.svg" alt="Стаж" class="inline-icon" /> Стаж:</span>
           <span class="value">{{ driver.experienceYears }} лет</span>
         </div>
         @if (driver.notes) {
         <div class="detail-row">
-          <span class="label">📝 Заметки:</span>
+          <span class="label">
+            <img src="assets/icons/description.svg" alt="Заметки" class="inline-icon" /> Заметки:</span>
           <span class="value">{{ driver.notes }}</span>
         </div>
         }
         <div class="detail-row">
-          <span class="label">📅 Создан:</span>
+          <span class="label">
+            <img src="assets/icons/calendar.svg" alt="Дата" class="inline-icon" /> Создан:</span>
           <span class="value">{{ driver.createdAt | date: 'dd.MM.yyyy' }}</span>
         </div>
       </div>
@@ -48,7 +52,7 @@
           [class.btn-suspend]="driver.status === DriverStatus.active"
           [class.btn-activate]="driver.status === DriverStatus.inactive"
         >
-          {{ driver.status === DriverStatus.active ? '⛔ Отстранить' : '✅ Активировать' }}
+          {{ driver.status === DriverStatus.active ? 'Отстранить' : 'Активировать' }}
         </button>
       </div>
     </div>

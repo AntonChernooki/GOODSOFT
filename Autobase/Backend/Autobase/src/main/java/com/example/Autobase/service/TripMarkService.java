@@ -64,7 +64,7 @@ public class TripMarkService {
     }
 
     public void deleteTripMarkById(Long id) {
-        TripMark mark = tripMarkDao.getTripMarkById(id)
+        tripMarkDao.getTripMarkById(id)
                 .orElseThrow(() -> new TripMarkNotFoundException("Отметка с id " + id + " не найдена"));
         tripMarkDao.deleteTripMark(id);
     }
